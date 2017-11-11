@@ -1,0 +1,21 @@
+{
+    "parser": "babel-eslint",
+    "env": {
+        "browser": true
+    },
+    "extends": "eslint:recommended",
+    "parserOptions": {
+	"ecmaVersion": 2017,
+        "sourceType": "module"
+    },
+    "rules": {
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "semi": [
+            "error",
+            "always"
+        ]
+    }
+}
