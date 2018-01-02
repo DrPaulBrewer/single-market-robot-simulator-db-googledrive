@@ -563,7 +563,7 @@ function extensionsForGoogleDrive(_ref) {
     var rootFolderId = _ref.rootFolderId,
         spaces = _ref.spaces;
 
-    // inspired by v2.0.0 decorated-google-drive, modified to use gapi.client.drive
+    // inspired by v2.0.0 npm:decorated-google-drive, modified to use gapi.client.drive
     // and modified for browser environment
 
     var folderMimeType = 'application/vnd.google-apps.folder';

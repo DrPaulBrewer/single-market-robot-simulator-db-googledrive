@@ -1,7 +1,7 @@
 {
   "name": "single-market-robot-simulator-db-googledrive",
   "version": "0.1.0",
-  "description": "settings db for smrs based on decorated-google-drive",
+  "description": "settings and data db for single-market-robot-simulator studies with storage on Google Drive",
   "main": "build/index.js",
   "jsnext:main": "src/index.js",
   "scripts": {
@@ -15,7 +15,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/drpaulbrewer/single-market-robot-simulator-db-dgd"
+    "url": "https://github.com/drpaulbrewer/single-market-robot-simulator-db-googledrive"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -32,6 +32,6 @@
   "dependencies": {
     "p-reduce": "^1.0.0",
     "search-string-for-google-drive": "^0.2.0",
-    "single-market-robot-simulator-study": "^2.0.0"
+    "single-market-robot-simulator-study": "^3.0.0"
   }
 }

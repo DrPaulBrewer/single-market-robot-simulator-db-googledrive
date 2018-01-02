@@ -10,7 +10,7 @@ import pReduce from 'p-reduce';
 import * as Study from 'single-market-robot-simulator-study';
 
 function extensionsForGoogleDrive({rootFolderId, spaces}){
-    // inspired by v2.0.0 decorated-google-drive, modified to use gapi.client.drive
+    // inspired by v2.0.0 npm:decorated-google-drive, modified to use gapi.client.drive
     // and modified for browser environment
 
     const folderMimeType = 'application/vnd.google-apps.folder';
