@@ -9,6 +9,116 @@ import ssgd from 'search-string-for-google-drive';
 import pReduce from 'p-reduce';
 import * as Study from 'single-market-robot-simulator-study';
 
+const CLIENT_ID = window.GCID;
+const API_KEY = window.GK;
+const gapi = window.gapi;
+
+const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+
+// Authorization scopes required by the API; multiple scopes can be
+// included, separated by spaces.
+const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com\
+/auth/drive.appdata';
+
+const authorizeButton = document.getElementById('authorize-button');
+const signoutButton = document.getElementById('signout-button');
+
+/**                                                                                 
+ *  On load, called to load the auth2 library and API client library.               
+ */
+window.handleGoogleClientLoad = function() {
+    gapi.load('client:auth2', initClient);
+    $('#welcomeModal').modal('show');
+}
+
+/**                                                                                 
+ *  Initializes the API client library and sets up sign-in state                    
+ *  listeners.                                                                      
+ */
+function initClient() {
+    'use strict';
+    gapi.client.init({
+	apiKey: API_KEY,
+	clientId: CLIENT_ID,
+	discoveryDocs: DISCOVERY_DOCS,
+	scope: SCOPES
+    }).then(function () {
+	// Listen for sign-in state changes.
+	gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+	// Handle the initial sign-in state.
+	updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+	authorizeButton.onclick = handleAuthClick;
+	signoutButton.onclick = handleSignoutClick;
+    });
+}
+                   
+
+/**                                                                                 
+ *  Called when the signed in status changes, to update the UI                      
+ *  appropriately. After a sign-in, the API is called.                              
+ */
+function updateSigninStatus(isSignedIn) {
+    'use strict';
+    if (isSignedIn) {
+	authorizeButton.style.display = 'none';
+	signoutButton.style.display = 'block';
+    } else {
+	authorizeButton.style.display = 'block';
+	signoutButton.style.display = 'none';
+    }
+}
+
+/**                                                                                 
+ *  Sign in the user upon button click.                                             
+ */
+function handleAuthClick(event) {
+    'use strict';
+    gapi.auth2.getAuthInstance().signIn();
+}
+
+function handleSignoutClick(event) {
+    'use strict';
+    gapi.auth2.getAuthInstance().signOut();
+}
+
+/**                                                                                 
+ * Append a pre element to the body containing the given message                    
+ * as its text node. Used to display the results of the API call.                   
+ *                                                                                  
+ * @param {string} message Text to be placed in pre element.                        
+ */
+function appendPre(message) {
+    'use strict';
+    var pre = document.getElementById('content');
+    var textContent = document.createTextNode(message + '\n');
+    pre.appendChild(textContent);
+}
+                     
+
+/**                                                                                 
+ * Print files.                                                                     
+ */
+function listFiles() {
+    'use strict';
+    gapi.client.drive.files.list({
+	'pageSize': 100,
+	'fields': "nextPageToken, files(id, name, description, md5Checksum)"
+    }).then(function(response) {
+	appendPre('Files:');
+	var files = response.result.files;
+	if (files && files.length > 0) {
+	    for (var i = 0; i < files.length; i++) {
+		var file = files[i];
+		appendPre(file.name + ' (' + file.id + ')'+ ' md5: '+ file.md5Check\
+			  sum);
+	    }
+	} else {
+	    appendPre('No files found.');
+	}
+    });
+}                     
+
+
 function extensionsForGoogleDrive({rootFolderId, spaces}){
     // inspired by v2.0.0 npm:decorated-google-drive, modified to use gapi.client.drive
     // and modified for browser environment
