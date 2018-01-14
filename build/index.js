@@ -459,13 +459,9 @@ function initClient() {
 function updateSigninStatus(isSignedIn) {
     'use strict';
 
-    if (isSignedIn) {
-        authorizeButton.style.display = 'none';
-        signoutButton.style.display = 'block';
-    } else {
-        authorizeButton.style.display = 'block';
-        signoutButton.style.display = 'none';
-    }
+    console.log("got call of updateSigninStatus: " + isSignedIn);
+    if (authorizeButton) authorizeButton.style.display = isSignedIn ? 'none' : 'block';
+    if (signoutButton) signoutButton.style.display = isSignedIn ? 'block' : 'none';
 }
 
 /**                                                                                 
