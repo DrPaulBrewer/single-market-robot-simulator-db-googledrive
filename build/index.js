@@ -80,15 +80,17 @@ var econ1NetMainFolder = function () {
 }();
 
 var availableStudies = exports.availableStudies = function () {
-    var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(options) {
-        var trashed, sharedWithMe, fields, q, request, response;
+    var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
+        var options, trashed, sharedWithMe, fields, q, request, response;
         return regeneratorRuntime.wrap(function _callee12$(_context12) {
             while (1) {
                 switch (_context12.prev = _context12.next) {
                     case 0:
+                        console.log("TODO: fix smrs-db-googledrive availableStudies, should take options, be supplied with options upstream");
+                        options = {};
                         trashed = !!options.trashed;
                         sharedWithMe = !!options.sharedWithMe;
-                        fields = 'files(id,name,description,parents)';
+                        fields = 'files(id,name,description,properties,parents)';
                         q = (0, _searchStringForGoogleDrive2.default)({
                             mimeType: folderMimeType,
                             properties: {
@@ -104,14 +106,14 @@ var availableStudies = exports.availableStudies = function () {
                             spaces: spaces,
                             pageSize: pageSize
                         };
-                        _context12.next = 7;
+                        _context12.next = 9;
                         return gapi.client.drive.files.list(request);
 
-                    case 7:
+                    case 9:
                         response = _context12.sent;
                         return _context12.abrupt('return', response.result.files);
 
-                    case 9:
+                    case 11:
                     case 'end':
                         return _context12.stop();
                 }
@@ -119,7 +121,7 @@ var availableStudies = exports.availableStudies = function () {
         }, _callee12, this);
     }));
 
-    return function availableStudies(_x19) {
+    return function availableStudies() {
         return _ref14.apply(this, arguments);
     };
 }();
@@ -146,7 +148,7 @@ var sendToTrash = exports.sendToTrash = function () {
         }, _callee13, this);
     }));
 
-    return function sendToTrash(_x20) {
+    return function sendToTrash(_x19) {
         return _ref15.apply(this, arguments);
     };
 }();
@@ -173,7 +175,7 @@ var recoverFromTrash = exports.recoverFromTrash = function () {
         }, _callee14, this);
     }));
 
-    return function recoverFromTrash(_x21) {
+    return function recoverFromTrash(_x20) {
         return _ref16.apply(this, arguments);
     };
 }();
@@ -224,7 +226,7 @@ var getStudyConfig = exports.getStudyConfig = function () {
         }, _callee15, this);
     }));
 
-    return function getStudyConfig(_x22) {
+    return function getStudyConfig(_x21) {
         return _ref17.apply(this, arguments);
     };
 }();
@@ -267,7 +269,7 @@ var saveStudyConfig = exports.saveStudyConfig = function () {
                 }, _callee16, this);
             }));
 
-            return function createStudyDirectory(_x24) {
+            return function createStudyDirectory(_x23) {
                 return _ref19.apply(this, arguments);
             };
         }();
@@ -333,7 +335,7 @@ var saveStudyConfig = exports.saveStudyConfig = function () {
         }, _callee17, this);
     }));
 
-    return function saveStudyConfig(_x23) {
+    return function saveStudyConfig(_x22) {
         return _ref18.apply(this, arguments);
     };
 }();
@@ -373,7 +375,7 @@ var uploadStudyZip = exports.uploadStudyZip = function () {
         }, _callee18, this);
     }));
 
-    return function uploadStudyZip(_x25, _x26) {
+    return function uploadStudyZip(_x24, _x25) {
         return _ref20.apply(this, arguments);
     };
 }();
