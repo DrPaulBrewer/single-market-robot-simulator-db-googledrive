@@ -8,7 +8,7 @@
     "clean": "rm -rf ./build ./doc ; mkdir ./build",
     "build": "node_modules/.bin/babel src/*js -o build/index.js ; done",
     "doc": "node_modules/.bin/esdoc -c esdoc.json",
-    "lint": "node_modules/.bin/eslint src/index.js",
+    "lint": "node_modules/.bin/eslint src/**.js",
     "go": "npm run clean && npm run lint && npm run build"
   },
   "author": "drpaulbrewer@eaftc.com",
