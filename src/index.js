@@ -339,16 +339,12 @@ function pSignedIn(){
 export async function availableStudies(){
     console.log("TODO: fix smrs-db-googledrive availableStudies, should take options, be supplied with options upstream");
     const options = {};
-    const trashed = !!(options.trashed);
-    const sharedWithMe = !!(options.sharedWithMe);
     const fields = 'files(id,name,description,properties,parents)';
     const q = ssgd({
         mimeType: folderMimeType,
         properties: {
             role: studyFolderRole
-        },
-        trashed,
-        sharedWithMe
+        }
     });
     const request = {
         q,
