@@ -371,7 +371,7 @@ export async function getStudyConfig(study){
     if (!study || (!study.id))
         throw new Error("missing study.id");
     const folderId = study.id;
-    const fields = 'id,properties';
+    const fields = 'files(id,properties)';
     const q = ssgd({
         parents: folderId,
         name: configName,
@@ -383,6 +383,7 @@ export async function getStudyConfig(study){
     const file = response.result.files[0];
     const contents = await X.contents(file.id);
     const config = (typeof(contents)==='string')? JSON.parse(contents): contents;
+    console.log(config);
     return Object.assign(
         {},
         study,
