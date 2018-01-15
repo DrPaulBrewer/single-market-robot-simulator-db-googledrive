@@ -81,7 +81,7 @@ var econ1NetMainFolder = function () {
 
 var availableStudies = exports.availableStudies = function () {
     var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-        var options, trashed, sharedWithMe, fields, q, request, response;
+        var options, trashed, sharedWithMe, fields, q, request, ok, response;
         return regeneratorRuntime.wrap(function _callee12$(_context12) {
             while (1) {
                 switch (_context12.prev = _context12.next) {
@@ -107,13 +107,18 @@ var availableStudies = exports.availableStudies = function () {
                             pageSize: pageSize
                         };
                         _context12.next = 9;
-                        return gapi.client.drive.files.list(request);
+                        return pSignedIn();
 
                     case 9:
+                        ok = _context12.sent;
+                        _context12.next = 12;
+                        return gapi.client.drive.files.list(request);
+
+                    case 12:
                         response = _context12.sent;
                         return _context12.abrupt('return', response.result.files);
 
-                    case 11:
+                    case 14:
                     case 'end':
                         return _context12.stop();
                 }
@@ -456,10 +461,12 @@ function initClient() {
  *  Called when the signed in status changes, to update the UI                      
  *  appropriately. After a sign-in, the API is called.                              
  */
+
 function updateSigninStatus(isSignedIn) {
     'use strict';
 
     console.log("got call of updateSigninStatus: " + isSignedIn);
+    window.isSignedIn = isSignedIn;
     if (authorizeButton) authorizeButton.style.display = isSignedIn ? 'none' : 'block';
     if (signoutButton) signoutButton.style.display = isSignedIn ? 'block' : 'none';
 }
@@ -953,6 +960,15 @@ function init(_ref11) {
     DB.onSignIn = onSignIn;
     DB.onSignOut = onSignOut;
     DB.onProgress = onProgress;
+}
+
+function pSignedIn() {
+    return new Promise(function (resolve) {
+        function loop() {
+            if (window.isSignedIn) return resolve(true);else setTimeout(loop, 250);
+        }
+        loop();
+    });
 }
 
 function onUploadProgress(e) {

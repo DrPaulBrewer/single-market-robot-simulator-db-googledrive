@@ -40,17 +40,17 @@ window.handleGoogleClientLoad = function() {
 function initClient() {
     'use strict';
     gapi.client.init({
-	apiKey: API_KEY,
-	clientId: CLIENT_ID,
-	discoveryDocs: DISCOVERY_DOCS,
-	scope: SCOPES
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        discoveryDocs: DISCOVERY_DOCS,
+        scope: SCOPES
     }).then(function () {
-	// Listen for sign-in state changes.
-	gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-	// Handle the initial sign-in state.
-	updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-	if (authorizeButton) authorizeButton.onclick = handleAuthClick;
-	if (signoutButton) signoutButton.onclick = handleSignoutClick;
+        // Listen for sign-in state changes.
+        gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
+        // Handle the initial sign-in state.
+        updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
+        if (authorizeButton) authorizeButton.onclick = handleAuthClick;
+        if (signoutButton) signoutButton.onclick = handleSignoutClick;
     });
 }
                    
@@ -59,9 +59,11 @@ function initClient() {
  *  Called when the signed in status changes, to update the UI                      
  *  appropriately. After a sign-in, the API is called.                              
  */
+
 function updateSigninStatus(isSignedIn) {
     'use strict';
     console.log("got call of updateSigninStatus: "+isSignedIn);
+    window.isSignedIn = isSignedIn;
     if (authorizeButton) authorizeButton.style.display = (isSignedIn)? 'none' : 'block';
     if (signoutButton) signoutButton.style.display = (isSignedIn)? 'block': 'none';
 }
@@ -307,10 +309,10 @@ export function init({onSignIn,onSignOut,onProgress}){
 
 async function whoAmI(force){
     if ((!iAm.user) || force){
-	const response = await gapi.client.drive.about.get({fields:'user,storageQuota'});
-	const result = response.result;
-	iAm.user = result.user;
-	iAm.storageQuota = result.storageQuota;
+        const response = await gapi.client.drive.about.get({fields:'user,storageQuota'});
+        const result = response.result;
+        iAm.user = result.user;
+        iAm.storageQuota = result.storageQuota;
     }
     return iAm.user;
 }
@@ -323,7 +325,16 @@ async function econ1NetMainFolder(){
     const folder = await (X.folderFactory()('root',folderName));
     return folder;
 }
-        
+
+function pSignedIn(){
+    return new Promise(function(resolve){
+        function loop(){
+            if (window.isSignedIn) return resolve(true);
+            else setTimeout(loop, 250);
+        }
+        loop();
+    });
+}
 
 export async function availableStudies(){
     console.log("TODO: fix smrs-db-googledrive availableStudies, should take options, be supplied with options upstream");
@@ -337,7 +348,7 @@ export async function availableStudies(){
             role: studyFolderRole
         },
         trashed,
-	sharedWithMe
+        sharedWithMe
     });
     const request = {
         q,
@@ -346,6 +357,7 @@ export async function availableStudies(){
         spaces,
         pageSize
     };
+    const ok = await pSignedIn(); // eslint-disable-line no-unused-vars
     const response = await gapi.client.drive.files.list(request);
     return response.result.files;
 }
