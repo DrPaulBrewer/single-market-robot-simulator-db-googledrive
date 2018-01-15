@@ -385,8 +385,6 @@ exports.init = init;
 
 var _extensionsForGoogleDrive = require('./extensionsForGoogleDrive.js');
 
-var _extensionsForGoogleDrive2 = _interopRequireDefault(_extensionsForGoogleDrive);
-
 var _searchStringForGoogleDrive = require('search-string-for-google-drive');
 
 var _searchStringForGoogleDrive2 = _interopRequireDefault(_searchStringForGoogleDrive);
@@ -482,7 +480,7 @@ function handleSignoutClick() {
     gapi.auth2.getAuthInstance().signOut();
 }
 
-var X = (0, _extensionsForGoogleDrive2.default)({
+var X = (0, _extensionsForGoogleDrive.extensionsForGoogleDrive)({
     rootFolderId: 'root',
     spaces: 'drive'
 });

@@ -5,7 +5,7 @@
 
 /* eslint-disable no-console */
 
-import extensionsForGoogleDrive from './extensionsForGoogleDrive.js';
+import {extensionsForGoogleDrive} from './extensionsForGoogleDrive.js';
 import ssgd from 'search-string-for-google-drive';
 import * as Study from 'single-market-robot-simulator-study';
 
