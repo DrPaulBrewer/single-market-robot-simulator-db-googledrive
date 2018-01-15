@@ -81,23 +81,18 @@ var econ1NetMainFolder = function () {
 
 var availableStudies = exports.availableStudies = function () {
     var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12() {
-        var options, trashed, sharedWithMe, fields, q, request, ok, response;
+        var fields, q, request, ok, response;
         return regeneratorRuntime.wrap(function _callee12$(_context12) {
             while (1) {
                 switch (_context12.prev = _context12.next) {
                     case 0:
                         console.log("TODO: fix smrs-db-googledrive availableStudies, should take options, be supplied with options upstream");
-                        options = {};
-                        trashed = !!options.trashed;
-                        sharedWithMe = !!options.sharedWithMe;
                         fields = 'files(id,name,description,properties,parents)';
                         q = (0, _searchStringForGoogleDrive2.default)({
                             mimeType: folderMimeType,
                             properties: {
                                 role: studyFolderRole
-                            },
-                            trashed: trashed,
-                            sharedWithMe: sharedWithMe
+                            }
                         });
                         request = {
                             q: q,
@@ -106,19 +101,19 @@ var availableStudies = exports.availableStudies = function () {
                             spaces: spaces,
                             pageSize: pageSize
                         };
-                        _context12.next = 9;
+                        _context12.next = 6;
                         return pSignedIn();
 
-                    case 9:
+                    case 6:
                         ok = _context12.sent;
-                        _context12.next = 12;
+                        _context12.next = 9;
                         return gapi.client.drive.files.list(request);
 
-                    case 12:
+                    case 9:
                         response = _context12.sent;
                         return _context12.abrupt('return', response.result.files);
 
-                    case 14:
+                    case 11:
                     case 'end':
                         return _context12.stop();
                 }
