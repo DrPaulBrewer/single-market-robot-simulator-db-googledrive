@@ -659,6 +659,7 @@ function extensionsForGoogleDrive(_ref) {
         var searchTerms = _searchStringForGoogleDrive2.default.extract(options);
         if (!searchTerms.trashed) searchTerms.trashed = false; // trashed:false must be default for findPath, etc.
         if (searchTerms.sharedWithMe === false) throw new Error("extensionsForGoogleDrive: driveSearcher -- sharedWithMe:false known to be problematic in upstream Drive API");
+        console.log(searchTerms);
 
         return function () {
             var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(parent, name) {
@@ -668,7 +669,11 @@ function extensionsForGoogleDrive(_ref) {
                         switch (_context.prev = _context.next) {
                             case 0:
                                 search = Object.assign({}, searchTerms, { parent: parent, name: name });
+
+                                console.log(search);
                                 searchString = (0, _searchStringForGoogleDrive2.default)(search, allowMatchAllFiles);
+
+                                console.log(searchString);
                                 params = {
                                     spaces: spaces,
                                     q: searchString,
@@ -677,10 +682,10 @@ function extensionsForGoogleDrive(_ref) {
                                     orderBy: "folder,name,modifiedTime desc",
                                     fields: 'files(' + fields + ')'
                                 };
-                                _context.next = 5;
+                                _context.next = 7;
                                 return gapi.client.drive.files.list(params);
 
-                            case 5:
+                            case 7:
                                 response = _context.sent;
                                 return _context.abrupt('return', {
                                     parent: parent,
@@ -692,7 +697,7 @@ function extensionsForGoogleDrive(_ref) {
                                     files: response.result.files
                                 });
 
-                            case 7:
+                            case 9:
                             case 'end':
                                 return _context.stop();
                         }
