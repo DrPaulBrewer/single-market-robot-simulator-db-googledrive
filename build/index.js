@@ -196,7 +196,7 @@ var getStudyConfig = exports.getStudyConfig = function () {
 
                     case 2:
                         folderId = study.id;
-                        fields = 'id,properties';
+                        fields = 'files(id,properties)';
                         q = (0, _searchStringForGoogleDrive2.default)({
                             parents: folderId,
                             name: configName,
@@ -216,9 +216,11 @@ var getStudyConfig = exports.getStudyConfig = function () {
                     case 12:
                         contents = _context15.sent;
                         config = typeof contents === 'string' ? JSON.parse(contents) : contents;
+
+                        console.log(config);
                         return _context15.abrupt('return', Object.assign({}, study, config));
 
-                    case 15:
+                    case 16:
                     case 'end':
                         return _context15.stop();
                 }
