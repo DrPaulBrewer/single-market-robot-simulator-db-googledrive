@@ -96,6 +96,8 @@ function extensionsForGoogleDrive({rootFolderId, spaces}){
         const allowMatchAllFiles = options && options.allowMatchAllFiles;
         const fields = options.fields || 'id,name,mimeType,modifiedTime,size'; 
         const searchTerms = ssgd.extract(options);
+	if (!searchTerms.trashed) searchTerms.trashed = false; // trashed:false must be default for findPath, etc.
+	if (searchTerms.sharedWithMe===false) throw new Error("extensionsForGoogleDrive: driveSearcher -- sharedWithMe:false known to be problematic in upstream Drive API");
         
         return async function(parent, name){
             const search = Object.assign({}, searchTerms, { parent, name });

@@ -657,6 +657,8 @@ function extensionsForGoogleDrive(_ref) {
         var allowMatchAllFiles = options && options.allowMatchAllFiles;
         var fields = options.fields || 'id,name,mimeType,modifiedTime,size';
         var searchTerms = _searchStringForGoogleDrive2.default.extract(options);
+        if (!searchTerms.trashed) searchTerms.trashed = false; // trashed:false must be default for findPath, etc.
+        if (searchTerms.sharedWithMe === false) throw new Error("extensionsForGoogleDrive: driveSearcher -- sharedWithMe:false known to be problematic in upstream Drive API");
 
         return function () {
             var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(parent, name) {
