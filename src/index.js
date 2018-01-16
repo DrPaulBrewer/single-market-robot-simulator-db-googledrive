@@ -186,7 +186,7 @@ export async function getStudyConfig(studyFolder){
     return Object.assign(
         {},
 	{ folder: studyFolder},
-	config	
+	{ config }	
     );
 }
 

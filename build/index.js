@@ -217,7 +217,7 @@ var getStudyConfig = exports.getStudyConfig = function () {
                         config = typeof contents === 'string' ? JSON.parse(contents) : contents;
 
                         console.log(config);
-                        return _context6.abrupt('return', Object.assign({}, { folder: studyFolder }, config));
+                        return _context6.abrupt('return', Object.assign({}, { folder: studyFolder }, { config: config }));
 
                     case 16:
                     case 'end':
