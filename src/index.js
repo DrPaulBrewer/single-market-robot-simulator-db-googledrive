@@ -8,6 +8,7 @@
 import {extensionsForGoogleDrive} from './extensionsForGoogleDrive.js';
 import ssgd from 'search-string-for-google-drive';
 import * as Study from 'single-market-robot-simulator-study';
+import clone from 'clone';
 
 const CLIENT_ID = window.GCID;
 const API_KEY = window.GK;
@@ -183,11 +184,10 @@ export async function getStudyConfig(studyFolder){
     const contents = await X.contents(file.id);
     const config = (typeof(contents)==='string')? JSON.parse(contents): contents;
     console.log(config);
-    return Object.assign(
-        {},
-	{ folder: studyFolder},
-	{ config }	
-    );
+    return {
+	folder: clone(studyFolder),
+	config
+    };
 }
 
 function onUploadProgress(e){

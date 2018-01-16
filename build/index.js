@@ -217,7 +217,10 @@ var getStudyConfig = exports.getStudyConfig = function () {
                         config = typeof contents === 'string' ? JSON.parse(contents) : contents;
 
                         console.log(config);
-                        return _context6.abrupt('return', Object.assign({}, { folder: studyFolder }, { config: config }));
+                        return _context6.abrupt('return', {
+                            folder: (0, _clone2.default)(studyFolder),
+                            config: config
+                        });
 
                     case 16:
                     case 'end':
@@ -394,6 +397,10 @@ var _searchStringForGoogleDrive2 = _interopRequireDefault(_searchStringForGoogle
 var _singleMarketRobotSimulatorStudy = require('single-market-robot-simulator-study');
 
 var Study = _interopRequireWildcard(_singleMarketRobotSimulatorStudy);
+
+var _clone = require('clone');
+
+var _clone2 = _interopRequireDefault(_clone);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
