@@ -88,7 +88,7 @@ const X = extensionsForGoogleDrive({
 
 const spaces = 'drive';
 const pageSize = 1000;
-const orderBy = 'modifiedTime desc';
+const orderNewestFirst = 'modifiedTime desc';
 
 const folderMimeType = 'application/vnd.google-apps.folder';
 const studyFolderRole = 'Econ1.Net Study Folder';
@@ -146,7 +146,7 @@ export async function availableStudies(){
     });
     const request = {
         q,
-        orderBy,
+        orderBy: orderNewestFirst,
         fields,
         spaces,
         pageSize
@@ -166,10 +166,10 @@ export async function recoverFromTrash(study){
     return response; 
 }
 
-export async function getStudyConfig(study){
-    if (!study || (!study.id))
-        throw new Error("missing study.id");
-    const folderId = study.id;
+export async function getStudyConfig(studyFolder){
+    if (!studyFolder || (!studyFolder.id))
+        throw new Error("missing studyFolder.id");
+    const folderId = studyFolder.id;
     const fields = 'files(id,properties)';
     const q = ssgd({
 	trashed: false,
@@ -177,7 +177,7 @@ export async function getStudyConfig(study){
         name: configName,
         mimeType: configMimeType,
     });
-    const request = { q, fields, spaces, pageSize, orderBy };
+    const request = { q, fields, spaces, pageSize, orderBy:orderNewestFirst };
     const response = await gapi.client.drive.files.list(request);
     const file = response.result.files[0];
     const contents = await X.contents(file.id);
@@ -185,8 +185,8 @@ export async function getStudyConfig(study){
     console.log(config);
     return Object.assign(
         {},
-        study,
-        config
+	{ folder: studyFolder},
+	config	
     );
 }
 
@@ -195,6 +195,8 @@ function onUploadProgress(e){
 }
 
 export async function saveStudyConfig(study){
+    console.log("saveStudyConfig");
+    console.log(study);
     async function createStudyDirectory(options){
         const parent = await econ1NetMainFolder();
         const metaData = Object.assign(

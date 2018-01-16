@@ -95,7 +95,7 @@ var availableStudies = exports.availableStudies = function () {
                         });
                         request = {
                             q: q,
-                            orderBy: orderBy,
+                            orderBy: orderNewestFirst,
                             fields: fields,
                             spaces: spaces,
                             pageSize: pageSize
@@ -180,21 +180,21 @@ var recoverFromTrash = exports.recoverFromTrash = function () {
 }();
 
 var getStudyConfig = exports.getStudyConfig = function () {
-    var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(study) {
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(studyFolder) {
         var folderId, fields, q, request, response, file, contents, config;
         return regeneratorRuntime.wrap(function _callee6$(_context6) {
             while (1) {
                 switch (_context6.prev = _context6.next) {
                     case 0:
-                        if (!(!study || !study.id)) {
+                        if (!(!studyFolder || !studyFolder.id)) {
                             _context6.next = 2;
                             break;
                         }
 
-                        throw new Error("missing study.id");
+                        throw new Error("missing studyFolder.id");
 
                     case 2:
-                        folderId = study.id;
+                        folderId = studyFolder.id;
                         fields = 'files(id,properties)';
                         q = (0, _searchStringForGoogleDrive2.default)({
                             trashed: false,
@@ -202,7 +202,7 @@ var getStudyConfig = exports.getStudyConfig = function () {
                             name: configName,
                             mimeType: configMimeType
                         });
-                        request = { q: q, fields: fields, spaces: spaces, pageSize: pageSize, orderBy: orderBy };
+                        request = { q: q, fields: fields, spaces: spaces, pageSize: pageSize, orderBy: orderNewestFirst };
                         _context6.next = 8;
                         return gapi.client.drive.files.list(request);
 
@@ -217,7 +217,7 @@ var getStudyConfig = exports.getStudyConfig = function () {
                         config = typeof contents === 'string' ? JSON.parse(contents) : contents;
 
                         console.log(config);
-                        return _context6.abrupt('return', Object.assign({}, study, config));
+                        return _context6.abrupt('return', Object.assign({}, { folder: studyFolder }, config));
 
                     case 16:
                     case 'end':
@@ -280,6 +280,8 @@ var saveStudyConfig = exports.saveStudyConfig = function () {
             while (1) {
                 switch (_context8.prev = _context8.next) {
                     case 0:
+                        console.log("saveStudyConfig");
+                        console.log(study);
                         config = study.config;
                         options = {
                             id: study.folderId,
@@ -289,25 +291,25 @@ var saveStudyConfig = exports.saveStudyConfig = function () {
                         folderId = void 0, createdDir = void 0;
 
                         if (!options.id) {
-                            _context8.next = 7;
+                            _context8.next = 9;
                             break;
                         }
 
                         folderId = options.id;
-                        _context8.next = 11;
+                        _context8.next = 13;
                         break;
 
-                    case 7:
-                        _context8.next = 9;
+                    case 9:
+                        _context8.next = 11;
                         return createStudyDirectory(options);
 
-                    case 9:
+                    case 11:
                         createdDir = _context8.sent;
 
                         folderId = createdDir.id;
 
-                    case 11:
-                        _context8.next = 13;
+                    case 13:
+                        _context8.next = 15;
                         return pUploaderForGoogleDrive({
                             file: new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' }),
                             metadata: {
@@ -322,13 +324,13 @@ var saveStudyConfig = exports.saveStudyConfig = function () {
                             onProgress: onUploadProgress
                         });
 
-                    case 13:
+                    case 15:
                         upload = _context8.sent;
 
                         upload.z = undefined;
                         return _context8.abrupt('return', study);
 
-                    case 16:
+                    case 18:
                     case 'end':
                         return _context8.stop();
                 }
@@ -487,7 +489,7 @@ var X = (0, _extensionsForGoogleDrive.extensionsForGoogleDrive)({
 
 var spaces = 'drive';
 var pageSize = 1000;
-var orderBy = 'modifiedTime desc';
+var orderNewestFirst = 'modifiedTime desc';
 
 var folderMimeType = 'application/vnd.google-apps.folder';
 var studyFolderRole = 'Econ1.Net Study Folder';
