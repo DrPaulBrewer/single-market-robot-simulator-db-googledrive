@@ -21,7 +21,8 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
         const unique = options.unique;
         if (unique) limit = 2;
         const allowMatchAllFiles = options && options.allowMatchAllFiles;
-        const fields = options.fields || 'id,name,mimeType,modifiedTime,size'; 
+        const fields = options.fields || 'id,name,mimeType,modifiedTime,size';
+        const orderBy = options.orderBy || 'folder,name,modifiedTime desc' ;
         const searchTerms = ssgd.extract(options);
         if (!searchTerms.trashed) searchTerms.trashed = false; // trashed:false must be default for findPath, etc.
         if (searchTerms.sharedWithMe===false) throw new Error("extensionsForGoogleDrive: driveSearcher -- sharedWithMe:false known to be problematic in upstream Drive API");
@@ -37,7 +38,7 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
                 q: searchString,
                 pageSize: limit,
                 maxResults: limit,
-                orderBy: "folder,name,modifiedTime desc",
+                orderBy,
                 fields: `files(${fields})`
             };
             const response = await gapi.client.drive.files.list(params);
@@ -143,9 +144,11 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
                 name,
                 parents: [parentFolderId]
             });
+            // see https://stackoverflow.com/questions/34905363/create-file-with-google-drive-api-v3-javascript
             return await gapi.client.drive.files.create({
-                fields: 'id, mimeType, name'
-            }, metaData);
+                fields: 'id, mimeType, name',
+                resource: metaData
+            });
         };
     }
 

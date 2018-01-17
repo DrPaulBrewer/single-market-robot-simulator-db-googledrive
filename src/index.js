@@ -1,14 +1,12 @@
 /* Copyright 2017- Paul Brewer, Economic and Financial Technology Consulting LLC */
 /* This file is open source software.  The MIT License applies to this software. */
 
-/* global gapi:false, pUploaderForGoogleDrive:false, Promise:false */
+/* global gapi:false, Promise:false, driveX:false */
 
 /* eslint-disable no-console */
 
 import {extensionsForGoogleDrive} from './extensionsForGoogleDrive.js';
-import ssgd from 'search-string-for-google-drive';
-import * as Study from 'single-market-robot-simulator-study';
-import clone from 'clone';
+import {StudyFolder} from './StudyFolder.js';
 
 const CLIENT_ID = window.GCID;
 const API_KEY = window.GK;
@@ -82,20 +80,15 @@ function handleSignoutClick() {
     gapi.auth2.getAuthInstance().signOut();
 }
 
-const X = extensionsForGoogleDrive({
+window.driveX = extensionsForGoogleDrive({
     rootFolderId: 'root',
     spaces: 'drive'
 });
 
-const spaces = 'drive';
-const pageSize = 1000;
-const orderNewestFirst = 'modifiedTime desc';
 
 const folderMimeType = 'application/vnd.google-apps.folder';
 const studyFolderRole = 'Econ1.Net Study Folder';
 
-const configMimeType = 'application/json';
-const configName = 'config.json';
 const iAm = {};
 
 const DB = {};
@@ -116,15 +109,6 @@ async function whoAmI(force){
     return iAm.user;
 }
 
-
-async function econ1NetMainFolder(){
-    const user = await whoAmI(false);
-    const userName = (user.displayName || user.emailAddress).replace(/ /g, '-');
-    const folderName = 'Econ1Net-'+userName;
-    const folder = await (X.folderFactory()('root',folderName));
-    return folder;
-}
-
 function pSignedIn(){
     return new Promise(function(resolve){
         function loop(){
@@ -135,131 +119,44 @@ function pSignedIn(){
     });
 }
 
-export async function availableStudies(){
-    console.log("TODO: fix smrs-db-googledrive availableStudies, should take options, be supplied with options upstream");
-    const fields = 'files(id,name,description,properties,parents)';
-    const q = ssgd({
-	trashed: false,
+export async function myPrimaryFolder(){
+    await pSignedIn();
+    const user = await whoAmI(false);
+    const userName = user.emailAddress.split('@')[0];
+    if (!userName.length) throw new Error("Error: myPrimaryFolder(), user.emailAddress is blank");
+    const folderName = 'Econ1Net-'+userName;
+    const folder = await (driveX.folderFactory()('root',folderName));
+    return folder;
+}
+
+export async function listStudyFolders({ trashed }){
+    await pSignedIn();
+    const fields = 'id,name,description,properties,modifiedTime';
+    const orderBy = 'modifiedTime desc';
+    const searcher = driveX.searcher({
+        orderBy,
+        fields,
+        trashed,
         mimeType: folderMimeType,
         properties: {
             role: studyFolderRole
         }
     });
-    const request = {
-        q,
-        orderBy: orderNewestFirst,
-        fields,
-        spaces,
-        pageSize
-    };
-    const ok = await pSignedIn(); // eslint-disable-line no-unused-vars
-    const response = await gapi.client.drive.files.list(request);
-    return response.result.files;
+    const response = await searcher('root');
+    return response.files.map((f)=>(new StudyFolder(f)));
 }
 
-export async function sendToTrash(study){
-    const response = await gapi.client.drive.files.update({fileId: study.id},{trashed:true});
-    return response;
-}
-
-export async function recoverFromTrash(study){
-    const response =  await gapi.client.drive.files.update({fileId: study.id},{trashed:false});
-    return response; 
-}
-
-export async function getStudyConfig(studyFolder){
-    if (!studyFolder || (!studyFolder.id))
-        throw new Error("missing studyFolder.id");
-    const folderId = studyFolder.id;
-    const fields = 'files(id,properties)';
-    const q = ssgd({
-	trashed: false,
-        parents: folderId,
-        name: configName,
-        mimeType: configMimeType,
+export async function createStudyFolder({name}){
+    if (!window.isSignedIn)
+        throw new Error("not signed into Google Drive");
+    const creator = driveX.folderCreator({
+        properties: {
+            role: studyFolderRole
+        }
     });
-    const request = { q, fields, spaces, pageSize, orderBy:orderNewestFirst };
-    const response = await gapi.client.drive.files.list(request);
-    const file = response.result.files[0];
-    const contents = await X.contents(file.id);
-    const config = (typeof(contents)==='string')? JSON.parse(contents): contents;
-    console.log(config);
-    return {
-	folder: clone(studyFolder),
-	config
-    };
+    const folder = await creator('root', name);
+    if (!folder || !folder.id) throw new Error("creating Study Folder "+name+" failed");
+    return new StudyFolder(folder);
 }
 
-function onUploadProgress(e){
-    console.log(e);
-}
-
-export async function saveStudyConfig(study){
-    console.log("saveStudyConfig");
-    console.log(study);
-    async function createStudyDirectory(options){
-        const parent = await econ1NetMainFolder();
-        const metaData = Object.assign(
-            {},
-            {
-                mimeType: folderMimeType,
-                properties: {
-                    role: studyFolderRole
-                },
-                parents: [parent]
-            },
-            options
-        );
-        const response = await gapi.client.drive.files.create({
-            fields: 'id,name,description'
-        }, metaData);
-        return response.result;
-    }
-    const config = study.config;
-    const options = {
-        id: study.folderId,
-        name: study.name,
-        description: study.description
-    };  
-    let folderId, createdDir;
-    if (options.id){
-        folderId = options.id;
-    } else {
-        createdDir = await createStudyDirectory(options);
-        folderId = createdDir.id;
-    }
-    const upload = await pUploaderForGoogleDrive({
-        file: new Blob([JSON.stringify(config,null,2)], { type: 'application/json'}),
-        metadata: {
-            name: configName,
-            mimeType: 'application/json',
-            parents: [folderId]
-        },
-        params: {
-            spaces,
-            fields: 'id,name,mimeType'
-        },
-        onProgress: onUploadProgress
-    });
-    upload.z = undefined;
-    return study;
-}
-
-export async function uploadStudyZip(zipBlob, options){
-    const uploader = await pUploaderForGoogleDrive({
-        file: zipBlob,
-        metadata: {
-            name: Study.myDateStamp(),
-            mimeType: 'application/zip',
-            description: options.description || '',
-            parents: [options.id]
-        },
-        params: {
-            spaces,
-            fields: 'id,name,mimeType'
-        },
-        onProgress: onUploadProgress
-    });
-    return uploader;
-}
 

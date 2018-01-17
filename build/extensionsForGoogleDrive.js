@@ -198,6 +198,7 @@ function extensionsForGoogleDrive(_ref) {
         if (unique) limit = 2;
         var allowMatchAllFiles = options && options.allowMatchAllFiles;
         var fields = options.fields || 'id,name,mimeType,modifiedTime,size';
+        var orderBy = options.orderBy || 'folder,name,modifiedTime desc';
         var searchTerms = _searchStringForGoogleDrive2.default.extract(options);
         if (!searchTerms.trashed) searchTerms.trashed = false; // trashed:false must be default for findPath, etc.
         if (searchTerms.sharedWithMe === false) throw new Error("extensionsForGoogleDrive: driveSearcher -- sharedWithMe:false known to be problematic in upstream Drive API");
@@ -221,7 +222,7 @@ function extensionsForGoogleDrive(_ref) {
                                     q: searchString,
                                     pageSize: limit,
                                     maxResults: limit,
-                                    orderBy: "folder,name,modifiedTime desc",
+                                    orderBy: orderBy,
                                     fields: 'files(' + fields + ')'
                                 };
                                 _context.next = 7;
@@ -386,10 +387,13 @@ function extensionsForGoogleDrive(_ref) {
                                     name: name,
                                     parents: [parentFolderId]
                                 });
+                                // see https://stackoverflow.com/questions/34905363/create-file-with-google-drive-api-v3-javascript
+
                                 _context4.next = 4;
                                 return gapi.client.drive.files.create({
-                                    fields: 'id, mimeType, name'
-                                }, metaData);
+                                    fields: 'id, mimeType, name',
+                                    resource: metaData
+                                });
 
                             case 4:
                                 return _context4.abrupt('return', _context4.sent);
