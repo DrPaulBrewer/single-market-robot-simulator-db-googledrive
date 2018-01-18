@@ -340,19 +340,23 @@ var StudyFolder = exports.StudyFolder = function () {
                     while (1) {
                         switch (_context9.prev = _context9.next) {
                             case 0:
-                                files = this.listFiles();
+                                _context9.next = 2;
+                                return this.listFiles();
+
+                            case 2:
+                                files = _context9.sent;
                                 hasZipFiles = files.some(function (f) {
-                                    return f.names.endsWith(".zip");
+                                    return f.name.endsWith(".zip");
                                 });
 
                                 if (!(name === 'config.json' && hasZipFiles)) {
-                                    _context9.next = 4;
+                                    _context9.next = 6;
                                     break;
                                 }
 
                                 throw new Error("conflict Error in upload logic: may not clobber config.json in a study folder with existing .zip file data: config.json unchanged");
 
-                            case 4:
+                            case 6:
                                 existingFile = files.filter(function (f) {
                                     return f.name === name;
                                 });
@@ -369,7 +373,7 @@ var StudyFolder = exports.StudyFolder = function () {
                                     myFile = blob;
                                     if (name.endsWith(".zip")) mimeType = 'application/zip';else mimeType = blob.type || 'application/octet-stream';
                                 }
-                                _context9.next = 13;
+                                _context9.next = 15;
                                 return pUploaderForGoogleDrive({
                                     file: myFile,
                                     fileId: existingFileId,
@@ -385,10 +389,10 @@ var StudyFolder = exports.StudyFolder = function () {
                                     onProgress: onProgress
                                 });
 
-                            case 13:
+                            case 15:
                                 return _context9.abrupt('return', this);
 
-                            case 14:
+                            case 16:
                             case 'end':
                                 return _context9.stop();
                         }

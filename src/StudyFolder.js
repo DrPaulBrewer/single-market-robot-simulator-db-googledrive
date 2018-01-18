@@ -76,8 +76,8 @@ export class StudyFolder {
     }
     
     async upload({name, contents, blob, onProgress}){
-        const files = this.listFiles();
-        const hasZipFiles = files.some((f)=>(f.names.endsWith(".zip")));
+        const files = await this.listFiles();
+        const hasZipFiles = files.some((f)=>(f.name.endsWith(".zip")));
         if ((name === 'config.json') && (hasZipFiles))
             throw new Error("conflict Error in upload logic: may not clobber config.json in a study folder with existing .zip file data: config.json unchanged");
         const existingFile = files.filter((f)=>(f.name===name));
