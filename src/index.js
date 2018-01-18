@@ -7,6 +7,7 @@
 
 import {extensionsForGoogleDrive} from './extensionsForGoogleDrive.js';
 import {StudyFolder} from './StudyFolder.js';
+export {StudyFolder};
 
 const CLIENT_ID = window.GCID;
 const API_KEY = window.GK;

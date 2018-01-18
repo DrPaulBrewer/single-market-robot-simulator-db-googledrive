@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.createStudyFolder = exports.listStudyFolders = exports.myPrimaryFolder = undefined;
+exports.createStudyFolder = exports.listStudyFolders = exports.myPrimaryFolder = exports.StudyFolder = undefined;
 
 var whoAmI = function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(force) {
@@ -197,6 +197,9 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 /* global gapi:false, Promise:false, driveX:false */
 
 /* eslint-disable no-console */
+
+exports.StudyFolder = _StudyFolder.StudyFolder;
+
 
 var CLIENT_ID = window.GCID;
 var API_KEY = window.GK;
