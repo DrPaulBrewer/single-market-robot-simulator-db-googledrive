@@ -103,7 +103,7 @@ var StudyFolder = exports.StudyFolder = function () {
 
                             case 3:
                                 config = _context3.sent;
-                                return _context3.abrupt('return', { config: config, schema: null, folder: folder });
+                                return _context3.abrupt('return', { config: config, folder: folder });
 
                             case 5:
                             case 'end':
@@ -123,8 +123,7 @@ var StudyFolder = exports.StudyFolder = function () {
         key: 'setConfig',
         value: function () {
             var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref4) {
-                var config = _ref4.config,
-                    schema = _ref4.schema;
+                var config = _ref4.config;
                 return regeneratorRuntime.wrap(function _callee4$(_context4) {
                     while (1) {
                         switch (_context4.prev = _context4.next) {
@@ -156,18 +155,9 @@ var StudyFolder = exports.StudyFolder = function () {
                                 return this.upload({ name: 'config.json', contents: config });
 
                             case 9:
-                                if (!(schema && (typeof schema === 'undefined' ? 'undefined' : _typeof(schema)) === 'object')) {
-                                    _context4.next = 12;
-                                    break;
-                                }
-
-                                _context4.next = 12;
-                                return this.upload({ name: 'schema.json', contents: schema });
-
-                            case 12:
                                 return _context4.abrupt('return', this);
 
-                            case 13:
+                            case 10:
                             case 'end':
                                 return _context4.stop();
                         }

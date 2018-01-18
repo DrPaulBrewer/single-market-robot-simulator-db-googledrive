@@ -25,10 +25,10 @@ export class StudyFolder {
     async getConfig(){
         const folder = this;
         const config = await this.download({ name: 'config.json' });
-        return { config, schema:null, folder };
+        return { config, folder };
     }
 
-    async setConfig({config, schema}){
+    async setConfig({config}){
         if (config && (typeof(config)==='object')){
             if (config.name !== this.name)
                 throw new Error(`mismatch at StudyFolder:setConfig configuration name ${config.name} should equal the folder name ${this.name}`);
@@ -37,9 +37,6 @@ export class StudyFolder {
                 await this.update();
             }
             await this.upload({ name: 'config.json',  contents: config});
-        }
-        if (schema && (typeof(schema)==='object')){
-            await this.upload({ name: 'schema.json', contents: schema});
         }
         return this;
     }
