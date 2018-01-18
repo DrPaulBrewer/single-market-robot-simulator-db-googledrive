@@ -114,7 +114,7 @@ var listStudyFolders = exports.listStudyFolders = function () {
                             }
                         });
                         _context3.next = 7;
-                        return searcher('root');
+                        return searcher();
 
                     case 7:
                         response = _context3.sent;

@@ -143,7 +143,7 @@ export async function listStudyFolders({ trashed }){
             role: studyFolderRole
         }
     });
-    const response = await searcher('root');
+    const response = await searcher();
     return response.files.map((f)=>(new StudyFolder(f)));
 }
 
