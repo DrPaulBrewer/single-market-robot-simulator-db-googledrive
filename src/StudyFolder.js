@@ -68,6 +68,12 @@ export class StudyFolder {
         else
             return contents;
     }
+
+    async update(){
+	const folder = this;
+	const response = await driveX.updateMetadata(folder.id, folder);
+	return response;
+    }
     
     async upload({name, contents, blob, onProgress}){
         const files = this.listFiles();

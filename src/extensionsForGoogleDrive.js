@@ -214,6 +214,14 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
 
     x.createPath = driveCreatePath;
 
+    async function driveUpdateMetadata(fileId, metadata){
+	const fields = 'id,name,trashed,description,mimeType,modifiedTime,size,parents,properties,appProperties';
+	const response = await gapi.client.drive.files.update({fileId, fields, resource: metadata});
+	return response;	
+    }
+
+    x.updateMetadata = driveUpdateMetadata;
+
     return x;
 
 }

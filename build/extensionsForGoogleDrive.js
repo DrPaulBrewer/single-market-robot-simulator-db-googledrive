@@ -182,6 +182,34 @@ function extensionsForGoogleDrive(_ref) {
         };
     }();
 
+    var driveUpdateMetadata = function () {
+        var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(fileId, metadata) {
+            var fields, response;
+            return regeneratorRuntime.wrap(function _callee10$(_context10) {
+                while (1) {
+                    switch (_context10.prev = _context10.next) {
+                        case 0:
+                            fields = 'id,name,trashed,description,mimeType,modifiedTime,size,parents,properties,appProperties';
+                            _context10.next = 3;
+                            return gapi.client.drive.files.update({ fileId: fileId, fields: fields, resource: metadata });
+
+                        case 3:
+                            response = _context10.sent;
+                            return _context10.abrupt('return', response);
+
+                        case 5:
+                        case 'end':
+                            return _context10.stop();
+                    }
+                }
+            }, _callee10, this);
+        }));
+
+        return function driveUpdateMetadata(_x18, _x19) {
+            return _ref11.apply(this, arguments);
+        };
+    }();
+
     var rootFolderId = _ref.rootFolderId,
         spaces = _ref.spaces;
 
@@ -480,6 +508,8 @@ function extensionsForGoogleDrive(_ref) {
     x.download = driveDownload;
 
     x.createPath = driveCreatePath;
+
+    x.updateMetadata = driveUpdateMetadata;
 
     return x;
 }

@@ -297,17 +297,48 @@ var StudyFolder = exports.StudyFolder = function () {
             return download;
         }()
     }, {
-        key: 'upload',
+        key: 'update',
         value: function () {
-            var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(_ref10) {
-                var name = _ref10.name,
-                    contents = _ref10.contents,
-                    blob = _ref10.blob,
-                    onProgress = _ref10.onProgress;
-                var files, hasZipFiles, existingFile, existingFileId, folderId, myFile, mimeType;
+            var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+                var folder, response;
                 return regeneratorRuntime.wrap(function _callee8$(_context8) {
                     while (1) {
                         switch (_context8.prev = _context8.next) {
+                            case 0:
+                                folder = this;
+                                _context8.next = 3;
+                                return driveX.updateMetadata(folder.id, folder);
+
+                            case 3:
+                                response = _context8.sent;
+                                return _context8.abrupt('return', response);
+
+                            case 5:
+                            case 'end':
+                                return _context8.stop();
+                        }
+                    }
+                }, _callee8, this);
+            }));
+
+            function update() {
+                return _ref10.apply(this, arguments);
+            }
+
+            return update;
+        }()
+    }, {
+        key: 'upload',
+        value: function () {
+            var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(_ref11) {
+                var name = _ref11.name,
+                    contents = _ref11.contents,
+                    blob = _ref11.blob,
+                    onProgress = _ref11.onProgress;
+                var files, hasZipFiles, existingFile, existingFileId, folderId, myFile, mimeType;
+                return regeneratorRuntime.wrap(function _callee9$(_context9) {
+                    while (1) {
+                        switch (_context9.prev = _context9.next) {
                             case 0:
                                 files = this.listFiles();
                                 hasZipFiles = files.some(function (f) {
@@ -315,7 +346,7 @@ var StudyFolder = exports.StudyFolder = function () {
                                 });
 
                                 if (!(name === 'config.json' && hasZipFiles)) {
-                                    _context8.next = 4;
+                                    _context9.next = 4;
                                     break;
                                 }
 
@@ -338,7 +369,7 @@ var StudyFolder = exports.StudyFolder = function () {
                                     myFile = blob;
                                     if (name.endsWith(".zip")) mimeType = 'application/zip';else mimeType = blob.type || 'application/octet-stream';
                                 }
-                                _context8.next = 13;
+                                _context9.next = 13;
                                 return pUploaderForGoogleDrive({
                                     file: myFile,
                                     fileId: existingFileId,
@@ -355,18 +386,18 @@ var StudyFolder = exports.StudyFolder = function () {
                                 });
 
                             case 13:
-                                return _context8.abrupt('return', this);
+                                return _context9.abrupt('return', this);
 
                             case 14:
                             case 'end':
-                                return _context8.stop();
+                                return _context9.stop();
                         }
                     }
-                }, _callee8, this);
+                }, _callee9, this);
             }));
 
             function upload(_x4) {
-                return _ref11.apply(this, arguments);
+                return _ref12.apply(this, arguments);
             }
 
             return upload;
