@@ -145,10 +145,13 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
                 parents: [parentFolderId]
             });
             // see https://stackoverflow.com/questions/34905363/create-file-with-google-drive-api-v3-javascript
-            return await gapi.client.drive.files.create({
+            const createdFolder = await gapi.client.drive.files.create({
                 fields: 'id, mimeType, name',
                 resource: metaData
             });
+	    console.log("created Folder "+name);
+	    console.log(createdFolder);
+	    return createdFolder;
         };
     }
 

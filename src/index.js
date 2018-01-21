@@ -155,7 +155,8 @@ export async function createStudyFolder({name}){
             role: studyFolderRole
         }
     });
-    const folder = await creator('root', name);
+    const parent = await myPrimaryFolder();
+    const folder = await creator(parent, name);
     if (!folder || !folder.id) throw new Error("creating Study Folder "+name+" failed");
     return new StudyFolder(folder);
 }
