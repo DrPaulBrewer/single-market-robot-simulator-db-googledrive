@@ -195,9 +195,12 @@ function extensionsForGoogleDrive(_ref) {
 
                         case 3:
                             response = _context10.sent;
+
+                            console.log("drive.files.update response follows");
+                            console.log(response);
                             return _context10.abrupt('return', response);
 
-                        case 5:
+                        case 7:
                         case 'end':
                             return _context10.stop();
                     }
@@ -425,12 +428,9 @@ function extensionsForGoogleDrive(_ref) {
 
                             case 4:
                                 createdFolder = _context4.sent;
+                                return _context4.abrupt('return', createdFolder.result);
 
-                                console.log("created Folder " + name);
-                                console.log(createdFolder);
-                                return _context4.abrupt('return', createdFolder);
-
-                            case 8:
+                            case 6:
                             case 'end':
                                 return _context4.stop();
                         }

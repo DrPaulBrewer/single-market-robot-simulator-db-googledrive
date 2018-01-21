@@ -149,9 +149,7 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
                 fields: 'id, mimeType, name',
                 resource: metaData
             });
-            console.log("created Folder "+name);
-            console.log(createdFolder);
-            return createdFolder;
+            return createdFolder.result;
         };
     }
 
@@ -220,6 +218,8 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
     async function driveUpdateMetadata(fileId, metadata){
         const fields = 'id,name,trashed,description,mimeType,modifiedTime,size,parents,properties,appProperties';
         const response = await gapi.client.drive.files.update({fileId, fields, resource: metadata});
+	console.log("drive.files.update response follows");
+	console.log(response);
         return response;        
     }
 
