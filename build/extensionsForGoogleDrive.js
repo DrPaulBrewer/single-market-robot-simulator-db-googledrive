@@ -404,7 +404,7 @@ function extensionsForGoogleDrive(_ref) {
     function driveFolderCreator(meta) {
         return function () {
             var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(f, name) {
-                var parentFolderId, metaData;
+                var parentFolderId, metaData, createdFolder;
                 return regeneratorRuntime.wrap(function _callee4$(_context4) {
                     while (1) {
                         switch (_context4.prev = _context4.next) {
@@ -424,9 +424,13 @@ function extensionsForGoogleDrive(_ref) {
                                 });
 
                             case 4:
-                                return _context4.abrupt('return', _context4.sent);
+                                createdFolder = _context4.sent;
 
-                            case 5:
+                                console.log("created Folder " + name);
+                                console.log(createdFolder);
+                                return _context4.abrupt('return', createdFolder);
+
+                            case 8:
                             case 'end':
                                 return _context4.stop();
                         }

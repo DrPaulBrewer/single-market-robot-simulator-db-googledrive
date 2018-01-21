@@ -138,7 +138,7 @@ var listStudyFolders = exports.listStudyFolders = function () {
 var createStudyFolder = exports.createStudyFolder = function () {
     var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref6) {
         var name = _ref6.name;
-        var creator, folder;
+        var creator, parent, folder;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
             while (1) {
                 switch (_context4.prev = _context4.next) {
@@ -157,22 +157,27 @@ var createStudyFolder = exports.createStudyFolder = function () {
                             }
                         });
                         _context4.next = 5;
-                        return creator('root', name);
+                        return myPrimaryFolder();
 
                     case 5:
+                        parent = _context4.sent;
+                        _context4.next = 8;
+                        return creator(parent, name);
+
+                    case 8:
                         folder = _context4.sent;
 
                         if (!(!folder || !folder.id)) {
-                            _context4.next = 8;
+                            _context4.next = 11;
                             break;
                         }
 
                         throw new Error("creating Study Folder " + name + " failed");
 
-                    case 8:
+                    case 11:
                         return _context4.abrupt('return', new _StudyFolder.StudyFolder(folder));
 
-                    case 9:
+                    case 12:
                     case 'end':
                         return _context4.stop();
                 }
