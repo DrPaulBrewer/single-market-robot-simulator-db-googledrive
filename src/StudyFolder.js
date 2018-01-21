@@ -12,13 +12,13 @@ export class StudyFolder {
 
     async trash(){
         this.trashed = true;
-        await this.update(); 
+        await this.update({trashed:true}); 
         return this;
     }
 
     async untrash(){
         this.trashed = false;
-        await this.update();
+        await this.update({trashed:false});
         return this;
     }
 
@@ -34,7 +34,7 @@ export class StudyFolder {
                 throw new Error(`mismatch at StudyFolder:setConfig configuration name ${config.name} should equal the folder name ${this.name}`);
             if (this.description !== config.description){
                 this.description = config.description;
-                await this.update();
+                await this.update({description: config.description});
             }
             await this.upload({ name: 'config.json',  contents: config});
         }
@@ -69,9 +69,9 @@ export class StudyFolder {
             return contents;
     }
 
-    async update(){
+    async update(metadata){
 	const folder = this;
-	const response = await driveX.updateMetadata(folder.id, folder);
+	const response = await driveX.updateMetadata(folder.id, metadata);
 	return response;
     }
     

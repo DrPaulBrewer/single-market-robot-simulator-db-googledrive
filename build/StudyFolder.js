@@ -40,7 +40,7 @@ var StudyFolder = exports.StudyFolder = function () {
                             case 0:
                                 this.trashed = true;
                                 _context.next = 3;
-                                return this.update();
+                                return this.update({ trashed: true });
 
                             case 3:
                                 return _context.abrupt('return', this);
@@ -69,7 +69,7 @@ var StudyFolder = exports.StudyFolder = function () {
                             case 0:
                                 this.trashed = false;
                                 _context2.next = 3;
-                                return this.update();
+                                return this.update({ trashed: false });
 
                             case 3:
                                 return _context2.abrupt('return', this);
@@ -148,7 +148,7 @@ var StudyFolder = exports.StudyFolder = function () {
 
                                 this.description = config.description;
                                 _context4.next = 7;
-                                return this.update();
+                                return this.update({ description: config.description });
 
                             case 7:
                                 _context4.next = 9;
@@ -299,7 +299,7 @@ var StudyFolder = exports.StudyFolder = function () {
     }, {
         key: 'update',
         value: function () {
-            var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+            var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(metadata) {
                 var folder, response;
                 return regeneratorRuntime.wrap(function _callee8$(_context8) {
                     while (1) {
@@ -307,7 +307,7 @@ var StudyFolder = exports.StudyFolder = function () {
                             case 0:
                                 folder = this;
                                 _context8.next = 3;
-                                return driveX.updateMetadata(folder.id, folder);
+                                return driveX.updateMetadata(folder.id, metadata);
 
                             case 3:
                                 response = _context8.sent;
@@ -321,7 +321,7 @@ var StudyFolder = exports.StudyFolder = function () {
                 }, _callee8, this);
             }));
 
-            function update() {
+            function update(_x4) {
                 return _ref10.apply(this, arguments);
             }
 
@@ -400,7 +400,7 @@ var StudyFolder = exports.StudyFolder = function () {
                 }, _callee9, this);
             }));
 
-            function upload(_x4) {
+            function upload(_x5) {
                 return _ref12.apply(this, arguments);
             }
 
