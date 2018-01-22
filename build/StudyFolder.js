@@ -92,7 +92,7 @@ var StudyFolder = exports.StudyFolder = function () {
         key: 'getConfig',
         value: function () {
             var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-                var folder, config;
+                var folder, config, shouldFixName, shouldFixDescription;
                 return regeneratorRuntime.wrap(function _callee3$(_context3) {
                     while (1) {
                         switch (_context3.prev = _context3.next) {
@@ -103,9 +103,28 @@ var StudyFolder = exports.StudyFolder = function () {
 
                             case 3:
                                 config = _context3.sent;
+                                shouldFixName = config.name && this.name && this.name.length && config.name !== this.name;
+                                shouldFixDescription = config.description && this.description && this.description.length && config.description !== this.description;
+
+                                if (shouldFixName) config.name = this.name;
+                                if (shouldFixDescription) config.description = this.description;
+
+                                if (!(shouldFixName || shouldFixDescription)) {
+                                    _context3.next = 11;
+                                    break;
+                                }
+
+                                _context3.next = 11;
+                                return this.upload({
+                                    name: 'config.json',
+                                    contents: config,
+                                    force: true
+                                });
+
+                            case 11:
                                 return _context3.abrupt('return', { config: config, folder: folder });
 
-                            case 5:
+                            case 12:
                             case 'end':
                                 return _context3.stop();
                         }
@@ -334,7 +353,8 @@ var StudyFolder = exports.StudyFolder = function () {
                 var name = _ref11.name,
                     contents = _ref11.contents,
                     blob = _ref11.blob,
-                    onProgress = _ref11.onProgress;
+                    onProgress = _ref11.onProgress,
+                    force = _ref11.force;
                 var files, hasZipFiles, existingFile, existingFileId, folderId, myFile, mimeType;
                 return regeneratorRuntime.wrap(function _callee9$(_context9) {
                     while (1) {
@@ -349,7 +369,7 @@ var StudyFolder = exports.StudyFolder = function () {
                                     return f.name.endsWith(".zip");
                                 });
 
-                                if (!(name === 'config.json' && hasZipFiles)) {
+                                if (!(!force && name === 'config.json' && hasZipFiles)) {
                                     _context9.next = 6;
                                     break;
                                 }

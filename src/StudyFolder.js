@@ -25,6 +25,16 @@ export class StudyFolder {
     async getConfig(){
         const folder = this;
         const config = await this.download({ name: 'config.json' });
+        const shouldFixName = (config.name && this.name && this.name.length && config.name!==this.name);
+        const shouldFixDescription = (config.description && this.description && this.description.length && config.description!==this.description);
+        if (shouldFixName) config.name = this.name;
+        if (shouldFixDescription) config.description = this.description;
+        if (shouldFixName || shouldFixDescription)
+            await this.upload({
+                name: 'config.json',
+                contents: config,
+                force: true
+            });
         return { config, folder };
     }
 
@@ -70,15 +80,15 @@ export class StudyFolder {
     }
 
     async update(metadata){
-	const folder = this;
-	const response = await driveX.updateMetadata(folder.id, metadata);
-	return response;
+        const folder = this;
+        const response = await driveX.updateMetadata(folder.id, metadata);
+        return response;
     }
     
-    async upload({name, contents, blob, onProgress}){
+    async upload({name, contents, blob, onProgress, force}){
         const files = await this.listFiles();
         const hasZipFiles = files.some((f)=>(f.name.endsWith(".zip")));
-        if ((name === 'config.json') && (hasZipFiles))
+        if ((!force) && (name === 'config.json') && (hasZipFiles))
             throw new Error("conflict Error in upload logic: may not clobber config.json in a study folder with existing .zip file data: config.json unchanged");
         const existingFile = files.filter((f)=>(f.name===name));
         const existingFileId = existingFile && existingFile.id ;
@@ -96,7 +106,7 @@ export class StudyFolder {
             else
                 mimeType = blob.type || 'application/octet-stream';
         }       
-	await pUploaderForGoogleDrive({
+        await pUploaderForGoogleDrive({
             file: myFile,
             fileId: existingFileId,
             metadata: {
