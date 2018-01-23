@@ -54,8 +54,10 @@ export class StudyFolder {
     async listFiles(){
         const trashed = this.trashed;
         const folderId = this.id;
+        const orderBy = 'modifiedTime desc';
         const searcher = driveX.searcher({
-            trashed
+            trashed,
+            orderBy
         });
         const response = await searcher(folderId);
         return response.files; 
@@ -63,7 +65,8 @@ export class StudyFolder {
 
     async fileId(name){
         const trashed = this.trashed;
-        const fileFinder = driveX.searcher({ trashed });
+        const orderBy = 'modifiedTime desc';
+        const fileFinder = driveX.searcher({ trashed, orderBy });
         const folderId = this.id;
         const response = await fileFinder(folderId, name);
         const fileId = response && response.files && response.files[0] && response.files[0].id;
@@ -91,7 +94,7 @@ export class StudyFolder {
         if ((!force) && (name === 'config.json') && (hasZipFiles))
             throw new Error("conflict Error in upload logic: may not clobber config.json in a study folder with existing .zip file data: config.json unchanged");
         const existingFile = files.filter((f)=>(f.name===name));
-        const existingFileId = existingFile && existingFile.id ;
+        const existingFileId = (Array.isArray(existingFile)) && existingFile[0] && existingFile[0].id;
         const folderId = this.id;
         var myFile = null;
         var mimeType = '';

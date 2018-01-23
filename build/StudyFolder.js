@@ -194,24 +194,26 @@ var StudyFolder = exports.StudyFolder = function () {
         key: 'listFiles',
         value: function () {
             var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-                var trashed, folderId, searcher, response;
+                var trashed, folderId, orderBy, searcher, response;
                 return regeneratorRuntime.wrap(function _callee5$(_context5) {
                     while (1) {
                         switch (_context5.prev = _context5.next) {
                             case 0:
                                 trashed = this.trashed;
                                 folderId = this.id;
+                                orderBy = 'modifiedTime desc';
                                 searcher = driveX.searcher({
-                                    trashed: trashed
+                                    trashed: trashed,
+                                    orderBy: orderBy
                                 });
-                                _context5.next = 5;
+                                _context5.next = 6;
                                 return searcher(folderId);
 
-                            case 5:
+                            case 6:
                                 response = _context5.sent;
                                 return _context5.abrupt('return', response.files);
 
-                            case 7:
+                            case 8:
                             case 'end':
                                 return _context5.stop();
                         }
@@ -229,23 +231,24 @@ var StudyFolder = exports.StudyFolder = function () {
         key: 'fileId',
         value: function () {
             var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(name) {
-                var trashed, fileFinder, folderId, response, fileId;
+                var trashed, orderBy, fileFinder, folderId, response, fileId;
                 return regeneratorRuntime.wrap(function _callee6$(_context6) {
                     while (1) {
                         switch (_context6.prev = _context6.next) {
                             case 0:
                                 trashed = this.trashed;
-                                fileFinder = driveX.searcher({ trashed: trashed });
+                                orderBy = 'modifiedTime desc';
+                                fileFinder = driveX.searcher({ trashed: trashed, orderBy: orderBy });
                                 folderId = this.id;
-                                _context6.next = 5;
+                                _context6.next = 6;
                                 return fileFinder(folderId, name);
 
-                            case 5:
+                            case 6:
                                 response = _context6.sent;
                                 fileId = response && response.files && response.files[0] && response.files[0].id;
                                 return _context6.abrupt('return', fileId);
 
-                            case 8:
+                            case 9:
                             case 'end':
                                 return _context6.stop();
                         }
@@ -380,7 +383,7 @@ var StudyFolder = exports.StudyFolder = function () {
                                 existingFile = files.filter(function (f) {
                                     return f.name === name;
                                 });
-                                existingFileId = existingFile && existingFile.id;
+                                existingFileId = Array.isArray(existingFile) && existingFile[0] && existingFile[0].id;
                                 folderId = this.id;
                                 myFile = null;
                                 mimeType = '';
