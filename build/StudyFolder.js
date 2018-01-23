@@ -358,7 +358,7 @@ var StudyFolder = exports.StudyFolder = function () {
                     blob = _ref11.blob,
                     onProgress = _ref11.onProgress,
                     force = _ref11.force;
-                var files, hasZipFiles, existingFile, existingFileId, folderId, myFile, mimeType;
+                var files, hasZipFiles, existingFile, existingFileId, folderId, myFile, mimeType, metadata;
                 return regeneratorRuntime.wrap(function _callee9$(_context9) {
                     while (1) {
                         switch (_context9.prev = _context9.next) {
@@ -396,15 +396,12 @@ var StudyFolder = exports.StudyFolder = function () {
                                     myFile = blob;
                                     if (name.endsWith(".zip")) mimeType = 'application/zip';else mimeType = blob.type || 'application/octet-stream';
                                 }
-                                _context9.next = 15;
+                                metadata = !existingFileId && { name: name, mimeType: mimeType, parents: [folderId] };
+                                _context9.next = 16;
                                 return pUploaderForGoogleDrive({
                                     file: myFile,
                                     fileId: existingFileId,
-                                    metadata: {
-                                        name: name,
-                                        mimeType: mimeType,
-                                        parents: [folderId]
-                                    },
+                                    metadata: metadata,
                                     params: {
                                         spaces: 'drive',
                                         fields: 'id,name,mimeType,parents'
@@ -412,10 +409,10 @@ var StudyFolder = exports.StudyFolder = function () {
                                     onProgress: onProgress
                                 });
 
-                            case 15:
+                            case 16:
                                 return _context9.abrupt('return', this);
 
-                            case 16:
+                            case 17:
                             case 'end':
                                 return _context9.stop();
                         }
