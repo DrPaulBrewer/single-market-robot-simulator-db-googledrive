@@ -265,6 +265,13 @@ function updateSigninStatus(isSignedIn) {
     window.isSignedIn = isSignedIn;
     if (authorizeButton) authorizeButton.style.display = isSignedIn ? 'none' : 'block';
     if (signoutButton) signoutButton.style.display = isSignedIn ? 'block' : 'none';
+    if (isSignedIn) {
+        $('.hideOnSignin').hide();
+        $('.showOnSignin').show();
+    } else {
+        $('.hideOnSignout').hide();
+        $('.showOnSignout').show();
+    }
 }
 
 /**                                                                                 
