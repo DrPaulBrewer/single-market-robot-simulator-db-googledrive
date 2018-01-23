@@ -69,9 +69,11 @@ function updateSigninStatus(isSignedIn) {
     if (isSignedIn){
 	$('.hideOnSignin').hide();
 	$('.showOnSignin').show();
+	$('.clickOnSignin').click();
     } else {
 	$('.hideOnSignout').hide();
 	$('.showOnSignout').show();
+	$('.clickOnSignout').click();
     }
 }
 
