@@ -108,15 +108,12 @@ export class StudyFolder {
                 mimeType = 'application/zip';
             else
                 mimeType = blob.type || 'application/octet-stream';
-        }       
+        }
+	const metadata = (!existingFileId) && { name, mimeType, parents: [folderId] };
         await pUploaderForGoogleDrive({
             file: myFile,
             fileId: existingFileId,
-            metadata: {
-                name,
-                mimeType,
-                parents: [folderId]
-            },
+            metadata,
             params: {
                 spaces: 'drive',
                 fields: 'id,name,mimeType,parents'
