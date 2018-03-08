@@ -67,13 +67,13 @@ function updateSigninStatus(isSignedIn) {
     if (authorizeButton) authorizeButton.style.display = (isSignedIn)? 'none' : 'block';
     if (signoutButton) signoutButton.style.display = (isSignedIn)? 'block': 'none';
     if (isSignedIn){
-	$('.hideOnSignin').hide();
-	$('.showOnSignin').show();
-	$('.clickOnSignin').click();
+        $('.hideOnSignin').hide();
+        $('.showOnSignin').show();
+        $('.clickOnSignin').click();
     } else {
-	$('.hideOnSignout').hide();
-	$('.showOnSignout').show();
-	$('.clickOnSignout').click();
+        $('.hideOnSignout').hide();
+        $('.showOnSignout').show();
+        $('.clickOnSignout').click();
     }
 }
 

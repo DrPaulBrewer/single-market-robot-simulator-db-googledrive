@@ -160,18 +160,18 @@ var StudyFolder = exports.StudyFolder = function () {
                                 throw new Error('mismatch at StudyFolder:setConfig configuration name ' + config.name + ' should equal the folder name ' + this.name);
 
                             case 3:
+                                _context4.next = 5;
+                                return this.upload({ name: 'config.json', contents: config });
+
+                            case 5:
                                 if (!(this.description !== config.description)) {
-                                    _context4.next = 7;
+                                    _context4.next = 9;
                                     break;
                                 }
 
                                 this.description = config.description;
-                                _context4.next = 7;
-                                return this.update({ description: config.description });
-
-                            case 7:
                                 _context4.next = 9;
-                                return this.upload({ name: 'config.json', contents: config });
+                                return this.update({ description: config.description });
 
                             case 9:
                                 return _context4.abrupt('return', this);

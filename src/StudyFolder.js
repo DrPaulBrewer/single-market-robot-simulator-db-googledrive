@@ -42,11 +42,11 @@ export class StudyFolder {
         if (config && (typeof(config)==='object')){
             if (config.name !== this.name)
                 throw new Error(`mismatch at StudyFolder:setConfig configuration name ${config.name} should equal the folder name ${this.name}`);
+            await this.upload({ name: 'config.json',  contents: config});
             if (this.description !== config.description){
                 this.description = config.description;
                 await this.update({description: config.description});
             }
-            await this.upload({ name: 'config.json',  contents: config});
         }
         return this;
     }
@@ -109,7 +109,7 @@ export class StudyFolder {
             else
                 mimeType = blob.type || 'application/octet-stream';
         }
-	const metadata = (!existingFileId) && { name, mimeType, parents: [folderId] };
+        const metadata = (!existingFileId) && { name, mimeType, parents: [folderId] };
         await pUploaderForGoogleDrive({
             file: myFile,
             fileId: existingFileId,
