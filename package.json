@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "p-reduce": "^1.0.0",
-    "search-string-for-google-drive": "^1.0.0",
-    "single-market-robot-simulator-study": "^3.0.0"
+    "search-string-for-google-drive": "^1.0.0"
   }
 }
