@@ -81,13 +81,13 @@ function updateSigninStatus(isSignedIn) {
 
 async function showUserInfo(){
   const user = await whoAmI();
-  console.log("web signin as:");
-  console.log(user);
   $('.userEmailAddress').text(user.emailAddress);
+  $('.userDisplayName').text(user.displayName);
 }
 
 function removeUserInfo(){
   $('.userEmailAddress').text('');
+  $('.userDisplayName').text('');
 }
 
 /**
