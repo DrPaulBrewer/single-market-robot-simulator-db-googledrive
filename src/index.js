@@ -76,6 +76,7 @@ function updateSigninStatus(isSignedIn) {
         $('.showOnSignout').show();
         $('.clickOnSignout').click();
         removeUserInfo();
+        $('#welcomeModal').modal('show');
     }
 }
 
