@@ -22,8 +22,8 @@ const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapi
 const authorizeButton = document.getElementById('authorize-button');
 const signoutButton = document.getElementById('signout-button');
 
-/**                                                                                 
- *  On load, called to load the auth2 library and API client library.               
+/**
+ *  On load, called to load the auth2 library and API client library.
  */
 
 window.handleGoogleClientLoad = function() {
@@ -32,9 +32,9 @@ window.handleGoogleClientLoad = function() {
     $('#welcomeModal').modal('show');
 };
 
-/**                                                                                 
- *  Initializes the API client library and sets up sign-in state                    
- *  listeners.                                                                      
+/**
+ *  Initializes the API client library and sets up sign-in state
+ *  listeners.
  */
 
 function initClient() {
@@ -53,11 +53,11 @@ function initClient() {
         if (signoutButton) signoutButton.onclick = handleSignoutClick;
     });
 }
-                   
 
-/**                                                                                 
- *  Called when the signed in status changes, to update the UI                      
- *  appropriately. After a sign-in, the API is called.                              
+
+/**
+ *  Called when the signed in status changes, to update the UI
+ *  appropriately. After a sign-in, the API is called.
  */
 
 function updateSigninStatus(isSignedIn) {
@@ -70,15 +70,28 @@ function updateSigninStatus(isSignedIn) {
         $('.hideOnSignin').hide();
         $('.showOnSignin').show();
         $('.clickOnSignin').click();
+        showUserInfo();
     } else {
         $('.hideOnSignout').hide();
         $('.showOnSignout').show();
         $('.clickOnSignout').click();
+        removeUserInfo();
     }
 }
 
-/**                                                                                 
- *  Sign in the user upon button click.                                             
+async function showUserInfo(){
+  const user = await whoAmI();
+  console.log("web signin as:");
+  console.log(user);
+  $('.userEmailAddress').text(user.emailAddress);
+}
+
+function removeUserInfo(){
+  $('.userEmailAddress').text('');
+}
+
+/**
+ *  Sign in the user upon button click.
  */
 function handleAuthClick() {
     'use strict';
@@ -169,5 +182,3 @@ export async function createStudyFolder({name}){
     if (!folder || !folder.id) throw new Error("creating Study Folder "+name+" failed");
     return new StudyFolder(folder);
 }
-
-
