@@ -18,11 +18,10 @@ var showUserInfo = function () {
                     case 2:
                         user = _context.sent;
 
-                        console.log("web signin as:");
-                        console.log(user);
                         $('.userEmailAddress').text(user.emailAddress);
+                        $('.userDisplayName').text(user.displayName);
 
-                    case 6:
+                    case 5:
                     case 'end':
                         return _context.stop();
                 }
@@ -305,11 +304,13 @@ function updateSigninStatus(isSignedIn) {
         $('.showOnSignout').show();
         $('.clickOnSignout').click();
         removeUserInfo();
+        $('#welcomeModal').modal('show');
     }
 }
 
 function removeUserInfo() {
     $('.userEmailAddress').text('');
+    $('.userDisplayName').text('');
 }
 
 /**
