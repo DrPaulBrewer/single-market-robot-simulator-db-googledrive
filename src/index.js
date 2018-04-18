@@ -76,7 +76,6 @@ function updateSigninStatus(isSignedIn) {
         $('.showOnSignout').show();
         $('.clickOnSignout').click();
         removeUserInfo();
-        $('#welcomeModal').modal('show');
     }
 }
 
@@ -102,6 +101,7 @@ function handleAuthClick() {
 function handleSignoutClick() {
     'use strict';
     gapi.auth2.getAuthInstance().signOut();
+    setTimeout(function(){ window.location.reload(); }, 800);
 }
 
 window.driveX = extensionsForGoogleDrive({
