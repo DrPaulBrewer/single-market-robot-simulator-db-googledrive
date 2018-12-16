@@ -117,10 +117,11 @@ const iAm = {};
 
 const DB = {};
 
-export function init({onSignIn,onSignOut,onProgress}){
+export function init({onSignIn,onSignOut,onProgress,gatekeeper}){
     DB.onSignIn = onSignIn;
     DB.onSignOut = onSignOut;
     DB.onProgress = onProgress;
+    DB.gatekeeper = gatekeeper;
 }
 
 async function whoAmI(force){
@@ -143,8 +144,23 @@ function pSignedIn(){
     });
 }
 
+async function pGatekeeper(){
+  if (typeof(DB.gatekeeper)==='function'){
+    const user = await whoAmI(false);
+    try {
+       const go = await DB.gatekeeper(window.driveX, user);
+       return go;
+     } catch(e){
+       window.alert(e.toString());
+       throw e;
+     }
+   }
+  return false;
+}
+
 export async function myPrimaryFolder(){
     await pSignedIn();
+    await pGatekeeper();
     const user = await whoAmI(false);
     const userName = user.emailAddress.split('@')[0];
     if (!userName.length) throw new Error("Error: myPrimaryFolder(), user.emailAddress is blank");
@@ -155,6 +171,7 @@ export async function myPrimaryFolder(){
 
 export async function listStudyFolders({ trashed }){
     await pSignedIn();
+    await pGatekeeper();
     const fields = 'id,name,description,properties,modifiedTime';
     const orderBy = 'modifiedTime desc';
     const searcher = driveX.searcher({
