@@ -142,7 +142,7 @@ async function pGatekeeper(){
   if (typeof(DB.gatekeeper)==='function'){
     const user = await whoAmI(false);
     try {
-       const go = await DB.gatekeeper(window.driveX, user);
+       const go = await DB.gatekeeper(driveX, user);
        return go;
      } catch(e){
        window.alert(e.toString());
