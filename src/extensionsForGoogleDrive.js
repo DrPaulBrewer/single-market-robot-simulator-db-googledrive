@@ -115,8 +115,7 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
 
     function driveStepRight(options){
         const searcherOptions = {
-            unique: true,
-            mimeType: folderMimeType
+            unique: true
         };
         if (options.fields) searcherOptions.fields = options.fields;
         const search = driveSearcher(searcherOptions);
