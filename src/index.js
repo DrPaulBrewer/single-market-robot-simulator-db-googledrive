@@ -5,7 +5,7 @@
 
 /* eslint-disable no-console */
 
-import {extensionsForGoogleDrive} from './extensionsForGoogleDrive.js';
+import {driveX} from './extensionsForGoogleDrive.js';
 import {StudyFolder} from './StudyFolder.js';
 export {StudyFolder};
 
@@ -103,11 +103,6 @@ function handleSignoutClick() {
     gapi.auth2.getAuthInstance().signOut();
     setTimeout(function(){ window.location.reload(); }, 800);
 }
-
-window.driveX = extensionsForGoogleDrive({
-    rootFolderId: 'root',
-    spaces: 'drive'
-});
 
 
 const folderMimeType = 'application/vnd.google-apps.folder';

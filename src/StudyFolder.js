@@ -1,9 +1,12 @@
 /* Copyright 2018- Paul Brewer, Economic and Financial Technology Consulting LLC */
 /* This file is open source software.  The MIT License applies to this software. */
 
-/* global driveX: true, pUploaderForGoogleDrive:false */
+/* global pUploaderForGoogleDrive:false */
 
 /* eslint-disable no-console */
+
+import {driveX} from './extensionsForGoogleDrive';
+export {driveX};
 
 export class StudyFolder {
     constructor(props){
@@ -12,7 +15,7 @@ export class StudyFolder {
 
     async trash(){
         this.trashed = true;
-        await this.update({trashed:true}); 
+        await this.update({trashed:true});
         return this;
     }
 
@@ -60,7 +63,7 @@ export class StudyFolder {
             orderBy
         });
         const response = await searcher(folderId);
-        return response.files; 
+        return response.files;
     }
 
     async fileId(name){
@@ -87,7 +90,7 @@ export class StudyFolder {
         const response = await driveX.updateMetadata(folder.id, metadata);
         return response;
     }
-    
+
     async upload({name, contents, blob, onProgress, force}){
         const files = await this.listFiles();
         const hasZipFiles = files.some((f)=>(f.name.endsWith(".zip")));
@@ -123,5 +126,3 @@ export class StudyFolder {
         return this;
     }
 }
-
-

@@ -3,8 +3,6 @@
 
 /* global gapi:false, Promise:false */
 
-/* eslint-disable no-console */
-
 import ssgd from 'search-string-for-google-drive';
 import pReduce from 'p-reduce';
 
@@ -13,7 +11,7 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
     // and modified for browser environment
 
     const folderMimeType = 'application/vnd.google-apps.folder';
-    
+
     const x = {};
 
     function driveSearcher(options){
@@ -26,13 +24,10 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
         const searchTerms = ssgd.extract(options);
         if (!searchTerms.trashed) searchTerms.trashed = false; // trashed:false must be default for findPath, etc.
         if (searchTerms.sharedWithMe===false) throw new Error("extensionsForGoogleDrive: driveSearcher -- sharedWithMe:false known to be problematic in upstream Drive API");
-        console.log(searchTerms);
-        
+
         return async function(parent, name){
             const search = Object.assign({}, searchTerms, { parent, name });
-            console.log(search);
             const searchString = ssgd(search, allowMatchAllFiles);
-            console.log(searchString);
             const params = {
                 spaces,
                 q: searchString,
@@ -51,7 +46,7 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
                 isSearchResult:true,
                 files: response.result.files
             };
-        };                         
+        };
     }
 
     x.searcher = driveSearcher;
@@ -60,7 +55,7 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
     const FileNotFound = "checkSearch: file not found";
     const ExpectedUniqueFile = "checkSearch: expected unique file";
     const TooManyFiles = "checkSearch: increase limit or too many files found";
-    
+
     function checkSearch(searchResult){
         if (!Array.isArray(searchResult.files))
             throw new Error(BadRequest);
@@ -104,7 +99,7 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
     }
 
     x.janitor = driveJanitor;
-    
+
     function getFolderId(folderIdOrObject){
         if (typeof(folderIdOrObject)==='object'){
             if (folderIdOrObject.id){
@@ -117,7 +112,7 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
         }
         throw new Error("bad request, not a folder or folder id");
     }
-    
+
     function driveStepRight(options){
         const searcherOptions = {
             unique: true,
@@ -133,12 +128,12 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
     }
 
     x.stepRight = driveStepRight;
-    
+
     // see https://developers.google.com/drive/v3/web/folder
 
     function driveFolderCreator(meta){
         return async function(f, name){
-            const parentFolderId = getFolderId(f);      
+            const parentFolderId = getFolderId(f);
             const metaData = Object.assign({}, meta,{
                 mimeType: folderMimeType,
                 name,
@@ -171,7 +166,7 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
     }
 
     x.folderFactory = driveFolderFactory;
-    
+
     async function driveFindPath(path, fields){
         const parts = path.split('/').filter((s)=>(s.length>0));
         const stepper = driveStepRight({fields});
@@ -218,9 +213,7 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
     async function driveUpdateMetadata(fileId, metadata){
         const fields = 'id,name,trashed,description,mimeType,modifiedTime,size,parents,properties,appProperties';
         const response = await gapi.client.drive.files.update({fileId, fields, resource: metadata});
-	console.log("drive.files.update response follows");
-	console.log(response);
-        return response;        
+        return response;
     }
 
     x.updateMetadata = driveUpdateMetadata;
@@ -229,3 +222,12 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
 
 }
 
+export const driveX = extensionsForGoogleDrive({
+    rootFolderId: 'root',
+    spaces: 'drive'
+});
+
+driveX.appDataFolder = extensionsForGoogleDrive({
+    rootFolderId: 'appDataFolder',
+    spaces: 'appDataFolder'
+});
