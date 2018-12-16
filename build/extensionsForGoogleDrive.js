@@ -355,8 +355,7 @@ function extensionsForGoogleDrive(_ref) {
 
     function driveStepRight(options) {
         var searcherOptions = {
-            unique: true,
-            mimeType: folderMimeType
+            unique: true
         };
         if (options.fields) searcherOptions.fields = options.fields;
         var search = driveSearcher(searcherOptions);
