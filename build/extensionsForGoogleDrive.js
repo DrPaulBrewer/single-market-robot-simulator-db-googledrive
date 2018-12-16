@@ -3,6 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.driveX = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -22,8 +23,6 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 /* This file is open source software.  The MIT License applies to this software. */
 
 /* global gapi:false, Promise:false */
-
-/* eslint-disable no-console */
 
 function extensionsForGoogleDrive(_ref) {
     var driveFindPath = function () {
@@ -195,12 +194,9 @@ function extensionsForGoogleDrive(_ref) {
 
                         case 3:
                             response = _context10.sent;
-
-                            console.log("drive.files.update response follows");
-                            console.log(response);
                             return _context10.abrupt('return', response);
 
-                        case 7:
+                        case 5:
                         case 'end':
                             return _context10.stop();
                     }
@@ -233,7 +229,6 @@ function extensionsForGoogleDrive(_ref) {
         var searchTerms = _searchStringForGoogleDrive2.default.extract(options);
         if (!searchTerms.trashed) searchTerms.trashed = false; // trashed:false must be default for findPath, etc.
         if (searchTerms.sharedWithMe === false) throw new Error("extensionsForGoogleDrive: driveSearcher -- sharedWithMe:false known to be problematic in upstream Drive API");
-        console.log(searchTerms);
 
         return function () {
             var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(parent, name) {
@@ -243,11 +238,7 @@ function extensionsForGoogleDrive(_ref) {
                         switch (_context.prev = _context.next) {
                             case 0:
                                 search = Object.assign({}, searchTerms, { parent: parent, name: name });
-
-                                console.log(search);
                                 searchString = (0, _searchStringForGoogleDrive2.default)(search, allowMatchAllFiles);
-
-                                console.log(searchString);
                                 params = {
                                     spaces: spaces,
                                     q: searchString,
@@ -256,10 +247,10 @@ function extensionsForGoogleDrive(_ref) {
                                     orderBy: orderBy,
                                     fields: 'files(' + fields + ')'
                                 };
-                                _context.next = 7;
+                                _context.next = 5;
                                 return gapi.client.drive.files.list(params);
 
-                            case 7:
+                            case 5:
                                 response = _context.sent;
                                 return _context.abrupt('return', {
                                     parent: parent,
@@ -271,7 +262,7 @@ function extensionsForGoogleDrive(_ref) {
                                     files: response.result.files
                                 });
 
-                            case 9:
+                            case 7:
                             case 'end':
                                 return _context.stop();
                         }
@@ -517,3 +508,13 @@ function extensionsForGoogleDrive(_ref) {
 
     return x;
 }
+
+var driveX = exports.driveX = extensionsForGoogleDrive({
+    rootFolderId: 'root',
+    spaces: 'drive'
+});
+
+driveX.appDataFolder = extensionsForGoogleDrive({
+    rootFolderId: 'appDataFolder',
+    spaces: 'appDataFolder'
+});

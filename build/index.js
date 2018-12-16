@@ -72,57 +72,57 @@ var whoAmI = function () {
     };
 }();
 
-var myPrimaryFolder = exports.myPrimaryFolder = function () {
+var pGatekeeper = function () {
     var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3() {
-        var user, userName, folderName, folder;
+        var user, go;
         return regeneratorRuntime.wrap(function _callee3$(_context3) {
             while (1) {
                 switch (_context3.prev = _context3.next) {
                     case 0:
-                        _context3.next = 2;
-                        return pSignedIn();
-
-                    case 2:
-                        _context3.next = 4;
-                        return whoAmI(false);
-
-                    case 4:
-                        user = _context3.sent;
-                        userName = user.emailAddress.split('@')[0];
-
-                        if (userName.length) {
-                            _context3.next = 8;
+                        if (!(typeof DB.gatekeeper === 'function')) {
+                            _context3.next = 15;
                             break;
                         }
 
-                        throw new Error("Error: myPrimaryFolder(), user.emailAddress is blank");
+                        _context3.next = 3;
+                        return whoAmI(false);
 
-                    case 8:
-                        folderName = 'Econ1Net-' + userName;
-                        _context3.next = 11;
-                        return driveX.folderFactory()('root', folderName);
+                    case 3:
+                        user = _context3.sent;
+                        _context3.prev = 4;
+                        _context3.next = 7;
+                        return DB.gatekeeper(window.driveX, user);
+
+                    case 7:
+                        go = _context3.sent;
+                        return _context3.abrupt('return', go);
 
                     case 11:
-                        folder = _context3.sent;
-                        return _context3.abrupt('return', folder);
+                        _context3.prev = 11;
+                        _context3.t0 = _context3['catch'](4);
 
-                    case 13:
+                        window.alert(_context3.t0.toString());
+                        throw _context3.t0;
+
+                    case 15:
+                        return _context3.abrupt('return', false);
+
+                    case 16:
                     case 'end':
                         return _context3.stop();
                 }
             }
-        }, _callee3, this);
+        }, _callee3, this, [[4, 11]]);
     }));
 
-    return function myPrimaryFolder() {
+    return function pGatekeeper() {
         return _ref4.apply(this, arguments);
     };
 }();
 
-var listStudyFolders = exports.listStudyFolders = function () {
-    var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref5) {
-        var trashed = _ref5.trashed;
-        var fields, orderBy, searcher, response;
+var myPrimaryFolder = exports.myPrimaryFolder = function () {
+    var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
+        var user, userName, folderName, folder;
         return regeneratorRuntime.wrap(function _callee4$(_context4) {
             while (1) {
                 switch (_context4.prev = _context4.next) {
@@ -131,9 +131,65 @@ var listStudyFolders = exports.listStudyFolders = function () {
                         return pSignedIn();
 
                     case 2:
+                        _context4.next = 4;
+                        return pGatekeeper();
+
+                    case 4:
+                        _context4.next = 6;
+                        return whoAmI(false);
+
+                    case 6:
+                        user = _context4.sent;
+                        userName = user.emailAddress.split('@')[0];
+
+                        if (userName.length) {
+                            _context4.next = 10;
+                            break;
+                        }
+
+                        throw new Error("Error: myPrimaryFolder(), user.emailAddress is blank");
+
+                    case 10:
+                        folderName = 'Econ1Net-' + userName;
+                        _context4.next = 13;
+                        return _StudyFolder.driveX.folderFactory()('root', folderName);
+
+                    case 13:
+                        folder = _context4.sent;
+                        return _context4.abrupt('return', folder);
+
+                    case 15:
+                    case 'end':
+                        return _context4.stop();
+                }
+            }
+        }, _callee4, this);
+    }));
+
+    return function myPrimaryFolder() {
+        return _ref5.apply(this, arguments);
+    };
+}();
+
+var listStudyFolders = exports.listStudyFolders = function () {
+    var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(_ref6) {
+        var trashed = _ref6.trashed;
+        var fields, orderBy, searcher, response;
+        return regeneratorRuntime.wrap(function _callee5$(_context5) {
+            while (1) {
+                switch (_context5.prev = _context5.next) {
+                    case 0:
+                        _context5.next = 2;
+                        return pSignedIn();
+
+                    case 2:
+                        _context5.next = 4;
+                        return pGatekeeper();
+
+                    case 4:
                         fields = 'id,name,description,properties,modifiedTime';
                         orderBy = 'modifiedTime desc';
-                        searcher = driveX.searcher({
+                        searcher = _StudyFolder.driveX.searcher({
                             orderBy: orderBy,
                             fields: fields,
                             trashed: trashed,
@@ -142,71 +198,16 @@ var listStudyFolders = exports.listStudyFolders = function () {
                                 role: studyFolderRole
                             }
                         });
-                        _context4.next = 7;
+                        _context5.next = 9;
                         return searcher();
 
-                    case 7:
-                        response = _context4.sent;
-                        return _context4.abrupt('return', response.files.map(function (f) {
+                    case 9:
+                        response = _context5.sent;
+                        return _context5.abrupt('return', response.files.map(function (f) {
                             return new _StudyFolder.StudyFolder(f);
                         }));
 
-                    case 9:
-                    case 'end':
-                        return _context4.stop();
-                }
-            }
-        }, _callee4, this);
-    }));
-
-    return function listStudyFolders(_x2) {
-        return _ref6.apply(this, arguments);
-    };
-}();
-
-var createStudyFolder = exports.createStudyFolder = function () {
-    var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(_ref7) {
-        var name = _ref7.name;
-        var creator, parent, folder;
-        return regeneratorRuntime.wrap(function _callee5$(_context5) {
-            while (1) {
-                switch (_context5.prev = _context5.next) {
-                    case 0:
-                        if (window.isSignedIn) {
-                            _context5.next = 2;
-                            break;
-                        }
-
-                        throw new Error("not signed into Google Drive");
-
-                    case 2:
-                        creator = driveX.folderCreator({
-                            properties: {
-                                role: studyFolderRole
-                            }
-                        });
-                        _context5.next = 5;
-                        return myPrimaryFolder();
-
-                    case 5:
-                        parent = _context5.sent;
-                        _context5.next = 8;
-                        return creator(parent, name);
-
-                    case 8:
-                        folder = _context5.sent;
-
-                        if (!(!folder || !folder.id)) {
-                            _context5.next = 11;
-                            break;
-                        }
-
-                        throw new Error("creating Study Folder " + name + " failed");
-
                     case 11:
-                        return _context5.abrupt('return', new _StudyFolder.StudyFolder(folder));
-
-                    case 12:
                     case 'end':
                         return _context5.stop();
                 }
@@ -214,21 +215,74 @@ var createStudyFolder = exports.createStudyFolder = function () {
         }, _callee5, this);
     }));
 
+    return function listStudyFolders(_x2) {
+        return _ref7.apply(this, arguments);
+    };
+}();
+
+var createStudyFolder = exports.createStudyFolder = function () {
+    var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(_ref8) {
+        var name = _ref8.name;
+        var creator, parent, folder;
+        return regeneratorRuntime.wrap(function _callee6$(_context6) {
+            while (1) {
+                switch (_context6.prev = _context6.next) {
+                    case 0:
+                        if (window.isSignedIn) {
+                            _context6.next = 2;
+                            break;
+                        }
+
+                        throw new Error("not signed into Google Drive");
+
+                    case 2:
+                        creator = _StudyFolder.driveX.folderCreator({
+                            properties: {
+                                role: studyFolderRole
+                            }
+                        });
+                        _context6.next = 5;
+                        return myPrimaryFolder();
+
+                    case 5:
+                        parent = _context6.sent;
+                        _context6.next = 8;
+                        return creator(parent, name);
+
+                    case 8:
+                        folder = _context6.sent;
+
+                        if (!(!folder || !folder.id)) {
+                            _context6.next = 11;
+                            break;
+                        }
+
+                        throw new Error("creating Study Folder " + name + " failed");
+
+                    case 11:
+                        return _context6.abrupt('return', new _StudyFolder.StudyFolder(folder));
+
+                    case 12:
+                    case 'end':
+                        return _context6.stop();
+                }
+            }
+        }, _callee6, this);
+    }));
+
     return function createStudyFolder(_x3) {
-        return _ref8.apply(this, arguments);
+        return _ref9.apply(this, arguments);
     };
 }();
 
 exports.init = init;
-
-var _extensionsForGoogleDrive = require('./extensionsForGoogleDrive.js');
 
 var _StudyFolder = require('./StudyFolder.js');
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; } /* Copyright 2017- Paul Brewer, Economic and Financial Technology Consulting LLC */
 /* This file is open source software.  The MIT License applies to this software. */
 
-/* global gapi:false, Promise:false, driveX:false */
+/* global gapi:false, Promise:false */
 
 /* eslint-disable no-console */
 
@@ -330,11 +384,6 @@ function handleSignoutClick() {
     }, 800);
 }
 
-window.driveX = (0, _extensionsForGoogleDrive.extensionsForGoogleDrive)({
-    rootFolderId: 'root',
-    spaces: 'drive'
-});
-
 var folderMimeType = 'application/vnd.google-apps.folder';
 var studyFolderRole = 'Econ1.Net Study Folder';
 
@@ -345,11 +394,13 @@ var DB = {};
 function init(_ref2) {
     var onSignIn = _ref2.onSignIn,
         onSignOut = _ref2.onSignOut,
-        onProgress = _ref2.onProgress;
+        onProgress = _ref2.onProgress,
+        gatekeeper = _ref2.gatekeeper;
 
     DB.onSignIn = onSignIn;
     DB.onSignOut = onSignOut;
     DB.onProgress = onProgress;
+    DB.gatekeeper = gatekeeper;
 }
 
 function pSignedIn() {

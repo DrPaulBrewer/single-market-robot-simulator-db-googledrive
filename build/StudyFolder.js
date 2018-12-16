@@ -3,21 +3,24 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.StudyFolder = exports.driveX = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }(); /* Copyright 2018- Paul Brewer, Economic and Financial Technology Consulting LLC */
+/* This file is open source software.  The MIT License applies to this software. */
+
+/* global pUploaderForGoogleDrive:false */
+
+/* eslint-disable no-console */
+
+var _extensionsForGoogleDrive = require('./extensionsForGoogleDrive');
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-/* Copyright 2018- Paul Brewer, Economic and Financial Technology Consulting LLC */
-/* This file is open source software.  The MIT License applies to this software. */
-
-/* global driveX: true, pUploaderForGoogleDrive:false */
-
-/* eslint-disable no-console */
+exports.driveX = _extensionsForGoogleDrive.driveX;
 
 var StudyFolder = exports.StudyFolder = function () {
     function StudyFolder(props) {
@@ -202,7 +205,7 @@ var StudyFolder = exports.StudyFolder = function () {
                                 trashed = this.trashed;
                                 folderId = this.id;
                                 orderBy = 'modifiedTime desc';
-                                searcher = driveX.searcher({
+                                searcher = _extensionsForGoogleDrive.driveX.searcher({
                                     trashed: trashed,
                                     orderBy: orderBy
                                 });
@@ -238,7 +241,7 @@ var StudyFolder = exports.StudyFolder = function () {
                             case 0:
                                 trashed = this.trashed;
                                 orderBy = 'modifiedTime desc';
-                                fileFinder = driveX.searcher({ trashed: trashed, orderBy: orderBy });
+                                fileFinder = _extensionsForGoogleDrive.driveX.searcher({ trashed: trashed, orderBy: orderBy });
                                 folderId = this.id;
                                 _context6.next = 6;
                                 return fileFinder(folderId, name);
@@ -289,7 +292,7 @@ var StudyFolder = exports.StudyFolder = function () {
                             case 5:
                                 fileId = _context7.t0;
                                 _context7.next = 8;
-                                return driveX.contents(fileId);
+                                return _extensionsForGoogleDrive.driveX.contents(fileId);
 
                             case 8:
                                 contents = _context7.sent;
@@ -329,7 +332,7 @@ var StudyFolder = exports.StudyFolder = function () {
                             case 0:
                                 folder = this;
                                 _context8.next = 3;
-                                return driveX.updateMetadata(folder.id, metadata);
+                                return _extensionsForGoogleDrive.driveX.updateMetadata(folder.id, metadata);
 
                             case 3:
                                 response = _context8.sent;
