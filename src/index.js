@@ -1,12 +1,11 @@
 /* Copyright 2017- Paul Brewer, Economic and Financial Technology Consulting LLC */
 /* This file is open source software.  The MIT License applies to this software. */
 
-/* global gapi:false, Promise:false, driveX:false */
+/* global gapi:false, Promise:false */
 
 /* eslint-disable no-console */
 
-import {driveX} from './extensionsForGoogleDrive.js';
-import {StudyFolder} from './StudyFolder.js';
+import {StudyFolder, driveX} from './StudyFolder.js';
 export {StudyFolder};
 
 const CLIENT_ID = window.GCID;
