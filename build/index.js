@@ -91,7 +91,7 @@ var pGatekeeper = function () {
                         user = _context3.sent;
                         _context3.prev = 4;
                         _context3.next = 7;
-                        return DB.gatekeeper(window.driveX, user);
+                        return DB.gatekeeper(_StudyFolder.driveX, user);
 
                     case 7:
                         go = _context3.sent;
