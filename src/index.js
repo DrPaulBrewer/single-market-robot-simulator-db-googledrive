@@ -8,28 +8,38 @@
 import {StudyFolder, driveX} from './StudyFolder.js';
 export {StudyFolder};
 
-const CLIENT_ID = window.GCID;
-const API_KEY = window.GK;
+const DB = {};
+const folderMimeType = 'application/vnd.google-apps.folder';
+const studyFolderRole = 'Econ1.Net Study Folder';
+const iAm = {};
 
-const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
-const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com\
-/auth/drive.appdata';
+const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.appdata';
 
 const authorizeButton = document.getElementById('authorize-button');
 const signoutButton = document.getElementById('signout-button');
+
+// dbdo -- safely run an optional function if it exists in DB.init configuration
+
+function dbdo(method){
+  if (typeof(DB[method])==='function') 
+    try { 
+      DB[method]();
+    } catch(e){ 
+      console.log("Error from externally supplied DB."+method);
+      console.log(e); 
+    }
+}
 
 /**
  *  On load, called to load the auth2 library and API client library.
  */
 
-window.handleGoogleClientLoad = function() {
-    'use strict';
+export function handleGoogleClientLoad() {
     gapi.load('client:auth2', initClient);
-    $('#welcomeModal').modal('show');
-};
+}
 
 /**
  *  Initializes the API client library and sets up sign-in state
@@ -37,11 +47,10 @@ window.handleGoogleClientLoad = function() {
  */
 
 function initClient() {
-    'use strict';
     gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
+        apiKey: DB.apiKey,
+        clientId: DB.clientId,
+        discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
         scope: SCOPES
     }).then(function () {
         // Listen for sign-in state changes.
@@ -60,8 +69,6 @@ function initClient() {
  */
 
 function updateSigninStatus(isSignedIn) {
-    'use strict';
-    console.log("got call of updateSigninStatus: "+isSignedIn);
     window.isSignedIn = isSignedIn;
     if (authorizeButton) authorizeButton.style.display = (isSignedIn)? 'none' : 'block';
     if (signoutButton) signoutButton.style.display = (isSignedIn)? 'block': 'none';
@@ -70,11 +77,13 @@ function updateSigninStatus(isSignedIn) {
         $('.showOnSignin').show();
         $('.clickOnSignin').click();
         showUserInfo();
+        dbdo('onSignIn');
     } else {
         $('.hideOnSignout').hide();
         $('.showOnSignout').show();
         $('.clickOnSignout').click();
         removeUserInfo();
+        dbdo('onSignOut');
     }
 }
 
@@ -85,6 +94,7 @@ async function showUserInfo(){
 }
 
 function removeUserInfo(){
+  delete iAm.user;
   $('.userEmailAddress').text('');
   $('.userDisplayName').text('');
 }
@@ -93,28 +103,19 @@ function removeUserInfo(){
  *  Sign in the user upon button click.
  */
 function handleAuthClick() {
-    'use strict';
     gapi.auth2.getAuthInstance().signIn();
 }
 
 function handleSignoutClick() {
-    'use strict';
     gapi.auth2.getAuthInstance().signOut();
     setTimeout(function(){ window.location.reload(); }, 800);
 }
 
-
-const folderMimeType = 'application/vnd.google-apps.folder';
-const studyFolderRole = 'Econ1.Net Study Folder';
-
-const iAm = {};
-
-const DB = {};
-
-export function init({onSignIn,onSignOut,onProgress,gatekeeper}){
+export function init({apiKey, clientId, onSignIn, onSignOut, gatekeeper}){
+    DB.apiKey = apiKey;
+    DB.clientId = clientId;
     DB.onSignIn = onSignIn;
     DB.onSignOut = onSignOut;
-    DB.onProgress = onProgress;
     DB.gatekeeper = gatekeeper;
 }
 
@@ -140,7 +141,7 @@ function pSignedIn(){
 
 async function pGatekeeper(){
   if (typeof(DB.gatekeeper)==='function'){
-    const user = await whoAmI(false);
+    const user = await whoAmI();
     try {
        const go = await DB.gatekeeper(driveX, user);
        return go;
