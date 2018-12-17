@@ -85,7 +85,7 @@ var pGatekeeper = function () {
                         }
 
                         _context3.next = 3;
-                        return whoAmI(false);
+                        return whoAmI();
 
                     case 3:
                         user = _context3.sent;
@@ -275,6 +275,7 @@ var createStudyFolder = exports.createStudyFolder = function () {
     };
 }();
 
+exports.handleGoogleClientLoad = handleGoogleClientLoad;
 exports.init = init;
 
 var _StudyFolder = require('./StudyFolder.js');
@@ -289,29 +290,36 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 exports.StudyFolder = _StudyFolder.StudyFolder;
 
 
-var CLIENT_ID = window.GCID;
-var API_KEY = window.GK;
-
-var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+var DB = {};
+var folderMimeType = 'application/vnd.google-apps.folder';
+var studyFolderRole = 'Econ1.Net Study Folder';
+var iAm = {};
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
-var SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com\
-/auth/drive.appdata';
+var SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.appdata';
 
 var authorizeButton = document.getElementById('authorize-button');
 var signoutButton = document.getElementById('signout-button');
+
+// dbdo -- safely run an optional function if it exists in DB.init configuration
+
+function dbdo(method) {
+    if (typeof DB[method] === 'function') try {
+        DB[method]();
+    } catch (e) {
+        console.log("Error from externally supplied DB." + method);
+        console.log(e);
+    }
+}
 
 /**
  *  On load, called to load the auth2 library and API client library.
  */
 
-window.handleGoogleClientLoad = function () {
-    'use strict';
-
+function handleGoogleClientLoad() {
     gapi.load('client:auth2', initClient);
-    $('#welcomeModal').modal('show');
-};
+}
 
 /**
  *  Initializes the API client library and sets up sign-in state
@@ -319,12 +327,10 @@ window.handleGoogleClientLoad = function () {
  */
 
 function initClient() {
-    'use strict';
-
     gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
+        apiKey: DB.apiKey,
+        clientId: DB.clientId,
+        discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
         scope: SCOPES
     }).then(function () {
         // Listen for sign-in state changes.
@@ -342,9 +348,6 @@ function initClient() {
  */
 
 function updateSigninStatus(isSignedIn) {
-    'use strict';
-
-    console.log("got call of updateSigninStatus: " + isSignedIn);
     window.isSignedIn = isSignedIn;
     if (authorizeButton) authorizeButton.style.display = isSignedIn ? 'none' : 'block';
     if (signoutButton) signoutButton.style.display = isSignedIn ? 'block' : 'none';
@@ -353,15 +356,18 @@ function updateSigninStatus(isSignedIn) {
         $('.showOnSignin').show();
         $('.clickOnSignin').click();
         showUserInfo();
+        dbdo('onSignIn');
     } else {
         $('.hideOnSignout').hide();
         $('.showOnSignout').show();
         $('.clickOnSignout').click();
         removeUserInfo();
+        dbdo('onSignOut');
     }
 }
 
 function removeUserInfo() {
+    delete iAm.user;
     $('.userEmailAddress').text('');
     $('.userDisplayName').text('');
 }
@@ -370,36 +376,27 @@ function removeUserInfo() {
  *  Sign in the user upon button click.
  */
 function handleAuthClick() {
-    'use strict';
-
     gapi.auth2.getAuthInstance().signIn();
 }
 
 function handleSignoutClick() {
-    'use strict';
-
     gapi.auth2.getAuthInstance().signOut();
     setTimeout(function () {
         window.location.reload();
     }, 800);
 }
 
-var folderMimeType = 'application/vnd.google-apps.folder';
-var studyFolderRole = 'Econ1.Net Study Folder';
-
-var iAm = {};
-
-var DB = {};
-
 function init(_ref2) {
-    var onSignIn = _ref2.onSignIn,
+    var apiKey = _ref2.apiKey,
+        clientId = _ref2.clientId,
+        onSignIn = _ref2.onSignIn,
         onSignOut = _ref2.onSignOut,
-        onProgress = _ref2.onProgress,
         gatekeeper = _ref2.gatekeeper;
 
+    DB.apiKey = apiKey;
+    DB.clientId = clientId;
     DB.onSignIn = onSignIn;
     DB.onSignOut = onSignOut;
-    DB.onProgress = onProgress;
     DB.gatekeeper = gatekeeper;
 }
 
