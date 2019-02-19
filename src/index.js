@@ -5,13 +5,16 @@
 
 /* eslint-disable no-console */
 
-import {StudyFolder, driveX} from './StudyFolder.js';
+import {StudyFolder, drive, driveX} from './StudyFolder.js';
 export {StudyFolder};
+import * as pAny from 'p-any';
+import * as arrayPrefer from 'array-prefer';
 
 const DB = {};
 const folderMimeType = 'application/vnd.google-apps.folder';
 const studyFolderRole = 'Econ1.Net Study Folder';
 const iAm = {};
+const hint = {};
 
 
 // Authorization scopes required by the API; multiple scopes can be
@@ -23,13 +26,13 @@ const signoutButton = document.getElementById('signout-button');
 
 // dbdo -- safely run an optional function if it exists in DB.init configuration
 
-function dbdo(method){
-  if (typeof(DB[method])==='function') 
-    try { 
-      DB[method]();
-    } catch(e){ 
+function dbdo(method, params){
+  if (typeof(DB[method])==='function')
+    try {
+      DB[method](params);
+    } catch(e){
       console.log("Error from externally supplied DB."+method);
-      console.log(e); 
+      console.log(e);
     }
 }
 
@@ -68,7 +71,7 @@ function initClient() {
  *  appropriately. After a sign-in, the API is called.
  */
 
-function updateSigninStatus(isSignedIn) {
+async function updateSigninStatus(isSignedIn) {
     window.isSignedIn = isSignedIn;
     if (authorizeButton) authorizeButton.style.display = (isSignedIn)? 'none' : 'block';
     if (signoutButton) signoutButton.style.display = (isSignedIn)? 'block': 'none';
@@ -77,6 +80,7 @@ function updateSigninStatus(isSignedIn) {
         $('.showOnSignin').show();
         $('.clickOnSignin').click();
         showUserInfo();
+        Object.assign(hint, await getHint());
         dbdo('onSignIn');
     } else {
         $('.hideOnSignout').hide();
@@ -111,11 +115,12 @@ function handleSignoutClick() {
     setTimeout(function(){ window.location.reload(); }, 800);
 }
 
-export function init({apiKey, clientId, onSignIn, onSignOut, gatekeeper}){
+export function init({apiKey, clientId, onSignIn, onSignOut, onHint, gatekeeper}){
     DB.apiKey = apiKey;
     DB.clientId = clientId;
     DB.onSignIn = onSignIn;
     DB.onSignOut = onSignOut;
+    DB.onHint = onHint;
     DB.gatekeeper = gatekeeper;
 }
 
@@ -179,7 +184,9 @@ export async function listStudyFolders({ trashed }){
         }
     });
     const response = await searcher();
-    return response.files.map((f)=>(new StudyFolder(f)));
+    const files = response.files;
+    const filesWithHintFirst = arrayPrefer(files,(f)=>(f.id===hint.existingFolderId),1);
+    return filesWithHintFirst.map((f)=>(new StudyFolder(f)));
 }
 
 export async function createStudyFolder({name}){
@@ -194,4 +201,53 @@ export async function createStudyFolder({name}){
     const folder = await creator(parent, name);
     if (!folder || !folder.id) throw new Error("creating Study Folder "+name+" failed");
     return new StudyFolder(folder);
+}
+
+function body(response){
+  return response && response.body;
+}
+
+async function requireStudyFolder(fileId){
+  const candidate = body(
+    await drive.files.get({fileId, fields:'id,name,mimeType,modifiedTime,properties'})
+  );
+  if (
+    candidate &&
+    candidate.properties &&
+    (candidate.mimeType === folderMimeType) &&
+    (candidate.properties.role===studyFolderRole)
+  ) return candidate;
+  throw new Error("not a study folder");
+}
+
+export async function parentStudyFolder({id, name, parents}){
+    let fileParents = parents;
+    if ((name.endsWith(".zip")) || (name.endsWith(".json"))){
+      if (!fileParents || !(fileParents.length)) {
+        const file = body(await drive.files.get({fileId: id, fields:'id,name,parents'}));
+        fileParents = file.parents;
+      }
+      if (!Array.isArray(fileParents))
+        return false;
+      if (fileParents.length === 0)
+        return false;
+      if (fileParents.length>10)
+        throw new Error("too many parents for file: "+(fileParents.length)+' '+name);
+      const parentFolder = await pAny(fileParents.map(requireStudyFolder));
+      return new StudyFolder(parentFolder);
+    }
+    return false;
+}
+
+async function getHint(){
+  const hint = driveX.appDataFolder.readBurnHint();
+  if (typeof(hint)==='object'){
+    const { file } = hint; // also contents
+    const existingFolder = await parentStudyFolder(file);
+    if (existingFolder && existingFolder.id){
+      hint.existingFolderId = existingFolder.id;
+    }
+    dbdo('onHint',{hint, drive, driveX});
+  }
+  return hint;
 }

@@ -30,7 +30,8 @@
     "should": "^13.2.1"
   },
   "dependencies": {
-    "p-reduce": "^1.0.0",
+    "array-prefer": "^0.1.0",
+    "p-any": "^1.1.0",
     "search-string-for-google-drive": "^1.0.0"
   }
 }

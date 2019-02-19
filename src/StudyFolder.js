@@ -5,8 +5,8 @@
 
 /* eslint-disable no-console */
 
-import {driveX} from './extensionsForGoogleDrive';
-export {driveX};
+import {drive, driveX} from './extensionsForGoogleDrive';
+export {drive, driveX};
 
 export class StudyFolder {
     constructor(props){
@@ -54,32 +54,32 @@ export class StudyFolder {
         return this;
     }
 
+    async search(name){
+      const trashed = this.trashed;
+      const folderId = this.id;
+      const orderBy = 'modifiedTime desc';
+      const searcher = driveX.searcher({
+        trashed,
+        orderBy
+      });
+      const response = await searcher(folderId, name);
+      return response.files;
+    }
+
     async listFiles(){
-        const trashed = this.trashed;
-        const folderId = this.id;
-        const orderBy = 'modifiedTime desc';
-        const searcher = driveX.searcher({
-            trashed,
-            orderBy
-        });
-        const response = await searcher(folderId);
-        return response.files;
+      return this.search();
     }
 
     async fileId(name){
-        const trashed = this.trashed;
-        const orderBy = 'modifiedTime desc';
-        const fileFinder = driveX.searcher({ trashed, orderBy });
-        const folderId = this.id;
-        const response = await fileFinder(folderId, name);
-        const fileId = response && response.files && response.files[0] && response.files[0].id;
+        const files = await this.search(name);
+        const fileId = files && files[0] && files[0].id;
         return fileId;
     }
 
     async download({name, id}){
         const fileId = id || (await this.fileId(name));
         const contents = await driveX.contents(fileId);
-        if (name.endsWith('.json'))
+        if (name.endsWith('.json') && (typeof(contents)==='string'))
             return JSON.parse(contents);
         else
             return contents;

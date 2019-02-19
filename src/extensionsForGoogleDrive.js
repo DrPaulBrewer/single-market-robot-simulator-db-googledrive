@@ -138,9 +138,12 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
                 name,
                 parents: [parentFolderId]
             });
+            const fieldList = Object.keys(metaData);
+            fieldList.unshift('modifiedTime');
+            fieldList.unshift('id');
             // see https://stackoverflow.com/questions/34905363/create-file-with-google-drive-api-v3-javascript
             const createdFolder = await gapi.client.drive.files.create({
-                fields: 'id, mimeType, name',
+                fields: fieldList.join(','),
                 resource: metaData
             });
             return createdFolder.result;
@@ -217,9 +220,30 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
 
     x.updateMetadata = driveUpdateMetadata;
 
+    async function driveReadBurnHint(){
+      const path = 'hint';
+      const file = await driveFindPath(path);
+      const contents = await driveContents(file.id);
+      let hint = false;
+      try {
+        hint = (typeof(contents)==='string')? JSON.parse(contents): contents;
+      } catch(e){
+        hint = false;
+        console.log(e); //eslint-disable-line no-console
+      }
+      if (file && file.id){
+        await gapi.client.drive.files.delete({fileId:file.id});
+      }
+      return hint;
+    }
+
+    if (spaces === 'appDataFolder') x.readBurnHint = driveReadBurnHint;
+
     return x;
 
 }
+
+export const drive = gapi.client.drive;
 
 export const driveX = extensionsForGoogleDrive({
     rootFolderId: 'root',
