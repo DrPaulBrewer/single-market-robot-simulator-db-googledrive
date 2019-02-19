@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.driveX = undefined;
+exports.driveX = exports.drive = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -209,6 +209,57 @@ function extensionsForGoogleDrive(_ref) {
         };
     }();
 
+    var driveReadBurnHint = function () {
+        var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11() {
+            var path, file, contents, hint;
+            return regeneratorRuntime.wrap(function _callee11$(_context11) {
+                while (1) {
+                    switch (_context11.prev = _context11.next) {
+                        case 0:
+                            path = 'hint';
+                            _context11.next = 3;
+                            return driveFindPath(path);
+
+                        case 3:
+                            file = _context11.sent;
+                            _context11.next = 6;
+                            return driveContents(file.id);
+
+                        case 6:
+                            contents = _context11.sent;
+                            hint = false;
+
+                            try {
+                                hint = typeof contents === 'string' ? JSON.parse(contents) : contents;
+                            } catch (e) {
+                                hint = false;
+                                console.log(e); //eslint-disable-line no-console
+                            }
+
+                            if (!(file && file.id)) {
+                                _context11.next = 12;
+                                break;
+                            }
+
+                            _context11.next = 12;
+                            return gapi.client.drive.files.delete({ fileId: file.id });
+
+                        case 12:
+                            return _context11.abrupt('return', hint);
+
+                        case 13:
+                        case 'end':
+                            return _context11.stop();
+                    }
+                }
+            }, _callee11, this);
+        }));
+
+        return function driveReadBurnHint() {
+            return _ref12.apply(this, arguments);
+        };
+    }();
+
     var rootFolderId = _ref.rootFolderId,
         spaces = _ref.spaces;
 
@@ -397,7 +448,7 @@ function extensionsForGoogleDrive(_ref) {
     function driveFolderCreator(meta) {
         return function () {
             var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(f, name) {
-                var parentFolderId, metaData, createdFolder;
+                var parentFolderId, metaData, fieldList, createdFolder;
                 return regeneratorRuntime.wrap(function _callee4$(_context4) {
                     while (1) {
                         switch (_context4.prev = _context4.next) {
@@ -408,19 +459,22 @@ function extensionsForGoogleDrive(_ref) {
                                     name: name,
                                     parents: [parentFolderId]
                                 });
-                                // see https://stackoverflow.com/questions/34905363/create-file-with-google-drive-api-v3-javascript
+                                fieldList = Object.keys(metaData);
 
-                                _context4.next = 4;
+                                fieldList.unshift('modifiedTime');
+                                fieldList.unshift('id');
+                                // see https://stackoverflow.com/questions/34905363/create-file-with-google-drive-api-v3-javascript
+                                _context4.next = 7;
                                 return gapi.client.drive.files.create({
-                                    fields: 'id, mimeType, name',
+                                    fields: fieldList.join(','),
                                     resource: metaData
                                 });
 
-                            case 4:
+                            case 7:
                                 createdFolder = _context4.sent;
                                 return _context4.abrupt('return', createdFolder.result);
 
-                            case 6:
+                            case 9:
                             case 'end':
                                 return _context4.stop();
                         }
@@ -505,8 +559,12 @@ function extensionsForGoogleDrive(_ref) {
 
     x.updateMetadata = driveUpdateMetadata;
 
+    if (spaces === 'appDataFolder') x.readBurnHint = driveReadBurnHint;
+
     return x;
 }
+
+var drive = exports.drive = gapi.client.drive;
 
 var driveX = exports.driveX = extensionsForGoogleDrive({
     rootFolderId: 'root',

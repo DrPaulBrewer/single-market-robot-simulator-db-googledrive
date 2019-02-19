@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.StudyFolder = exports.driveX = undefined;
+exports.StudyFolder = exports.driveX = exports.drive = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -20,6 +20,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+exports.drive = _extensionsForGoogleDrive.drive;
 exports.driveX = _extensionsForGoogleDrive.driveX;
 
 var StudyFolder = exports.StudyFolder = function () {
@@ -194,9 +195,9 @@ var StudyFolder = exports.StudyFolder = function () {
             return setConfig;
         }()
     }, {
-        key: 'listFiles',
+        key: 'search',
         value: function () {
-            var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+            var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(name) {
                 var trashed, folderId, orderBy, searcher, response;
                 return regeneratorRuntime.wrap(function _callee5$(_context5) {
                     while (1) {
@@ -210,7 +211,7 @@ var StudyFolder = exports.StudyFolder = function () {
                                     orderBy: orderBy
                                 });
                                 _context5.next = 6;
-                                return searcher(folderId);
+                                return searcher(folderId, name);
 
                             case 6:
                                 response = _context5.sent;
@@ -224,34 +225,23 @@ var StudyFolder = exports.StudyFolder = function () {
                 }, _callee5, this);
             }));
 
-            function listFiles() {
+            function search(_x2) {
                 return _ref6.apply(this, arguments);
             }
 
-            return listFiles;
+            return search;
         }()
     }, {
-        key: 'fileId',
+        key: 'listFiles',
         value: function () {
-            var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(name) {
-                var trashed, orderBy, fileFinder, folderId, response, fileId;
+            var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
                 return regeneratorRuntime.wrap(function _callee6$(_context6) {
                     while (1) {
                         switch (_context6.prev = _context6.next) {
                             case 0:
-                                trashed = this.trashed;
-                                orderBy = 'modifiedTime desc';
-                                fileFinder = _extensionsForGoogleDrive.driveX.searcher({ trashed: trashed, orderBy: orderBy });
-                                folderId = this.id;
-                                _context6.next = 6;
-                                return fileFinder(folderId, name);
+                                return _context6.abrupt('return', this.search());
 
-                            case 6:
-                                response = _context6.sent;
-                                fileId = response && response.files && response.files[0] && response.files[0].id;
-                                return _context6.abrupt('return', fileId);
-
-                            case 9:
+                            case 1:
                             case 'end':
                                 return _context6.stop();
                         }
@@ -259,55 +249,30 @@ var StudyFolder = exports.StudyFolder = function () {
                 }, _callee6, this);
             }));
 
-            function fileId(_x2) {
+            function listFiles() {
                 return _ref7.apply(this, arguments);
             }
 
-            return fileId;
+            return listFiles;
         }()
     }, {
-        key: 'download',
+        key: 'fileId',
         value: function () {
-            var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(_ref8) {
-                var name = _ref8.name,
-                    id = _ref8.id;
-                var fileId, contents;
+            var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(name) {
+                var files, fileId;
                 return regeneratorRuntime.wrap(function _callee7$(_context7) {
                     while (1) {
                         switch (_context7.prev = _context7.next) {
                             case 0:
-                                _context7.t0 = id;
+                                _context7.next = 2;
+                                return this.search(name);
 
-                                if (_context7.t0) {
-                                    _context7.next = 5;
-                                    break;
-                                }
-
-                                _context7.next = 4;
-                                return this.fileId(name);
-
-                            case 4:
-                                _context7.t0 = _context7.sent;
+                            case 2:
+                                files = _context7.sent;
+                                fileId = files && files[0] && files[0].id;
+                                return _context7.abrupt('return', fileId);
 
                             case 5:
-                                fileId = _context7.t0;
-                                _context7.next = 8;
-                                return _extensionsForGoogleDrive.driveX.contents(fileId);
-
-                            case 8:
-                                contents = _context7.sent;
-
-                                if (!name.endsWith('.json')) {
-                                    _context7.next = 13;
-                                    break;
-                                }
-
-                                return _context7.abrupt('return', JSON.parse(contents));
-
-                            case 13:
-                                return _context7.abrupt('return', contents);
-
-                            case 14:
                             case 'end':
                                 return _context7.stop();
                         }
@@ -315,30 +280,55 @@ var StudyFolder = exports.StudyFolder = function () {
                 }, _callee7, this);
             }));
 
-            function download(_x3) {
-                return _ref9.apply(this, arguments);
+            function fileId(_x3) {
+                return _ref8.apply(this, arguments);
             }
 
-            return download;
+            return fileId;
         }()
     }, {
-        key: 'update',
+        key: 'download',
         value: function () {
-            var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(metadata) {
-                var folder, response;
+            var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(_ref9) {
+                var name = _ref9.name,
+                    id = _ref9.id;
+                var fileId, contents;
                 return regeneratorRuntime.wrap(function _callee8$(_context8) {
                     while (1) {
                         switch (_context8.prev = _context8.next) {
                             case 0:
-                                folder = this;
-                                _context8.next = 3;
-                                return _extensionsForGoogleDrive.driveX.updateMetadata(folder.id, metadata);
+                                _context8.t0 = id;
 
-                            case 3:
-                                response = _context8.sent;
-                                return _context8.abrupt('return', response);
+                                if (_context8.t0) {
+                                    _context8.next = 5;
+                                    break;
+                                }
+
+                                _context8.next = 4;
+                                return this.fileId(name);
+
+                            case 4:
+                                _context8.t0 = _context8.sent;
 
                             case 5:
+                                fileId = _context8.t0;
+                                _context8.next = 8;
+                                return _extensionsForGoogleDrive.driveX.contents(fileId);
+
+                            case 8:
+                                contents = _context8.sent;
+
+                                if (!(name.endsWith('.json') && typeof contents === 'string')) {
+                                    _context8.next = 13;
+                                    break;
+                                }
+
+                                return _context8.abrupt('return', JSON.parse(contents));
+
+                            case 13:
+                                return _context8.abrupt('return', contents);
+
+                            case 14:
                             case 'end':
                                 return _context8.stop();
                         }
@@ -346,8 +336,39 @@ var StudyFolder = exports.StudyFolder = function () {
                 }, _callee8, this);
             }));
 
-            function update(_x4) {
+            function download(_x4) {
                 return _ref10.apply(this, arguments);
+            }
+
+            return download;
+        }()
+    }, {
+        key: 'update',
+        value: function () {
+            var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(metadata) {
+                var folder, response;
+                return regeneratorRuntime.wrap(function _callee9$(_context9) {
+                    while (1) {
+                        switch (_context9.prev = _context9.next) {
+                            case 0:
+                                folder = this;
+                                _context9.next = 3;
+                                return _extensionsForGoogleDrive.driveX.updateMetadata(folder.id, metadata);
+
+                            case 3:
+                                response = _context9.sent;
+                                return _context9.abrupt('return', response);
+
+                            case 5:
+                            case 'end':
+                                return _context9.stop();
+                        }
+                    }
+                }, _callee9, this);
+            }));
+
+            function update(_x5) {
+                return _ref11.apply(this, arguments);
             }
 
             return update;
@@ -355,28 +376,28 @@ var StudyFolder = exports.StudyFolder = function () {
     }, {
         key: 'upload',
         value: function () {
-            var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(_ref11) {
-                var name = _ref11.name,
-                    contents = _ref11.contents,
-                    blob = _ref11.blob,
-                    onProgress = _ref11.onProgress,
-                    force = _ref11.force;
+            var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(_ref12) {
+                var name = _ref12.name,
+                    contents = _ref12.contents,
+                    blob = _ref12.blob,
+                    onProgress = _ref12.onProgress,
+                    force = _ref12.force;
                 var files, hasZipFiles, existingFile, existingFileId, folderId, myFile, mimeType, metadata;
-                return regeneratorRuntime.wrap(function _callee9$(_context9) {
+                return regeneratorRuntime.wrap(function _callee10$(_context10) {
                     while (1) {
-                        switch (_context9.prev = _context9.next) {
+                        switch (_context10.prev = _context10.next) {
                             case 0:
-                                _context9.next = 2;
+                                _context10.next = 2;
                                 return this.listFiles();
 
                             case 2:
-                                files = _context9.sent;
+                                files = _context10.sent;
                                 hasZipFiles = files.some(function (f) {
                                     return f.name.endsWith(".zip");
                                 });
 
                                 if (!(!force && name === 'config.json' && hasZipFiles)) {
-                                    _context9.next = 6;
+                                    _context10.next = 6;
                                     break;
                                 }
 
@@ -400,7 +421,7 @@ var StudyFolder = exports.StudyFolder = function () {
                                     if (name.endsWith(".zip")) mimeType = 'application/zip';else mimeType = blob.type || 'application/octet-stream';
                                 }
                                 metadata = !existingFileId && { name: name, mimeType: mimeType, parents: [folderId] };
-                                _context9.next = 16;
+                                _context10.next = 16;
                                 return pUploaderForGoogleDrive({
                                     file: myFile,
                                     fileId: existingFileId,
@@ -413,18 +434,18 @@ var StudyFolder = exports.StudyFolder = function () {
                                 });
 
                             case 16:
-                                return _context9.abrupt('return', this);
+                                return _context10.abrupt('return', this);
 
                             case 17:
                             case 'end':
-                                return _context9.stop();
+                                return _context10.stop();
                         }
                     }
-                }, _callee9, this);
+                }, _callee10, this);
             }));
 
-            function upload(_x5) {
-                return _ref12.apply(this, arguments);
+            function upload(_x6) {
+                return _ref13.apply(this, arguments);
             }
 
             return upload;
