@@ -6,7 +6,7 @@
 /* eslint-disable no-console */
 
 import {driveX} from './extensionsForGoogleDrive';
-import * as arrayPrefer from 'array-prefer';
+import arrayPrefer from 'array-prefer';
 export {driveX, arrayPrefer};
 
 export class StudyFolder {
