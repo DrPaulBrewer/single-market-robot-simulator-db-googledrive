@@ -251,12 +251,14 @@ export async function parentStudyFolder({id, name, parents}){
 
 async function getHint(){
   const hint = await driveX.appDataFolder.readBurnHint();
+  console.log("got hint: ", hint);
   if (typeof(hint)==='object'){
     const { file } = hint; // also contents
     const existingFolder = await parentStudyFolder(file);
     if (existingFolder && existingFolder.id){
       hint.existingFolderId = existingFolder.id;
     }
+    console.log("sending hint:", hint);
     dbdo('onHint',{hint, drive:gapi.client.drive, driveX});
   }
   return hint;
