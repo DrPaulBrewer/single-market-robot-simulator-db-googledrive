@@ -89,6 +89,7 @@ async function updateSigninStatus(isSignedIn) {
     removeUserInfo();
     dbdo('onSignOut');
   }
+  return isSignedIn;
 }
 
 async function showUserInfo() {
@@ -215,11 +216,11 @@ function result(response) {
   return response && response.result;
 }
 
-function passOnlyStudyFolder(candidate){
+function passOnlyStudyFolder(candidate) {
   console.log(candidate);
   console.log(!!(candidate.properties));
-  console.log(candidate.mimeType, folderMimeType, candidate.mimeType===folderMimeType);
-  console.log(candidate.properties.role, studyFolderRole, candidate.properties.role===studyFolderRole);
+  console.log(candidate.mimeType, folderMimeType, candidate.mimeType === folderMimeType);
+  console.log(candidate.properties.role, studyFolderRole, candidate.properties.role === studyFolderRole);
   if (
     candidate &&
     candidate.properties &&
@@ -240,36 +241,28 @@ function pRequireStudyFolder(fileId) {
   );
 }
 
-export async function parentStudyFolder({ id, name, parents }) {
-  const drive = gapi.client.drive;
-  let fileParents = parents;
-  if ((name.endsWith(".zip")) || (name.endsWith(".json"))) {
-    try {
-      if (!fileParents || !(fileParents.length)) {
-        const file = result(await drive.files.get({ fileId: id, fields: 'id,name,parents' }));
-        fileParents = file.parents;
-      }
-      if (!Array.isArray(fileParents))
-        return false;
-      if (fileParents.length === 0)
-        return false;
-      if (fileParents.length > 10)
-        throw new Error("too many parents for file: " + (fileParents.length) + ' ' + name);
-      const promises = fileParents.map(pRequireStudyFolder);
-      const parentFolder = await pAny(promises);
-      return new StudyFolder(parentFolder);
-    } catch (e) { return false; }
-  }
-  return false;
+export async function parentStudyFolder({ name, parents }) {
+  if (!Array.isArray(parents))
+    throw new Error("parents is required to be an Array");
+  if (parents.length === 0)
+    return false;
+  if (parents.length > 10)
+    throw new Error("too many parents for file: " + (parents.length) + ' ' + name);
+  try {
+    const promises = parents.map(pRequireStudyFolder);
+    const parentFolder = await pAny(promises);
+    return new StudyFolder(parentFolder);
+  } catch (e) { console.log(e); return false; }
 }
 
 async function getHint() {
   // hint is defined at top of module
   hint = await driveX.appDataFolder.readBurnHint();
   console.log("got hint: ", hint);
-  if (typeof (hint) === 'object') {
+  if ((typeof (hint) === 'object') && (typeof (hint.file) === 'object')) {
     const { file } = hint; // also contents
     const existingFolder = await parentStudyFolder(file);
+    console.log("existing folder", existingFolder);
     if (existingFolder && existingFolder.id) {
       hint.existingFolderId = existingFolder.id;
     }
