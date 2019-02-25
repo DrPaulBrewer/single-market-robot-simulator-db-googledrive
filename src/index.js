@@ -13,7 +13,7 @@ const DB = {};
 const folderMimeType = 'application/vnd.google-apps.folder';
 const studyFolderRole = 'Econ1.Net Study Folder';
 const iAm = {};
-const hint = {};
+let hint = {};
 
 
 
@@ -80,7 +80,7 @@ async function updateSigninStatus(isSignedIn) {
     $('.showOnSignin').show();
     $('.clickOnSignin').click();
     showUserInfo();
-    Object.assign(hint, await getHint());
+    await getHint();
     dbdo('onSignIn');
   } else {
     $('.hideOnSignout').hide();
@@ -256,7 +256,8 @@ export async function parentStudyFolder({ id, name, parents }) {
 }
 
 async function getHint() {
-  const hint = await driveX.appDataFolder.readBurnHint();
+  // hint is defined at top of module
+  hint = await driveX.appDataFolder.readBurnHint();
   console.log("got hint: ", hint);
   if (typeof (hint) === 'object') {
     const { file } = hint; // also contents
