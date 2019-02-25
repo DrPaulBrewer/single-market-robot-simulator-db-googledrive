@@ -47,6 +47,9 @@ var updateSigninStatus = function () {
             dbdo('onSignOut');
 
           case 18:
+            return _context.abrupt('return', isSignedIn);
+
+          case 19:
           case 'end':
             return _context.stop();
         }
@@ -341,86 +344,57 @@ var createStudyFolder = exports.createStudyFolder = function () {
 
 var parentStudyFolder = exports.parentStudyFolder = function () {
   var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(_ref11) {
-    var id = _ref11.id,
-        name = _ref11.name,
+    var name = _ref11.name,
         parents = _ref11.parents;
-    var drive, fileParents, file, promises, parentFolder;
+    var promises, parentFolder;
     return regeneratorRuntime.wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
           case 0:
-            drive = gapi.client.drive;
-            fileParents = parents;
-
-            if (!(name.endsWith(".zip") || name.endsWith(".json"))) {
-              _context8.next = 27;
+            if (Array.isArray(parents)) {
+              _context8.next = 2;
               break;
             }
 
-            _context8.prev = 3;
+            throw new Error("parents is required to be an Array");
 
-            if (!(!fileParents || !fileParents.length)) {
-              _context8.next = 11;
-              break;
-            }
-
-            _context8.t0 = result;
-            _context8.next = 8;
-            return drive.files.get({ fileId: id, fields: 'id,name,parents' });
-
-          case 8:
-            _context8.t1 = _context8.sent;
-            file = (0, _context8.t0)(_context8.t1);
-
-            fileParents = file.parents;
-
-          case 11:
-            if (Array.isArray(fileParents)) {
-              _context8.next = 13;
+          case 2:
+            if (!(parents.length === 0)) {
+              _context8.next = 4;
               break;
             }
 
             return _context8.abrupt('return', false);
 
-          case 13:
-            if (!(fileParents.length === 0)) {
-              _context8.next = 15;
+          case 4:
+            if (!(parents.length > 10)) {
+              _context8.next = 6;
               break;
             }
 
-            return _context8.abrupt('return', false);
+            throw new Error("too many parents for file: " + parents.length + ' ' + name);
 
-          case 15:
-            if (!(fileParents.length > 10)) {
-              _context8.next = 17;
-              break;
-            }
-
-            throw new Error("too many parents for file: " + fileParents.length + ' ' + name);
-
-          case 17:
-            promises = fileParents.map(pRequireStudyFolder);
-            _context8.next = 20;
+          case 6:
+            _context8.prev = 6;
+            promises = parents.map(pRequireStudyFolder);
+            _context8.next = 10;
             return pAny(promises);
 
-          case 20:
+          case 10:
             parentFolder = _context8.sent;
             return _context8.abrupt('return', new _StudyFolder.StudyFolder(parentFolder));
 
-          case 24:
-            _context8.prev = 24;
-            _context8.t2 = _context8['catch'](3);
-            return _context8.abrupt('return', false);
+          case 14:
+            _context8.prev = 14;
+            _context8.t0 = _context8['catch'](6);
+            console.log(_context8.t0);return _context8.abrupt('return', false);
 
-          case 27:
-            return _context8.abrupt('return', false);
-
-          case 28:
+          case 18:
           case 'end':
             return _context8.stop();
         }
       }
-    }, _callee8, this, [[3, 24]]);
+    }, _callee8, this, [[6, 14]]);
   }));
 
   return function parentStudyFolder(_x5) {
@@ -444,8 +418,8 @@ var getHint = function () {
 
             console.log("got hint: ", hint);
 
-            if (!((typeof hint === 'undefined' ? 'undefined' : _typeof(hint)) === 'object')) {
-              _context9.next = 12;
+            if (!((typeof hint === 'undefined' ? 'undefined' : _typeof(hint)) === 'object' && _typeof(hint.file) === 'object')) {
+              _context9.next = 13;
               break;
             }
 
@@ -457,16 +431,17 @@ var getHint = function () {
           case 8:
             existingFolder = _context9.sent;
 
+            console.log("existing folder", existingFolder);
             if (existingFolder && existingFolder.id) {
               hint.existingFolderId = existingFolder.id;
             }
             console.log("sending hint:", hint);
             dbdo('onHint', { hint: hint, drive: gapi.client.drive, driveX: _StudyFolder.driveX });
 
-          case 12:
+          case 13:
             return _context9.abrupt('return', hint);
 
-          case 13:
+          case 14:
           case 'end':
             return _context9.stop();
         }
