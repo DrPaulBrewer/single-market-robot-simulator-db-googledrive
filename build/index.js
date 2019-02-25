@@ -339,166 +339,123 @@ var createStudyFolder = exports.createStudyFolder = function () {
   };
 }();
 
-var requireStudyFolder = function () {
-  var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(fileId) {
-    var drive, candidate;
+var parentStudyFolder = exports.parentStudyFolder = function () {
+  var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(_ref11) {
+    var id = _ref11.id,
+        name = _ref11.name,
+        parents = _ref11.parents;
+    var drive, fileParents, file, promises, parentFolder;
     return regeneratorRuntime.wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
           case 0:
             drive = gapi.client.drive;
-            _context8.t0 = result;
-            _context8.next = 4;
-            return drive.files.get({ fileId: fileId, fields: 'id,name,mimeType,modifiedTime,properties' });
-
-          case 4:
-            _context8.t1 = _context8.sent;
-            candidate = (0, _context8.t0)(_context8.t1);
-
-            console.log(candidate);
-            console.log(!!candidate.properties);
-            console.log(candidate.mimeType, folderMimeType, candidate.mimeType === folderMimeType);
-            console.log(candidate.properties.role, studyFolderRole, candidate.properties.role === studyFolderRole);
-
-            if (!(candidate && candidate.properties && candidate.mimeType === folderMimeType && candidate.properties.role === studyFolderRole)) {
-              _context8.next = 12;
-              break;
-            }
-
-            return _context8.abrupt('return', candidate);
-
-          case 12:
-            throw new Error("not a study folder");
-
-          case 13:
-          case 'end':
-            return _context8.stop();
-        }
-      }
-    }, _callee8, this);
-  }));
-
-  return function requireStudyFolder(_x5) {
-    return _ref11.apply(this, arguments);
-  };
-}();
-
-var parentStudyFolder = exports.parentStudyFolder = function () {
-  var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(_ref12) {
-    var id = _ref12.id,
-        name = _ref12.name,
-        parents = _ref12.parents;
-    var drive, fileParents, file, parentFolder;
-    return regeneratorRuntime.wrap(function _callee9$(_context9) {
-      while (1) {
-        switch (_context9.prev = _context9.next) {
-          case 0:
-            drive = gapi.client.drive;
             fileParents = parents;
 
             if (!(name.endsWith(".zip") || name.endsWith(".json"))) {
-              _context9.next = 26;
+              _context8.next = 27;
               break;
             }
 
-            _context9.prev = 3;
+            _context8.prev = 3;
 
             if (!(!fileParents || !fileParents.length)) {
-              _context9.next = 11;
+              _context8.next = 11;
               break;
             }
 
-            _context9.t0 = result;
-            _context9.next = 8;
+            _context8.t0 = result;
+            _context8.next = 8;
             return drive.files.get({ fileId: id, fields: 'id,name,parents' });
 
           case 8:
-            _context9.t1 = _context9.sent;
-            file = (0, _context9.t0)(_context9.t1);
+            _context8.t1 = _context8.sent;
+            file = (0, _context8.t0)(_context8.t1);
 
             fileParents = file.parents;
 
           case 11:
             if (Array.isArray(fileParents)) {
-              _context9.next = 13;
+              _context8.next = 13;
               break;
             }
 
-            return _context9.abrupt('return', false);
+            return _context8.abrupt('return', false);
 
           case 13:
             if (!(fileParents.length === 0)) {
-              _context9.next = 15;
+              _context8.next = 15;
               break;
             }
 
-            return _context9.abrupt('return', false);
+            return _context8.abrupt('return', false);
 
           case 15:
             if (!(fileParents.length > 10)) {
-              _context9.next = 17;
+              _context8.next = 17;
               break;
             }
 
             throw new Error("too many parents for file: " + fileParents.length + ' ' + name);
 
           case 17:
-            _context9.next = 19;
-            return pAny(fileParents.map(requireStudyFolder));
+            promises = fileParents.map(pRequireStudyFolder);
+            _context8.next = 20;
+            return pAny(promises);
 
-          case 19:
-            parentFolder = _context9.sent;
-            return _context9.abrupt('return', new _StudyFolder.StudyFolder(parentFolder));
+          case 20:
+            parentFolder = _context8.sent;
+            return _context8.abrupt('return', new _StudyFolder.StudyFolder(parentFolder));
 
-          case 23:
-            _context9.prev = 23;
-            _context9.t2 = _context9['catch'](3);
-            return _context9.abrupt('return', false);
-
-          case 26:
-            return _context9.abrupt('return', false);
+          case 24:
+            _context8.prev = 24;
+            _context8.t2 = _context8['catch'](3);
+            return _context8.abrupt('return', false);
 
           case 27:
+            return _context8.abrupt('return', false);
+
+          case 28:
           case 'end':
-            return _context9.stop();
+            return _context8.stop();
         }
       }
-    }, _callee9, this, [[3, 23]]);
+    }, _callee8, this, [[3, 24]]);
   }));
 
-  return function parentStudyFolder(_x6) {
-    return _ref13.apply(this, arguments);
+  return function parentStudyFolder(_x5) {
+    return _ref12.apply(this, arguments);
   };
 }();
 
 var getHint = function () {
-  var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
+  var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
     var _hint, file, existingFolder;
 
-    return regeneratorRuntime.wrap(function _callee10$(_context10) {
+    return regeneratorRuntime.wrap(function _callee9$(_context9) {
       while (1) {
-        switch (_context10.prev = _context10.next) {
+        switch (_context9.prev = _context9.next) {
           case 0:
-            _context10.next = 2;
+            _context9.next = 2;
             return _StudyFolder.driveX.appDataFolder.readBurnHint();
 
           case 2:
-            hint = _context10.sent;
+            hint = _context9.sent;
 
             console.log("got hint: ", hint);
 
             if (!((typeof hint === 'undefined' ? 'undefined' : _typeof(hint)) === 'object')) {
-              _context10.next = 12;
+              _context9.next = 12;
               break;
             }
 
             _hint = hint, file = _hint.file; // also contents
 
-            _context10.next = 8;
+            _context9.next = 8;
             return parentStudyFolder(file);
 
           case 8:
-            existingFolder = _context10.sent;
+            existingFolder = _context9.sent;
 
             if (existingFolder && existingFolder.id) {
               hint.existingFolderId = existingFolder.id;
@@ -507,18 +464,18 @@ var getHint = function () {
             dbdo('onHint', { hint: hint, drive: gapi.client.drive, driveX: _StudyFolder.driveX });
 
           case 12:
-            return _context10.abrupt('return', hint);
+            return _context9.abrupt('return', hint);
 
           case 13:
           case 'end':
-            return _context10.stop();
+            return _context9.stop();
         }
       }
-    }, _callee10, this);
+    }, _callee9, this);
   }));
 
   return function getHint() {
-    return _ref14.apply(this, arguments);
+    return _ref13.apply(this, arguments);
   };
 }();
 
@@ -643,4 +600,18 @@ function pSignedIn() {
 
 function result(response) {
   return response && response.result;
+}
+
+function passOnlyStudyFolder(candidate) {
+  console.log(candidate);
+  console.log(!!candidate.properties);
+  console.log(candidate.mimeType, folderMimeType, candidate.mimeType === folderMimeType);
+  console.log(candidate.properties.role, studyFolderRole, candidate.properties.role === studyFolderRole);
+  if (candidate && candidate.properties && candidate.mimeType === folderMimeType && candidate.properties.role === studyFolderRole) return candidate;
+  throw new Error("not a study folder");
+}
+
+function pRequireStudyFolder(fileId) {
+  var drive = gapi.client.drive;
+  return drive.files.get({ fileId: fileId, fields: 'id,name,mimeType,modifiedTime,properties' }).then(result).then(passOnlyStudyFolder);
 }
