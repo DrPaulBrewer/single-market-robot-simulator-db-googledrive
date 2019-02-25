@@ -234,7 +234,7 @@ var myPrimaryFolder = exports.myPrimaryFolder = function () {
 var listStudyFolders = exports.listStudyFolders = function () {
     var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(_ref7) {
         var trashed = _ref7.trashed;
-        var fields, orderBy, searcher, response, files, filesWithHintFirst;
+        var fields, orderBy, searcher, response, files;
         return regeneratorRuntime.wrap(function _callee6$(_context6) {
             while (1) {
                 switch (_context6.prev = _context6.next) {
@@ -264,10 +264,13 @@ var listStudyFolders = exports.listStudyFolders = function () {
                     case 9:
                         response = _context6.sent;
                         files = response.files;
-                        filesWithHintFirst = arrayPrefer(files, function (f) {
-                            return f.id === hint.existingFolderId;
-                        }, 1);
-                        return _context6.abrupt('return', filesWithHintFirst.map(function (f) {
+
+                        if (hint.existingFolderId) {
+                            files = arrayPrefer(files, function (f) {
+                                return f.id === hint.existingFolderId;
+                            }, 1);
+                        }
+                        return _context6.abrupt('return', files.map(function (f) {
                             return new _StudyFolder.StudyFolder(f);
                         }));
 
