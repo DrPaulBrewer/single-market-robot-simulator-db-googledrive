@@ -215,11 +215,7 @@ function result(response) {
   return response && response.result;
 }
 
-async function requireStudyFolder(fileId) {
-  const drive = gapi.client.drive;
-  const candidate = result(
-    await drive.files.get({ fileId, fields: 'id,name,mimeType,modifiedTime,properties' })
-  );
+function passOnlyStudyFolder(candidate){
   console.log(candidate);
   console.log(!!(candidate.properties));
   console.log(candidate.mimeType, folderMimeType, candidate.mimeType===folderMimeType);
@@ -231,6 +227,17 @@ async function requireStudyFolder(fileId) {
     (candidate.properties.role === studyFolderRole)
   ) return candidate;
   throw new Error("not a study folder");
+}
+
+function pRequireStudyFolder(fileId) {
+  const drive = gapi.client.drive;
+  return (
+    drive
+    .files
+    .get({ fileId, fields: 'id,name,mimeType,modifiedTime,properties' })
+    .then(result)
+    .then(passOnlyStudyFolder)
+  );
 }
 
 export async function parentStudyFolder({ id, name, parents }) {
@@ -248,7 +255,8 @@ export async function parentStudyFolder({ id, name, parents }) {
         return false;
       if (fileParents.length > 10)
         throw new Error("too many parents for file: " + (fileParents.length) + ' ' + name);
-      const parentFolder = await pAny(fileParents.map(requireStudyFolder));
+      const promises = fileParents.map(pRequireStudyFolder);
+      const parentFolder = await pAny(promises);
       return new StudyFolder(parentFolder);
     } catch (e) { return false; }
   }
