@@ -211,13 +211,13 @@ export async function createStudyFolder({ name }) {
   return new StudyFolder(folder);
 }
 
-function body(response) {
-  return response && response.body;
+function result(response) {
+  return response && response.result;
 }
 
 async function requireStudyFolder(fileId) {
   const drive = gapi.client.drive;
-  const candidate = body(
+  const candidate = result(
     await drive.files.get({ fileId, fields: 'id,name,mimeType,modifiedTime,properties' })
   );
   if (
@@ -235,7 +235,7 @@ export async function parentStudyFolder({ id, name, parents }) {
   if ((name.endsWith(".zip")) || (name.endsWith(".json"))) {
     try {
       if (!fileParents || !(fileParents.length)) {
-        const file = body(await drive.files.get({ fileId: id, fields: 'id,name,parents' }));
+        const file = result(await drive.files.get({ fileId: id, fields: 'id,name,parents' }));
         fileParents = file.parents;
       }
       if (!Array.isArray(fileParents))
