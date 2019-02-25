@@ -250,7 +250,7 @@ export async function parentStudyFolder({id, name, parents}){
 }
 
 async function getHint(){
-  const hint = driveX.appDataFolder.readBurnHint();
+  const hint = await driveX.appDataFolder.readBurnHint();
   if (typeof(hint)==='object'){
     const { file } = hint; // also contents
     const existingFolder = await parentStudyFolder(file);
