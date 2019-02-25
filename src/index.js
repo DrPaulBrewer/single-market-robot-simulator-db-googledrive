@@ -15,8 +15,7 @@ const studyFolderRole = 'Econ1.Net Study Folder';
 const iAm = {};
 const hint = {};
 
-const gapi = window.gapi;
-if (!gapi) throw new Error("window.gapi not defined.  can not proceed.");
+
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
