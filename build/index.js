@@ -361,17 +361,22 @@ var requireStudyFolder = function () {
             _context8.t1 = _context8.sent;
             candidate = (0, _context8.t0)(_context8.t1);
 
+            console.log(candidate);
+            console.log(!!candidate.properties);
+            console.log(candidate.mimeType, folderMimeType, candidate.mimeType === folderMimeType);
+            console.log(candidate.properties.role, studyFolderRole, candidate.properties.role === studyFolderRole);
+
             if (!(candidate && candidate.properties && candidate.mimeType === folderMimeType && candidate.properties.role === studyFolderRole)) {
-              _context8.next = 8;
+              _context8.next = 12;
               break;
             }
 
             return _context8.abrupt('return', candidate);
 
-          case 8:
+          case 12:
             throw new Error("not a study folder");
 
-          case 9:
+          case 13:
           case 'end':
             return _context8.stop();
         }
