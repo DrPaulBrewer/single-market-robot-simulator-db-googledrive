@@ -243,8 +243,6 @@ export function extensionsForGoogleDrive({rootFolderId, spaces}){
 
 }
 
-export const drive = gapi.client.drive;
-
 export const driveX = extensionsForGoogleDrive({
     rootFolderId: 'root',
     spaces: 'drive'

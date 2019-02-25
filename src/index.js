@@ -5,7 +5,7 @@
 
 /* eslint-disable no-console */
 
-import {StudyFolder, drive, driveX, arrayPrefer} from './StudyFolder.js';
+import {StudyFolder, driveX, arrayPrefer} from './StudyFolder.js';
 export {StudyFolder};
 import * as pAny from 'p-any';
 
@@ -216,6 +216,7 @@ function body(response){
 }
 
 async function requireStudyFolder(fileId){
+  const drive = gapi.client.drive;
   const candidate = body(
     await drive.files.get({fileId, fields:'id,name,mimeType,modifiedTime,properties'})
   );
@@ -229,6 +230,7 @@ async function requireStudyFolder(fileId){
 }
 
 export async function parentStudyFolder({id, name, parents}){
+    const drive = gapi.client.drive;
     let fileParents = parents;
     if ((name.endsWith(".zip")) || (name.endsWith(".json"))){
       if (!fileParents || !(fileParents.length)) {
@@ -255,7 +257,7 @@ async function getHint(){
     if (existingFolder && existingFolder.id){
       hint.existingFolderId = existingFolder.id;
     }
-    dbdo('onHint',{hint, drive, driveX});
+    dbdo('onHint',{hint, drive:gapi.client.drive, driveX});
   }
   return hint;
 }
