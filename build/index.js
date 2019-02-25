@@ -234,7 +234,7 @@ var myPrimaryFolder = exports.myPrimaryFolder = function () {
 var listStudyFolders = exports.listStudyFolders = function () {
     var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(_ref7) {
         var trashed = _ref7.trashed;
-        var fields, orderBy, searcher, response, files;
+        var fields, orderBy, searcher, response, files, studyFolders;
         return regeneratorRuntime.wrap(function _callee6$(_context6) {
             while (1) {
                 switch (_context6.prev = _context6.next) {
@@ -266,15 +266,17 @@ var listStudyFolders = exports.listStudyFolders = function () {
                         files = response.files;
 
                         if (hint.existingFolderId) {
-                            files = arrayPrefer(files, function (f) {
+                            files = (0, _StudyFolder.arrayPrefer)(files, function (f) {
                                 return f.id === hint.existingFolderId;
                             }, 1);
+                            if (files.length > 0 && hint.file && hint.file.id && files[0].id === hint.existingFolderId) files[0].hintFileId = hint.file.id;
                         }
-                        return _context6.abrupt('return', files.map(function (f) {
+                        studyFolders = files.map(function (f) {
                             return new _StudyFolder.StudyFolder(f);
-                        }));
+                        });
+                        return _context6.abrupt('return', studyFolders);
 
-                    case 13:
+                    case 14:
                     case 'end':
                         return _context6.stop();
                 }
@@ -511,10 +513,6 @@ var _StudyFolder = require('./StudyFolder.js');
 var _pAny = require('p-any');
 
 var pAny = _interopRequireWildcard(_pAny);
-
-var _arrayPrefer = require('array-prefer');
-
-var arrayPrefer = _interopRequireWildcard(_arrayPrefer);
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
