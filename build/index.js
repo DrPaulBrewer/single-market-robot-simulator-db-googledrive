@@ -96,7 +96,8 @@ var showUserInfo = function () {
 
 var whoAmI = function () {
   var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(force) {
-    var response, result;
+    var response, _result;
+
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
@@ -111,10 +112,10 @@ var whoAmI = function () {
 
           case 3:
             response = _context3.sent;
-            result = response.result;
+            _result = response.result;
 
-            iAm.user = result.user;
-            iAm.storageQuota = result.storageQuota;
+            iAm.user = _result.user;
+            iAm.storageQuota = _result.storageQuota;
 
           case 7:
             return _context3.abrupt('return', iAm.user);
@@ -352,7 +353,7 @@ var requireStudyFolder = function () {
         switch (_context8.prev = _context8.next) {
           case 0:
             drive = gapi.client.drive;
-            _context8.t0 = body;
+            _context8.t0 = result;
             _context8.next = 4;
             return drive.files.get({ fileId: fileId, fields: 'id,name,mimeType,modifiedTime,properties' });
 
@@ -408,7 +409,7 @@ var parentStudyFolder = exports.parentStudyFolder = function () {
               break;
             }
 
-            _context9.t0 = body;
+            _context9.t0 = result;
             _context9.next = 8;
             return drive.files.get({ fileId: id, fields: 'id,name,parents' });
 
@@ -640,6 +641,6 @@ function pSignedIn() {
   });
 }
 
-function body(response) {
-  return response && response.body;
+function result(response) {
+  return response && response.result;
 }
