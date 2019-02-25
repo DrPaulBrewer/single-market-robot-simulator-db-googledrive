@@ -346,7 +346,7 @@ var parentStudyFolder = exports.parentStudyFolder = function () {
   var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(_ref11) {
     var name = _ref11.name,
         parents = _ref11.parents;
-    var promises, parentFolder;
+    var promises, results, parentFolder;
     return regeneratorRuntime.wrap(function _callee8$(_context8) {
       while (1) {
         switch (_context8.prev = _context8.next) {
@@ -378,23 +378,39 @@ var parentStudyFolder = exports.parentStudyFolder = function () {
             _context8.prev = 6;
             promises = parents.map(pRequireStudyFolder);
             _context8.next = 10;
-            return pAny(promises);
+            return Promise.all(promises);
 
           case 10:
-            parentFolder = _context8.sent;
+            results = _context8.sent;
+            parentFolder = results.find(function (r) {
+              return (typeof r === 'undefined' ? 'undefined' : _typeof(r)) === 'object';
+            });
+
+            if (!parentFolder) {
+              _context8.next = 16;
+              break;
+            }
+
             return _context8.abrupt('return', new _StudyFolder.StudyFolder(parentFolder));
 
-          case 14:
-            _context8.prev = 14;
+          case 16:
+            return _context8.abrupt('return', false);
+
+          case 17:
+            _context8.next = 23;
+            break;
+
+          case 19:
+            _context8.prev = 19;
             _context8.t0 = _context8['catch'](6);
             console.log(_context8.t0);return _context8.abrupt('return', false);
 
-          case 18:
+          case 23:
           case 'end':
             return _context8.stop();
         }
       }
-    }, _callee8, this, [[6, 14]]);
+    }, _callee8, this, [[6, 19]]);
   }));
 
   return function parentStudyFolder(_x5) {
@@ -458,12 +474,6 @@ exports.handleGoogleClientLoad = handleGoogleClientLoad;
 exports.init = init;
 
 var _StudyFolder = require('./StudyFolder.js');
-
-var _pAny = require('p-any');
-
-var pAny = _interopRequireWildcard(_pAny);
-
-function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; } /* Copyright 2017- Paul Brewer, Economic and Financial Technology Consulting LLC */
 /* This file is open source software.  The MIT License applies to this software. */
@@ -583,10 +593,12 @@ function passOnlyStudyFolder(candidate) {
   console.log(candidate.mimeType, folderMimeType, candidate.mimeType === folderMimeType);
   console.log(candidate.properties.role, studyFolderRole, candidate.properties.role === studyFolderRole);
   if (candidate && candidate.properties && candidate.mimeType === folderMimeType && candidate.properties.role === studyFolderRole) return candidate;
-  throw new Error("not a study folder");
+  return false;
 }
 
 function pRequireStudyFolder(fileId) {
   var drive = gapi.client.drive;
-  return drive.files.get({ fileId: fileId, fields: 'id,name,mimeType,modifiedTime,properties' }).then(result).then(passOnlyStudyFolder);
+  return drive.files.get({ fileId: fileId, fields: 'id,name,mimeType,modifiedTime,properties' }).then(result).then(passOnlyStudyFolder, function (e) {
+    return console.log(e);
+  });
 }
