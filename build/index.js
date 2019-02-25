@@ -23,7 +23,7 @@ var updateSigninStatus = function () {
             if (signoutButton) signoutButton.style.display = isSignedIn ? 'block' : 'none';
 
             if (!isSignedIn) {
-              _context.next = 17;
+              _context.next = 13;
               break;
             }
 
@@ -31,28 +31,22 @@ var updateSigninStatus = function () {
             $('.showOnSignin').show();
             $('.clickOnSignin').click();
             showUserInfo();
-            _context.t0 = Object;
-            _context.t1 = hint;
-            _context.next = 12;
+            _context.next = 10;
             return getHint();
 
-          case 12:
-            _context.t2 = _context.sent;
-
-            _context.t0.assign.call(_context.t0, _context.t1, _context.t2);
-
+          case 10:
             dbdo('onSignIn');
-            _context.next = 22;
+            _context.next = 18;
             break;
 
-          case 17:
+          case 13:
             $('.hideOnSignout').hide();
             $('.showOnSignout').show();
             $('.clickOnSignout').click();
             removeUserInfo();
             dbdo('onSignOut');
 
-          case 22:
+          case 18:
           case 'end':
             return _context.stop();
         }
@@ -479,7 +473,8 @@ var parentStudyFolder = exports.parentStudyFolder = function () {
 
 var getHint = function () {
   var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10() {
-    var hint, file, existingFolder;
+    var _hint, file, existingFolder;
+
     return regeneratorRuntime.wrap(function _callee10$(_context10) {
       while (1) {
         switch (_context10.prev = _context10.next) {
@@ -497,7 +492,7 @@ var getHint = function () {
               break;
             }
 
-            file = hint.file; // also contents
+            _hint = hint, file = _hint.file; // also contents
 
             _context10.next = 8;
             return parentStudyFolder(file);
