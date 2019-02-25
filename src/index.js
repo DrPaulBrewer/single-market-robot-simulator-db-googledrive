@@ -184,9 +184,11 @@ export async function listStudyFolders({ trashed }){
         }
     });
     const response = await searcher();
-    const files = response.files;
-    const filesWithHintFirst = arrayPrefer(files,(f)=>(f.id===hint.existingFolderId),1);
-    return filesWithHintFirst.map((f)=>(new StudyFolder(f)));
+    let files = response.files;
+    if (hint.existingFolderId){
+      files = arrayPrefer(files,(f)=>(f.id===hint.existingFolderId),1);
+    }
+    return files.map((f)=>(new StudyFolder(f)));
 }
 
 export async function createStudyFolder({name}){
