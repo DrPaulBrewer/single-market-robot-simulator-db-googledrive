@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.StudyFolder = exports.arrayPrefer = exports.driveX = exports.drive = undefined;
+exports.StudyFolder = exports.arrayPrefer = exports.driveX = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -26,7 +26,6 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-exports.drive = _extensionsForGoogleDrive.drive;
 exports.driveX = _extensionsForGoogleDrive.driveX;
 exports.arrayPrefer = arrayPrefer;
 

@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.driveX = exports.drive = undefined;
+exports.driveX = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -563,8 +563,6 @@ function extensionsForGoogleDrive(_ref) {
 
     return x;
 }
-
-var drive = exports.drive = gapi.client.drive;
 
 var driveX = exports.driveX = extensionsForGoogleDrive({
     rootFolderId: 'root',
