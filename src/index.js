@@ -220,6 +220,10 @@ async function requireStudyFolder(fileId) {
   const candidate = result(
     await drive.files.get({ fileId, fields: 'id,name,mimeType,modifiedTime,properties' })
   );
+  console.log(candidate);
+  console.log(!!(candidate.properties));
+  console.log(candidate.mimeType, folderMimeType, candidate.mimeType===folderMimeType);
+  console.log(candidate.properties.role, studyFolderRole, candidate.properties.role===studyFolderRole);
   if (
     candidate &&
     candidate.properties &&
