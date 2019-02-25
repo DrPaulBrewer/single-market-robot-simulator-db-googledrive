@@ -477,28 +477,31 @@ var getHint = function () {
                     case 2:
                         hint = _context10.sent;
 
+                        console.log("got hint: ", hint);
+
                         if (!((typeof hint === 'undefined' ? 'undefined' : _typeof(hint)) === 'object')) {
-                            _context10.next = 10;
+                            _context10.next = 12;
                             break;
                         }
 
                         file = hint.file; // also contents
 
-                        _context10.next = 7;
+                        _context10.next = 8;
                         return parentStudyFolder(file);
 
-                    case 7:
+                    case 8:
                         existingFolder = _context10.sent;
 
                         if (existingFolder && existingFolder.id) {
                             hint.existingFolderId = existingFolder.id;
                         }
+                        console.log("sending hint:", hint);
                         dbdo('onHint', { hint: hint, drive: gapi.client.drive, driveX: _StudyFolder.driveX });
 
-                    case 10:
+                    case 12:
                         return _context10.abrupt('return', hint);
 
-                    case 11:
+                    case 13:
                     case 'end':
                         return _context10.stop();
                 }
