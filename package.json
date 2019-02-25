@@ -31,7 +31,6 @@
   },
   "dependencies": {
     "array-prefer": "^0.1.0",
-    "p-any": "^1.1.0",
     "search-string-for-google-drive": "^1.0.0"
   }
 }

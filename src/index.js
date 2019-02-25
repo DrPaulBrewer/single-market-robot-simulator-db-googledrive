@@ -7,7 +7,6 @@
 
 import { StudyFolder, driveX, arrayPrefer } from './StudyFolder.js';
 export { StudyFolder };
-import * as pAny from 'p-any';
 
 const DB = {};
 const folderMimeType = 'application/vnd.google-apps.folder';
@@ -227,7 +226,7 @@ function passOnlyStudyFolder(candidate) {
     (candidate.mimeType === folderMimeType) &&
     (candidate.properties.role === studyFolderRole)
   ) return candidate;
-  throw new Error("not a study folder");
+  return false;
 }
 
 function pRequireStudyFolder(fileId) {
@@ -237,7 +236,7 @@ function pRequireStudyFolder(fileId) {
     .files
     .get({ fileId, fields: 'id,name,mimeType,modifiedTime,properties' })
     .then(result)
-    .then(passOnlyStudyFolder)
+    .then(passOnlyStudyFolder, (e)=>(console.log(e)))
   );
 }
 
@@ -250,8 +249,12 @@ export async function parentStudyFolder({ name, parents }) {
     throw new Error("too many parents for file: " + (parents.length) + ' ' + name);
   try {
     const promises = parents.map(pRequireStudyFolder);
-    const parentFolder = await pAny(promises);
-    return new StudyFolder(parentFolder);
+    const results = await(Promise.all(promises));
+    const parentFolder = results.find((r)=>(typeof(r)==='object'));
+    if (parentFolder)
+      return new StudyFolder(parentFolder);
+    else
+      return false;
   } catch (e) { console.log(e); return false; }
 }
 
