@@ -6,7 +6,8 @@
 /* eslint-disable no-console */
 
 import {drive, driveX} from './extensionsForGoogleDrive';
-export {drive, driveX};
+import * as arrayPrefer from 'array-prefer';
+export {drive, driveX, arrayPrefer};
 
 export class StudyFolder {
     constructor(props){
@@ -67,7 +68,11 @@ export class StudyFolder {
     }
 
     async listFiles(){
-      return this.search();
+      let files = await this.search();
+      if (this.hintFileId){
+        files = arrayPrefer(files, (f)=>(f.id===this.hintFileId), 1);
+      }
+      return files;
     }
 
     async fileId(name){

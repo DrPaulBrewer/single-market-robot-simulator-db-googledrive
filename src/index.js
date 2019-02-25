@@ -5,10 +5,9 @@
 
 /* eslint-disable no-console */
 
-import {StudyFolder, drive, driveX} from './StudyFolder.js';
+import {StudyFolder, drive, driveX, arrayPrefer} from './StudyFolder.js';
 export {StudyFolder};
 import * as pAny from 'p-any';
-import * as arrayPrefer from 'array-prefer';
 
 const DB = {};
 const folderMimeType = 'application/vnd.google-apps.folder';
@@ -187,8 +186,14 @@ export async function listStudyFolders({ trashed }){
     let files = response.files;
     if (hint.existingFolderId){
       files = arrayPrefer(files,(f)=>(f.id===hint.existingFolderId),1);
+      if (
+        (files.length>0) &&
+        (hint.file && hint.file.id) &&
+        (files[0].id === hint.existingFolderId)
+      ) files[0].hintFileId = hint.file.id;
     }
-    return files.map((f)=>(new StudyFolder(f)));
+    const studyFolders = files.map((f)=>(new StudyFolder(f)));
+    return studyFolders;
 }
 
 export async function createStudyFolder({name}){
