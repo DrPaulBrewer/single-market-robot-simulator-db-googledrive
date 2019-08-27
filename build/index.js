@@ -300,7 +300,7 @@ exports.getHint = getHint;
 
 var folderMimeType = 'application/vnd.google-apps.folder';
 var studyFolderRole = 'Econ1.Net Study Folder';
-var hint = void 0;
+var hint = {};
 
 function isSignedIn() {
   var ok = false;

@@ -10,7 +10,7 @@ export { StudyFolder, getHint };
 
 const folderMimeType = 'application/vnd.google-apps.folder';
 const studyFolderRole = 'Econ1.Net Study Folder';
-let hint;
+let hint = {};
 
 function isSignedIn(){
   let ok = false;
