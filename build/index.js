@@ -3,53 +3,41 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.parentStudyFolder = exports.createStudyFolder = exports.listStudyFolders = exports.myPrimaryFolder = exports.StudyFolder = undefined;
+exports.parentStudyFolder = exports.createStudyFolder = exports.listStudyFolders = exports.myPrimaryFolder = exports.getHint = exports.StudyFolder = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
-/**
- *  Called when the signed in status changes, to update the UI
- *  appropriately. After a sign-in, the API is called.
- */
-
-var updateSigninStatus = function () {
-  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(isSignedIn) {
+var myPrimaryFolder = exports.myPrimaryFolder = function () {
+  var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee() {
+    var emailAddress, userName, folderName, folder;
     return regeneratorRuntime.wrap(function _callee$(_context) {
       while (1) {
         switch (_context.prev = _context.next) {
           case 0:
-            window.isSignedIn = isSignedIn;
-            if (authorizeButton) authorizeButton.style.display = isSignedIn ? 'none' : 'block';
-            if (signoutButton) signoutButton.style.display = isSignedIn ? 'block' : 'none';
+            _context.next = 2;
+            return pSignedIn();
 
-            if (!isSignedIn) {
-              _context.next = 13;
+          case 2:
+            emailAddress = window.GoogleUser.getBasicProfile().getEmail();
+            userName = emailAddress.split('@')[0];
+
+            if (userName.length) {
+              _context.next = 6;
               break;
             }
 
-            $('.hideOnSignin').hide();
-            $('.showOnSignin').show();
-            $('.clickOnSignin').click();
-            showUserInfo();
-            _context.next = 10;
-            return getHint();
+            throw new Error('Error: myPrimaryFolder(), bad emailAddress = ' + emailAddress);
 
-          case 10:
-            dbdo('onSignIn');
-            _context.next = 18;
-            break;
+          case 6:
+            folderName = 'Econ1Net-' + userName;
+            _context.next = 9;
+            return _StudyFolder.driveX.folderFactory()('root', folderName);
 
-          case 13:
-            $('.hideOnSignout').hide();
-            $('.showOnSignout').show();
-            $('.clickOnSignout').click();
-            removeUserInfo();
-            dbdo('onSignOut');
+          case 9:
+            folder = _context.sent;
+            return _context.abrupt('return', folder);
 
-          case 18:
-            return _context.abrupt('return', isSignedIn);
-
-          case 19:
+          case 11:
           case 'end':
             return _context.stop();
         }
@@ -57,194 +45,23 @@ var updateSigninStatus = function () {
     }, _callee, this);
   }));
 
-  return function updateSigninStatus(_x) {
+  return function myPrimaryFolder() {
     return _ref.apply(this, arguments);
   };
 }();
 
-var showUserInfo = function () {
-  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2() {
-    var user;
+var listStudyFolders = exports.listStudyFolders = function () {
+  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref2) {
+    var trashed = _ref2.trashed;
+    var fields, orderBy, searcher, response, files, studyFolders;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
           case 0:
             _context2.next = 2;
-            return whoAmI();
-
-          case 2:
-            user = _context2.sent;
-
-            $('.userEmailAddress').text(user.emailAddress);
-            $('.userDisplayName').text(user.displayName);
-
-          case 5:
-          case 'end':
-            return _context2.stop();
-        }
-      }
-    }, _callee2, this);
-  }));
-
-  return function showUserInfo() {
-    return _ref2.apply(this, arguments);
-  };
-}();
-
-var whoAmI = function () {
-  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(force) {
-    var response, _result;
-
-    return regeneratorRuntime.wrap(function _callee3$(_context3) {
-      while (1) {
-        switch (_context3.prev = _context3.next) {
-          case 0:
-            if (!(!iAm.user || force)) {
-              _context3.next = 7;
-              break;
-            }
-
-            _context3.next = 3;
-            return gapi.client.drive.about.get({ fields: 'user,storageQuota' });
-
-          case 3:
-            response = _context3.sent;
-            _result = response.result;
-
-            iAm.user = _result.user;
-            iAm.storageQuota = _result.storageQuota;
-
-          case 7:
-            return _context3.abrupt('return', iAm.user);
-
-          case 8:
-          case 'end':
-            return _context3.stop();
-        }
-      }
-    }, _callee3, this);
-  }));
-
-  return function whoAmI(_x2) {
-    return _ref4.apply(this, arguments);
-  };
-}();
-
-var pGatekeeper = function () {
-  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4() {
-    var user, go;
-    return regeneratorRuntime.wrap(function _callee4$(_context4) {
-      while (1) {
-        switch (_context4.prev = _context4.next) {
-          case 0:
-            if (!(typeof DB.gatekeeper === 'function')) {
-              _context4.next = 15;
-              break;
-            }
-
-            _context4.next = 3;
-            return whoAmI();
-
-          case 3:
-            user = _context4.sent;
-            _context4.prev = 4;
-            _context4.next = 7;
-            return DB.gatekeeper(_StudyFolder.driveX, user);
-
-          case 7:
-            go = _context4.sent;
-            return _context4.abrupt('return', go);
-
-          case 11:
-            _context4.prev = 11;
-            _context4.t0 = _context4['catch'](4);
-
-            window.alert(_context4.t0.toString());
-            throw _context4.t0;
-
-          case 15:
-            return _context4.abrupt('return', false);
-
-          case 16:
-          case 'end':
-            return _context4.stop();
-        }
-      }
-    }, _callee4, this, [[4, 11]]);
-  }));
-
-  return function pGatekeeper() {
-    return _ref5.apply(this, arguments);
-  };
-}();
-
-var myPrimaryFolder = exports.myPrimaryFolder = function () {
-  var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-    var user, userName, folderName, folder;
-    return regeneratorRuntime.wrap(function _callee5$(_context5) {
-      while (1) {
-        switch (_context5.prev = _context5.next) {
-          case 0:
-            _context5.next = 2;
             return pSignedIn();
 
           case 2:
-            _context5.next = 4;
-            return pGatekeeper();
-
-          case 4:
-            _context5.next = 6;
-            return whoAmI(false);
-
-          case 6:
-            user = _context5.sent;
-            userName = user.emailAddress.split('@')[0];
-
-            if (userName.length) {
-              _context5.next = 10;
-              break;
-            }
-
-            throw new Error("Error: myPrimaryFolder(), user.emailAddress is blank");
-
-          case 10:
-            folderName = 'Econ1Net-' + userName;
-            _context5.next = 13;
-            return _StudyFolder.driveX.folderFactory()('root', folderName);
-
-          case 13:
-            folder = _context5.sent;
-            return _context5.abrupt('return', folder);
-
-          case 15:
-          case 'end':
-            return _context5.stop();
-        }
-      }
-    }, _callee5, this);
-  }));
-
-  return function myPrimaryFolder() {
-    return _ref6.apply(this, arguments);
-  };
-}();
-
-var listStudyFolders = exports.listStudyFolders = function () {
-  var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(_ref7) {
-    var trashed = _ref7.trashed;
-    var fields, orderBy, searcher, response, files, studyFolders;
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
-      while (1) {
-        switch (_context6.prev = _context6.next) {
-          case 0:
-            _context6.next = 2;
-            return pSignedIn();
-
-          case 2:
-            _context6.next = 4;
-            return pGatekeeper();
-
-          case 4:
             fields = 'id,name,description,properties,modifiedTime';
             orderBy = 'modifiedTime desc';
             searcher = _StudyFolder.driveX.searcher({
@@ -256,11 +73,11 @@ var listStudyFolders = exports.listStudyFolders = function () {
                 role: studyFolderRole
               }
             });
-            _context6.next = 9;
+            _context2.next = 7;
             return searcher();
 
-          case 9:
-            response = _context6.sent;
+          case 7:
+            response = _context2.sent;
             files = response.files;
 
             if (hint.existingFolderId) {
@@ -272,31 +89,31 @@ var listStudyFolders = exports.listStudyFolders = function () {
             studyFolders = files.map(function (f) {
               return new _StudyFolder.StudyFolder(f);
             });
-            return _context6.abrupt('return', studyFolders);
+            return _context2.abrupt('return', studyFolders);
 
-          case 14:
+          case 12:
           case 'end':
-            return _context6.stop();
+            return _context2.stop();
         }
       }
-    }, _callee6, this);
+    }, _callee2, this);
   }));
 
-  return function listStudyFolders(_x3) {
-    return _ref8.apply(this, arguments);
+  return function listStudyFolders(_x) {
+    return _ref3.apply(this, arguments);
   };
 }();
 
 var createStudyFolder = exports.createStudyFolder = function () {
-  var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(_ref9) {
-    var name = _ref9.name;
+  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(_ref4) {
+    var name = _ref4.name;
     var creator, parent, folder;
-    return regeneratorRuntime.wrap(function _callee7$(_context7) {
+    return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
-        switch (_context7.prev = _context7.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
             if (window.isSignedIn) {
-              _context7.next = 2;
+              _context3.next = 2;
               break;
             }
 
@@ -308,51 +125,51 @@ var createStudyFolder = exports.createStudyFolder = function () {
                 role: studyFolderRole
               }
             });
-            _context7.next = 5;
+            _context3.next = 5;
             return myPrimaryFolder();
 
           case 5:
-            parent = _context7.sent;
-            _context7.next = 8;
+            parent = _context3.sent;
+            _context3.next = 8;
             return creator(parent, name);
 
           case 8:
-            folder = _context7.sent;
+            folder = _context3.sent;
 
             if (!(!folder || !folder.id)) {
-              _context7.next = 11;
+              _context3.next = 11;
               break;
             }
 
             throw new Error("creating Study Folder " + name + " failed");
 
           case 11:
-            return _context7.abrupt('return', new _StudyFolder.StudyFolder(folder));
+            return _context3.abrupt('return', new _StudyFolder.StudyFolder(folder));
 
           case 12:
           case 'end':
-            return _context7.stop();
+            return _context3.stop();
         }
       }
-    }, _callee7, this);
+    }, _callee3, this);
   }));
 
-  return function createStudyFolder(_x4) {
-    return _ref10.apply(this, arguments);
+  return function createStudyFolder(_x2) {
+    return _ref5.apply(this, arguments);
   };
 }();
 
 var parentStudyFolder = exports.parentStudyFolder = function () {
-  var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(_ref11) {
-    var name = _ref11.name,
-        parents = _ref11.parents;
+  var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref6) {
+    var name = _ref6.name,
+        parents = _ref6.parents;
     var promises, results, parentFolder;
-    return regeneratorRuntime.wrap(function _callee8$(_context8) {
+    return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
-        switch (_context8.prev = _context8.next) {
+        switch (_context4.prev = _context4.next) {
           case 0:
             if (Array.isArray(parents)) {
-              _context8.next = 2;
+              _context4.next = 2;
               break;
             }
 
@@ -360,118 +177,113 @@ var parentStudyFolder = exports.parentStudyFolder = function () {
 
           case 2:
             if (!(parents.length === 0)) {
-              _context8.next = 4;
+              _context4.next = 4;
               break;
             }
 
-            return _context8.abrupt('return', false);
+            return _context4.abrupt('return', false);
 
           case 4:
             if (!(parents.length > 10)) {
-              _context8.next = 6;
+              _context4.next = 6;
               break;
             }
 
             throw new Error("too many parents for file: " + parents.length + ' ' + name);
 
           case 6:
-            _context8.prev = 6;
+            _context4.prev = 6;
             promises = parents.map(pRequireStudyFolder);
-            _context8.next = 10;
+            _context4.next = 10;
             return Promise.all(promises);
 
           case 10:
-            results = _context8.sent;
+            results = _context4.sent;
             parentFolder = results.find(function (r) {
               return (typeof r === 'undefined' ? 'undefined' : _typeof(r)) === 'object';
             });
 
             if (!parentFolder) {
-              _context8.next = 16;
+              _context4.next = 16;
               break;
             }
 
-            return _context8.abrupt('return', new _StudyFolder.StudyFolder(parentFolder));
+            return _context4.abrupt('return', new _StudyFolder.StudyFolder(parentFolder));
 
           case 16:
-            return _context8.abrupt('return', false);
+            return _context4.abrupt('return', false);
 
           case 17:
-            _context8.next = 23;
+            _context4.next = 23;
             break;
 
           case 19:
-            _context8.prev = 19;
-            _context8.t0 = _context8['catch'](6);
-            console.log(_context8.t0);return _context8.abrupt('return', false);
+            _context4.prev = 19;
+            _context4.t0 = _context4['catch'](6);
+            console.log(_context4.t0);return _context4.abrupt('return', false);
 
           case 23:
           case 'end':
-            return _context8.stop();
+            return _context4.stop();
         }
       }
-    }, _callee8, this, [[6, 19]]);
+    }, _callee4, this, [[6, 19]]);
   }));
 
-  return function parentStudyFolder(_x5) {
-    return _ref12.apply(this, arguments);
+  return function parentStudyFolder(_x3) {
+    return _ref7.apply(this, arguments);
   };
 }();
 
 var getHint = function () {
-  var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9() {
+  var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
     var _hint, file, existingFolder;
 
-    return regeneratorRuntime.wrap(function _callee9$(_context9) {
+    return regeneratorRuntime.wrap(function _callee5$(_context5) {
       while (1) {
-        switch (_context9.prev = _context9.next) {
+        switch (_context5.prev = _context5.next) {
           case 0:
-            _context9.next = 2;
+            _context5.next = 2;
             return _StudyFolder.driveX.appDataFolder.readBurnHint();
 
           case 2:
-            hint = _context9.sent;
+            hint = _context5.sent;
 
             console.log("got hint: ", hint);
 
             if (!((typeof hint === 'undefined' ? 'undefined' : _typeof(hint)) === 'object' && _typeof(hint.file) === 'object')) {
-              _context9.next = 13;
+              _context5.next = 11;
               break;
             }
 
             _hint = hint, file = _hint.file; // also contents
 
-            _context9.next = 8;
+            _context5.next = 8;
             return parentStudyFolder(file);
 
           case 8:
-            existingFolder = _context9.sent;
+            existingFolder = _context5.sent;
 
             console.log("existing folder", existingFolder);
             if (existingFolder && existingFolder.id) {
               hint.existingFolderId = existingFolder.id;
             }
-            console.log("sending hint:", hint);
-            dbdo('onHint', { hint: hint, drive: gapi.client.drive, driveX: _StudyFolder.driveX });
 
-          case 13:
-            return _context9.abrupt('return', hint);
+          case 11:
+            return _context5.abrupt('return', hint);
 
-          case 14:
+          case 12:
           case 'end':
-            return _context9.stop();
+            return _context5.stop();
         }
       }
-    }, _callee9, this);
+    }, _callee5, this);
   }));
 
   return function getHint() {
-    return _ref13.apply(this, arguments);
+    return _ref8.apply(this, arguments);
   };
 }();
-
-exports.handleGoogleClientLoad = handleGoogleClientLoad;
-exports.init = init;
 
 var _StudyFolder = require('./StudyFolder.js');
 
@@ -483,101 +295,28 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 /* eslint-disable no-console */
 
 exports.StudyFolder = _StudyFolder.StudyFolder;
+exports.getHint = getHint;
 
 
-var DB = {};
 var folderMimeType = 'application/vnd.google-apps.folder';
 var studyFolderRole = 'Econ1.Net Study Folder';
-var iAm = {};
-var hint = {};
+var hint = void 0;
 
-// Authorization scopes required by the API; multiple scopes can be
-// included, separated by spaces.
-var SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.appdata';
-
-var authorizeButton = document.getElementById('authorize-button');
-var signoutButton = document.getElementById('signout-button');
-
-// dbdo -- safely run an optional function if it exists in DB.init configuration
-
-function dbdo(method, params) {
-  if (typeof DB[method] === 'function') try {
-    DB[method](params);
+function isSignedIn() {
+  var ok = false;
+  try {
+    ok = window.GoogleUser.isSignedIn();
   } catch (e) {
-    console.log("Error from externally supplied DB." + method);
-    console.log(e);
+    console.log("smrs-db-googledrive:isSignedIn:" + e);
+    ok = false;
   }
-}
-
-/**
- *  On load, called to load the auth2 library and API client library.
- */
-
-function handleGoogleClientLoad() {
-  gapi.load('client:auth2', initClient);
-}
-
-/**
- *  Initializes the API client library and sets up sign-in state
- *  listeners.
- */
-
-function initClient() {
-  gapi.client.init({
-    apiKey: DB.apiKey,
-    clientId: DB.clientId,
-    discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"],
-    scope: SCOPES
-  }).then(function () {
-    // Listen for sign-in state changes.
-    gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus);
-    // Handle the initial sign-in state.
-    updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get());
-    if (authorizeButton) authorizeButton.onclick = handleAuthClick;
-    if (signoutButton) signoutButton.onclick = handleSignoutClick;
-  });
-}
-
-function removeUserInfo() {
-  delete iAm.user;
-  $('.userEmailAddress').text('');
-  $('.userDisplayName').text('');
-}
-
-/**
- *  Sign in the user upon button click.
- */
-function handleAuthClick() {
-  gapi.auth2.getAuthInstance().signIn();
-}
-
-function handleSignoutClick() {
-  gapi.auth2.getAuthInstance().signOut();
-  setTimeout(function () {
-    window.location.reload();
-  }, 800);
-}
-
-function init(_ref3) {
-  var apiKey = _ref3.apiKey,
-      clientId = _ref3.clientId,
-      onSignIn = _ref3.onSignIn,
-      onSignOut = _ref3.onSignOut,
-      onHint = _ref3.onHint,
-      gatekeeper = _ref3.gatekeeper;
-
-  DB.apiKey = apiKey;
-  DB.clientId = clientId;
-  DB.onSignIn = onSignIn;
-  DB.onSignOut = onSignOut;
-  DB.onHint = onHint;
-  DB.gatekeeper = gatekeeper;
+  return ok;
 }
 
 function pSignedIn() {
   return new Promise(function (resolve) {
     function loop() {
-      if (window.isSignedIn) return resolve(true);else setTimeout(loop, 250);
+      if (isSignedIn()) return resolve(true);else setTimeout(loop, 250);
     }
     loop();
   });
