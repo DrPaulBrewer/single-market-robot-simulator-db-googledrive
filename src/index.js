@@ -6,7 +6,7 @@
 /* eslint-disable no-console */
 
 import { StudyFolder, driveX, arrayPrefer } from './StudyFolder.js';
-export { StudyFolder, getHint };
+export { StudyFolder, driveX, getHint };
 
 const folderMimeType = 'application/vnd.google-apps.folder';
 const studyFolderRole = 'Econ1.Net Study Folder';
