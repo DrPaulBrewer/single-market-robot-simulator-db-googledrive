@@ -71,14 +71,12 @@ export async function listStudyFolders({ trashed }) {
 }
 
 export async function createStudyFolder({ name }) {
-  if (!window.isSignedIn)
-    throw new Error("not signed into Google Drive");
+  const parent = await myPrimaryFolder();
   const creator = driveX.folderCreator({
     properties: {
       role: studyFolderRole
     }
   });
-  const parent = await myPrimaryFolder();
   const folder = await creator(parent, name);
   if (!folder || !folder.id) throw new Error("creating Study Folder " + name + " failed");
   return new StudyFolder(folder);
