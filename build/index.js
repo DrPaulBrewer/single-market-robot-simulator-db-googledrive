@@ -107,46 +107,38 @@ var listStudyFolders = exports.listStudyFolders = function () {
 var createStudyFolder = exports.createStudyFolder = function () {
   var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(_ref4) {
     var name = _ref4.name;
-    var creator, parent, folder;
+    var parent, creator, folder;
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
         switch (_context3.prev = _context3.next) {
           case 0:
-            if (window.isSignedIn) {
-              _context3.next = 2;
-              break;
-            }
-
-            throw new Error("not signed into Google Drive");
+            _context3.next = 2;
+            return myPrimaryFolder();
 
           case 2:
+            parent = _context3.sent;
             creator = _StudyFolder.driveX.folderCreator({
               properties: {
                 role: studyFolderRole
               }
             });
-            _context3.next = 5;
-            return myPrimaryFolder();
-
-          case 5:
-            parent = _context3.sent;
-            _context3.next = 8;
+            _context3.next = 6;
             return creator(parent, name);
 
-          case 8:
+          case 6:
             folder = _context3.sent;
 
             if (!(!folder || !folder.id)) {
-              _context3.next = 11;
+              _context3.next = 9;
               break;
             }
 
             throw new Error("creating Study Folder " + name + " failed");
 
-          case 11:
+          case 9:
             return _context3.abrupt('return', new _StudyFolder.StudyFolder(folder));
 
-          case 12:
+          case 10:
           case 'end':
             return _context3.stop();
         }
