@@ -23,7 +23,7 @@
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "coveralls": "^3.0.0",
-    "esdoc": "^1.0.4",
+    "esdoc": "^1.1.0",
     "eslint": "^4.15.0",
     "istanbul": "^1.0.0-alpha.2",
     "mocha": "^4.1.0",
@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "array-prefer": "^0.1.0",
+    "p-reduce": "^2.1.0",
     "search-string-for-google-drive": "^1.0.0"
   }
 }
