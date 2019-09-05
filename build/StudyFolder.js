@@ -402,7 +402,7 @@ var StudyFolder = exports.StudyFolder = function () {
                     blob = _ref12.blob,
                     onProgress = _ref12.onProgress,
                     force = _ref12.force;
-                var files, hasZipFiles, existingFile, existingFileId, folderId, myFile, mimeType, metadata;
+                var files, hasZipFiles, existingFile, existingFileId, folderId, myFile, mimeType, metadata, uploadedDriveFile;
                 return regeneratorRuntime.wrap(function _callee10$(_context10) {
                     while (1) {
                         switch (_context10.prev = _context10.next) {
@@ -448,15 +448,16 @@ var StudyFolder = exports.StudyFolder = function () {
                                     metadata: metadata,
                                     params: {
                                         spaces: 'drive',
-                                        fields: 'id,name,mimeType,parents'
+                                        fields: 'id,name,mimeType,modifiedTime,size,parents'
                                     },
                                     onProgress: onProgress
                                 });
 
                             case 16:
-                                return _context10.abrupt('return', this);
+                                uploadedDriveFile = _context10.sent;
+                                return _context10.abrupt('return', uploadedDriveFile);
 
-                            case 17:
+                            case 18:
                             case 'end':
                                 return _context10.stop();
                         }
