@@ -188,7 +188,7 @@ function extensionsForGoogleDrive(_ref) {
         while (1) {
           switch (_context10.prev = _context10.next) {
             case 0:
-              fields = 'id,name,trashed,description,mimeType,modifiedTime,size,parents,properties,appProperties';
+              fields = 'id,name,trashed,description,mimeType,modifiedTime,size,parents,properties,appProperties,webViewLink';
               _context10.next = 3;
               return gapi.client.drive.files.update({ fileId: fileId, fields: fields, resource: metadata });
 
@@ -280,7 +280,7 @@ function extensionsForGoogleDrive(_ref) {
     var unique = options.unique;
     if (unique) limit = 2;
     var allowMatchAllFiles = options && options.allowMatchAllFiles;
-    var fields = options.fields || 'id,name,mimeType,modifiedTime,size';
+    var fields = options.fields || 'id,name,mimeType,modifiedTime,size,webViewLink';
     var orderBy = options.orderBy || 'folder,name,modifiedTime desc';
     var searchTerms = _searchStringForGoogleDrive2.default.extract(options);
     if (!searchTerms.trashed) searchTerms.trashed = false; // trashed:false must be default for findPath, etc.

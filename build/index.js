@@ -62,7 +62,7 @@ var listStudyFolders = exports.listStudyFolders = function () {
             return pSignedIn();
 
           case 2:
-            fields = 'id,name,description,properties,modifiedTime';
+            fields = 'id,name,description,properties,modifiedTime,webViewLink';
             orderBy = 'modifiedTime desc';
             searcher = _StudyFolder.driveX.searcher({
               orderBy: orderBy,
@@ -330,7 +330,7 @@ function passOnlyStudyFolder(candidate) {
 
 function pRequireStudyFolder(fileId) {
   var drive = gapi.client.drive;
-  return drive.files.get({ fileId: fileId, fields: 'id,name,mimeType,modifiedTime,properties' }).then(result).then(passOnlyStudyFolder, function (e) {
+  return drive.files.get({ fileId: fileId, fields: 'id,name,mimeType,modifiedTime,properties,webViewLink' }).then(result).then(passOnlyStudyFolder, function (e) {
     return console.log(e);
   });
 }

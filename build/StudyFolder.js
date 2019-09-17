@@ -448,7 +448,7 @@ var StudyFolder = exports.StudyFolder = function () {
                                     metadata: metadata,
                                     params: {
                                         spaces: 'drive',
-                                        fields: 'id,name,mimeType,modifiedTime,size,parents'
+                                        fields: 'id,name,mimeType,modifiedTime,size,parents,webViewLink'
                                     },
                                     onProgress: onProgress
                                 });
