@@ -19,7 +19,7 @@ export function extensionsForGoogleDrive({ rootFolderId, spaces }) {
     const unique = options.unique;
     if (unique) limit = 2;
     const allowMatchAllFiles = options && options.allowMatchAllFiles;
-    const fields = options.fields || 'id,name,mimeType,modifiedTime,size';
+    const fields = options.fields || 'id,name,mimeType,modifiedTime,size,webViewLink';
     const orderBy = options.orderBy || 'folder,name,modifiedTime desc';
     const searchTerms = ssgd.extract(options);
     if (!searchTerms.trashed) searchTerms.trashed = false; // trashed:false must be default for findPath, etc.
@@ -213,7 +213,7 @@ export function extensionsForGoogleDrive({ rootFolderId, spaces }) {
   x.createPath = driveCreatePath;
 
   async function driveUpdateMetadata(fileId, metadata) {
-    const fields = 'id,name,trashed,description,mimeType,modifiedTime,size,parents,properties,appProperties';
+    const fields = 'id,name,trashed,description,mimeType,modifiedTime,size,parents,properties,appProperties,webViewLink';
     const response = await gapi.client.drive.files.update({ fileId, fields, resource: metadata });
     return response;
   }

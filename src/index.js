@@ -45,7 +45,7 @@ export async function myPrimaryFolder() {
 
 export async function listStudyFolders({ trashed }) {
   await pSignedIn();
-  const fields = 'id,name,description,properties,modifiedTime';
+  const fields = 'id,name,description,properties,modifiedTime,webViewLink';
   const orderBy = 'modifiedTime desc';
   const searcher = driveX.searcher({
     orderBy,
@@ -105,7 +105,7 @@ function pRequireStudyFolder(fileId) {
   return (
     drive
     .files
-    .get({ fileId, fields: 'id,name,mimeType,modifiedTime,properties' })
+    .get({ fileId, fields: 'id,name,mimeType,modifiedTime,properties,webViewLink' })
     .then(result)
     .then(passOnlyStudyFolder, (e)=>(console.log(e)))
   );

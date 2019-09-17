@@ -124,7 +124,7 @@ export class StudyFolder {
             metadata,
             params: {
                 spaces: 'drive',
-                fields: 'id,name,mimeType,modifiedTime,size,parents'
+                fields: 'id,name,mimeType,modifiedTime,size,parents,webViewLink'
             },
             onProgress
         });
