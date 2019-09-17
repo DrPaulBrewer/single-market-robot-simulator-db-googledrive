@@ -1,6 +1,6 @@
 {
   "name": "single-market-robot-simulator-db-googledrive",
-  "version": "0.25.1",
+  "version": "0.26.0",
   "description": "settings and data db for single-market-robot-simulator studies with storage on Google Drive",
   "main": "build/index.js",
   "jsnext:main": "src/index.js",
