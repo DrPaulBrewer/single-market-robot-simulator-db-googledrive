@@ -6,8 +6,9 @@
 /* eslint-disable no-console */
 
 import { StudyFolder, driveX, arrayPrefer } from './StudyFolder.js';
-export { StudyFolder, driveX, getHint };
+export { StudyFolder, driveX, getHint, defaultWebLink };
 
+const defaultWebLink = 'https://drive.google.com';
 const folderMimeType = 'application/vnd.google-apps.folder';
 const studyFolderRole = 'Econ1.Net Study Folder';
 let hint = {};

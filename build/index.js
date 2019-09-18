@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.parentStudyFolder = exports.createStudyFolder = exports.listStudyFolders = exports.myPrimaryFolder = exports.getHint = exports.driveX = exports.StudyFolder = undefined;
+exports.parentStudyFolder = exports.createStudyFolder = exports.listStudyFolders = exports.myPrimaryFolder = exports.defaultWebLink = exports.getHint = exports.driveX = exports.StudyFolder = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -289,8 +289,10 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 exports.StudyFolder = _StudyFolder.StudyFolder;
 exports.driveX = _StudyFolder.driveX;
 exports.getHint = getHint;
+exports.defaultWebLink = defaultWebLink;
 
 
+var defaultWebLink = 'https://drive.google.com';
 var folderMimeType = 'application/vnd.google-apps.folder';
 var studyFolderRole = 'Econ1.Net Study Folder';
 var hint = {};
