@@ -76,7 +76,7 @@ var listStudyFolders = exports.listStudyFolders = function () {
               fields: fields,
               name: name,
               trashed: trashed,
-              parents: [parent],
+              parents: parent.id,
               mimeType: folderMimeType,
               properties: {
                 role: studyFolderRole
@@ -208,7 +208,7 @@ var parentStudyFolder = exports.parentStudyFolder = function () {
           case 13:
             results = _context4.sent;
             parentFolder = results.find(function (r) {
-              return (typeof r === 'undefined' ? 'undefined' : _typeof(r)) === 'object' && r.parents.includes(primaryFolder);
+              return (typeof r === 'undefined' ? 'undefined' : _typeof(r)) === 'object' && r.parents.includes(primaryFolder.id);
             });
 
             if (!parentFolder) {
