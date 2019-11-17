@@ -14,18 +14,6 @@ export class StudyFolder {
         Object.keys(props).forEach(k => { this[k] = props[k]; });
     }
 
-    async trash(){
-        this.trashed = true;
-        await this.update({trashed:true});
-        return this;
-    }
-
-    async untrash(){
-        this.trashed = false;
-        await this.update({trashed:false});
-        return this;
-    }
-
     async getConfig(){
         const folder = this;
         const config = await this.download({ name: 'config.json' });
@@ -56,7 +44,7 @@ export class StudyFolder {
     }
 
     async search(name){
-      const trashed = this.trashed;
+      const trashed = false;
       const folderId = this.id;
       const orderBy = 'modifiedTime desc';
       const searcher = driveX.searcher({
