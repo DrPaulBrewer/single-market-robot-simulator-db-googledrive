@@ -56,7 +56,7 @@ export async function listStudyFolders(name) {
     fields,
     name,
     trashed,
-    parents: [parent],
+    parents: parent.id,
     mimeType: folderMimeType,
     properties: {
       role: studyFolderRole
@@ -126,7 +126,7 @@ export async function parentStudyFolder({ name, parents }) {
     const promises = parents.map(pRequireStudyFolder);
     const results = await(Promise.all(promises));
     const parentFolder = results.find(
-      (r)=>((typeof(r)==='object') && (r.parents.includes(primaryFolder)))
+      (r)=>((typeof(r)==='object') && (r.parents.includes(primaryFolder.id)))
     );
     if (parentFolder)
       return new StudyFolder(parentFolder);
