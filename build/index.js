@@ -51,9 +51,8 @@ var myPrimaryFolder = exports.myPrimaryFolder = function () {
 }();
 
 var listStudyFolders = exports.listStudyFolders = function () {
-  var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(_ref2) {
-    var trashed = _ref2.trashed;
-    var fields, orderBy, searcher, response, files, studyFolders;
+  var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(name) {
+    var parent, fields, orderBy, trashed, searchTerms, searcher, response, files, studyFolders;
     return regeneratorRuntime.wrap(function _callee2$(_context2) {
       while (1) {
         switch (_context2.prev = _context2.next) {
@@ -62,21 +61,32 @@ var listStudyFolders = exports.listStudyFolders = function () {
             return pSignedIn();
 
           case 2:
+            _context2.next = 4;
+            return myPrimaryFolder();
+
+          case 4:
+            parent = _context2.sent;
             fields = 'id,name,description,properties,modifiedTime,webViewLink';
             orderBy = 'modifiedTime desc';
-            searcher = _StudyFolder.driveX.searcher({
+            trashed = false;
+            // if name is undefined, it will be ignored by ssgd and match all names
+
+            searchTerms = {
               orderBy: orderBy,
               fields: fields,
+              name: name,
               trashed: trashed,
+              parents: [parent],
               mimeType: folderMimeType,
               properties: {
                 role: studyFolderRole
               }
-            });
-            _context2.next = 7;
+            };
+            searcher = _StudyFolder.driveX.searcher(searchTerms);
+            _context2.next = 12;
             return searcher();
 
-          case 7:
+          case 12:
             response = _context2.sent;
             files = response.files;
 
@@ -91,7 +101,7 @@ var listStudyFolders = exports.listStudyFolders = function () {
             });
             return _context2.abrupt('return', studyFolders);
 
-          case 12:
+          case 17:
           case 'end':
             return _context2.stop();
         }
@@ -100,13 +110,13 @@ var listStudyFolders = exports.listStudyFolders = function () {
   }));
 
   return function listStudyFolders(_x) {
-    return _ref3.apply(this, arguments);
+    return _ref2.apply(this, arguments);
   };
 }();
 
 var createStudyFolder = exports.createStudyFolder = function () {
-  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(_ref4) {
-    var name = _ref4.name;
+  var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(_ref3) {
+    var name = _ref3.name;
     var parent, creator, folder;
     return regeneratorRuntime.wrap(function _callee3$(_context3) {
       while (1) {
@@ -147,88 +157,94 @@ var createStudyFolder = exports.createStudyFolder = function () {
   }));
 
   return function createStudyFolder(_x2) {
-    return _ref5.apply(this, arguments);
+    return _ref4.apply(this, arguments);
   };
 }();
 
 var parentStudyFolder = exports.parentStudyFolder = function () {
-  var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref6) {
-    var name = _ref6.name,
-        parents = _ref6.parents;
-    var promises, results, parentFolder;
+  var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(_ref5) {
+    var name = _ref5.name,
+        parents = _ref5.parents;
+    var primaryFolder, promises, results, parentFolder;
     return regeneratorRuntime.wrap(function _callee4$(_context4) {
       while (1) {
         switch (_context4.prev = _context4.next) {
           case 0:
+            _context4.next = 2;
+            return myPrimaryFolder();
+
+          case 2:
+            primaryFolder = _context4.sent;
+
             if (Array.isArray(parents)) {
-              _context4.next = 2;
+              _context4.next = 5;
               break;
             }
 
             throw new Error("parents is required to be an Array");
 
-          case 2:
+          case 5:
             if (!(parents.length === 0)) {
-              _context4.next = 4;
+              _context4.next = 7;
               break;
             }
 
             return _context4.abrupt('return', false);
 
-          case 4:
+          case 7:
             if (!(parents.length > 10)) {
-              _context4.next = 6;
+              _context4.next = 9;
               break;
             }
 
             throw new Error("too many parents for file: " + parents.length + ' ' + name);
 
-          case 6:
-            _context4.prev = 6;
+          case 9:
+            _context4.prev = 9;
             promises = parents.map(pRequireStudyFolder);
-            _context4.next = 10;
+            _context4.next = 13;
             return Promise.all(promises);
 
-          case 10:
+          case 13:
             results = _context4.sent;
             parentFolder = results.find(function (r) {
-              return (typeof r === 'undefined' ? 'undefined' : _typeof(r)) === 'object';
+              return (typeof r === 'undefined' ? 'undefined' : _typeof(r)) === 'object' && r.parents.includes(primaryFolder);
             });
 
             if (!parentFolder) {
-              _context4.next = 16;
+              _context4.next = 19;
               break;
             }
 
             return _context4.abrupt('return', new _StudyFolder.StudyFolder(parentFolder));
 
-          case 16:
+          case 19:
             return _context4.abrupt('return', false);
 
-          case 17:
-            _context4.next = 23;
+          case 20:
+            _context4.next = 26;
             break;
 
-          case 19:
-            _context4.prev = 19;
-            _context4.t0 = _context4['catch'](6);
+          case 22:
+            _context4.prev = 22;
+            _context4.t0 = _context4['catch'](9);
             console.log(_context4.t0);return _context4.abrupt('return', false);
 
-          case 23:
+          case 26:
           case 'end':
             return _context4.stop();
         }
       }
-    }, _callee4, this, [[6, 19]]);
+    }, _callee4, this, [[9, 22]]);
   }));
 
   return function parentStudyFolder(_x3) {
-    return _ref7.apply(this, arguments);
+    return _ref6.apply(this, arguments);
   };
 }();
 
 var getHint = function () {
-  var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
+  var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
     var _hint, file, existingFolder;
 
     return regeneratorRuntime.wrap(function _callee5$(_context5) {
@@ -249,6 +265,7 @@ var getHint = function () {
             }
 
             _hint = hint, file = _hint.file; // also contents
+            // file is an object and should have properties name, parents, etc...
 
             _context5.next = 8;
             return parentStudyFolder(file);
@@ -273,7 +290,7 @@ var getHint = function () {
   }));
 
   return function getHint() {
-    return _ref8.apply(this, arguments);
+    return _ref7.apply(this, arguments);
   };
 }();
 
@@ -322,17 +339,13 @@ function result(response) {
 }
 
 function passOnlyStudyFolder(candidate) {
-  console.log(candidate);
-  console.log(!!candidate.properties);
-  console.log(candidate.mimeType, folderMimeType, candidate.mimeType === folderMimeType);
-  console.log(candidate.properties.role, studyFolderRole, candidate.properties.role === studyFolderRole);
   if (candidate && candidate.properties && candidate.mimeType === folderMimeType && candidate.properties.role === studyFolderRole) return candidate;
   return false;
 }
 
 function pRequireStudyFolder(fileId) {
   var drive = gapi.client.drive;
-  return drive.files.get({ fileId: fileId, fields: 'id,name,mimeType,modifiedTime,properties,webViewLink' }).then(result).then(passOnlyStudyFolder, function (e) {
+  return drive.files.get({ fileId: fileId, fields: 'id,name,mimeType,modifiedTime,properties,parents,webViewLink' }).then(result).then(passOnlyStudyFolder, function (e) {
     return console.log(e);
   });
 }
