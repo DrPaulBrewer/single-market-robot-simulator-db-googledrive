@@ -1,11 +1,13 @@
 single-market-robot-simulator-db-googledrive
 =========
+Persistent storage for Econ1.Net simulation configurations in Google Drive.
 
-Persistent storage for simulation configurations.
+This is a browser-side JavaScript module we use with recent versions of npm:single-market-robot-simulator-app-framework
 
-Draft/Development branch.  May be unstable or not work.  Wait until >1.0 before using.
+Each user has a primary folder in Google Drive, and a "hint" file in the app data folder
+that may indicate a file selected through the Google Drive interface.
 
-This module represents a new direction, and a significant departure from how other 
-single-market-robot-simulator-db-* modules works, and is not compatible with the previous
-modules' API.
+The primary folder contains StudyFolder(s).
 
+Each StudyFolder contains a config.json file for the market simulator and one or more
+zip files of market simulator data.

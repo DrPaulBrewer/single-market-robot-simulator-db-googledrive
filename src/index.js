@@ -44,19 +44,25 @@ export async function myPrimaryFolder() {
   return folder;
 }
 
-export async function listStudyFolders({ trashed }) {
+export async function listStudyFolders(name) {
   await pSignedIn();
+  const parent = await myPrimaryFolder();
   const fields = 'id,name,description,properties,modifiedTime,webViewLink';
   const orderBy = 'modifiedTime desc';
-  const searcher = driveX.searcher({
+  const trashed = false;
+  // if name is undefined, it will be ignored by ssgd and match all names
+  const searchTerms = {
     orderBy,
     fields,
+    name,
     trashed,
+    parents: [parent],
     mimeType: folderMimeType,
     properties: {
       role: studyFolderRole
     }
-  });
+  };
+  const searcher = driveX.searcher(searchTerms);
   const response = await searcher();
   let files = response.files;
   if (hint.existingFolderId) {
@@ -88,10 +94,6 @@ function result(response) {
 }
 
 function passOnlyStudyFolder(candidate) {
-  console.log(candidate);
-  console.log(!!(candidate.properties));
-  console.log(candidate.mimeType, folderMimeType, candidate.mimeType === folderMimeType);
-  console.log(candidate.properties.role, studyFolderRole, candidate.properties.role === studyFolderRole);
   if (
     candidate &&
     candidate.properties &&
@@ -106,13 +108,14 @@ function pRequireStudyFolder(fileId) {
   return (
     drive
     .files
-    .get({ fileId, fields: 'id,name,mimeType,modifiedTime,properties,webViewLink' })
+    .get({ fileId, fields: 'id,name,mimeType,modifiedTime,properties,parents,webViewLink' })
     .then(result)
     .then(passOnlyStudyFolder, (e)=>(console.log(e)))
   );
 }
 
 export async function parentStudyFolder({ name, parents }) {
+  const primaryFolder = await myPrimaryFolder();
   if (!Array.isArray(parents))
     throw new Error("parents is required to be an Array");
   if (parents.length === 0)
@@ -122,7 +125,9 @@ export async function parentStudyFolder({ name, parents }) {
   try {
     const promises = parents.map(pRequireStudyFolder);
     const results = await(Promise.all(promises));
-    const parentFolder = results.find((r)=>(typeof(r)==='object'));
+    const parentFolder = results.find(
+      (r)=>((typeof(r)==='object') && (r.parents.includes(primaryFolder)))
+    );
     if (parentFolder)
       return new StudyFolder(parentFolder);
     else
@@ -137,6 +142,7 @@ async function getHint() {
   console.log("got hint: ", hint);
   if ((typeof (hint) === 'object') && (typeof (hint.file) === 'object')) {
     const { file } = hint; // also contents
+    // file is an object and should have properties name, parents, etc...
     const existingFolder = await parentStudyFolder(file);
     console.log("existing folder", existingFolder);
     if (existingFolder && existingFolder.id) {
