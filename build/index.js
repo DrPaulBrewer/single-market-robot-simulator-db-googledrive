@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.parentStudyFolder = exports.createStudyFolder = exports.listStudyFolders = exports.myPrimaryFolder = exports.defaultWebLink = exports.getHint = exports.driveX = exports.StudyFolder = undefined;
+exports.parentStudyFolder = exports.createStudyFolder = exports.listStudyFolders = exports.myPrimaryFolder = exports.defaultWebLink = exports.getHint = exports.driveX = exports.StudyFolderForGoogleDrive = undefined;
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -97,7 +97,7 @@ var listStudyFolders = exports.listStudyFolders = function () {
               if (files.length > 0 && hint.file && hint.file.id && files[0].id === hint.existingFolderId) files[0].hintFileId = hint.file.id;
             }
             studyFolders = files.map(function (f) {
-              return new _StudyFolder.StudyFolder(f);
+              return new _StudyFolder.StudyFolderForGoogleDrive(f);
             });
             return _context2.abrupt('return', studyFolders);
 
@@ -146,7 +146,7 @@ var createStudyFolder = exports.createStudyFolder = function () {
             throw new Error("creating Study Folder " + name + " failed");
 
           case 9:
-            return _context3.abrupt('return', new _StudyFolder.StudyFolder(folder));
+            return _context3.abrupt('return', new _StudyFolder.StudyFolderForGoogleDrive(folder));
 
           case 10:
           case 'end':
@@ -216,7 +216,7 @@ var parentStudyFolder = exports.parentStudyFolder = function () {
               break;
             }
 
-            return _context4.abrupt('return', new _StudyFolder.StudyFolder(parentFolder));
+            return _context4.abrupt('return', new _StudyFolder.StudyFolderForGoogleDrive(parentFolder));
 
           case 19:
             return _context4.abrupt('return', false);
@@ -303,7 +303,7 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 /* eslint-disable no-console */
 
-exports.StudyFolder = _StudyFolder.StudyFolder;
+exports.StudyFolderForGoogleDrive = _StudyFolder.StudyFolderForGoogleDrive;
 exports.driveX = _StudyFolder.driveX;
 exports.getHint = getHint;
 exports.defaultWebLink = defaultWebLink;

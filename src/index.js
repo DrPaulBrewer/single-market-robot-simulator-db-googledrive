@@ -5,8 +5,8 @@
 
 /* eslint-disable no-console */
 
-import { StudyFolder, driveX, arrayPrefer } from './StudyFolder.js';
-export { StudyFolder, driveX, getHint, defaultWebLink };
+import { StudyFolderForGoogleDrive, driveX, arrayPrefer } from './StudyFolder.js';
+export { StudyFolderForGoogleDrive, driveX, getHint, defaultWebLink };
 
 const defaultWebLink = 'https://drive.google.com';
 const folderMimeType = 'application/vnd.google-apps.folder';
@@ -73,7 +73,7 @@ export async function listStudyFolders(name) {
       (files[0].id === hint.existingFolderId)
     ) files[0].hintFileId = hint.file.id;
   }
-  const studyFolders = files.map((f) => (new StudyFolder(f)));
+  const studyFolders = files.map((f) => (new StudyFolderForGoogleDrive(f)));
   return studyFolders;
 }
 
@@ -86,7 +86,7 @@ export async function createStudyFolder({ name }) {
   });
   const folder = await creator(parent, name);
   if (!folder || !folder.id) throw new Error("creating Study Folder " + name + " failed");
-  return new StudyFolder(folder);
+  return new StudyFolderForGoogleDrive(folder);
 }
 
 function result(response) {
@@ -129,7 +129,7 @@ export async function parentStudyFolder({ name, parents }) {
       (r)=>((typeof(r)==='object') && (r.parents.includes(primaryFolder.id)))
     );
     if (parentFolder)
-      return new StudyFolder(parentFolder);
+      return new StudyFolderForGoogleDrive(parentFolder);
     else
       return false;
   } catch (e) { console.log(e); return false; }

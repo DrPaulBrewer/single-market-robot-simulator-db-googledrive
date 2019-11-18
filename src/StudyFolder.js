@@ -7,41 +7,10 @@
 
 import {driveX} from './extensionsForGoogleDrive';
 import arrayPrefer from 'array-prefer';
+import StudyFolder from 'single-market-robot-simulator-db-studyfolder';
 export {driveX, arrayPrefer};
 
-export class StudyFolder {
-    constructor(props){
-        Object.keys(props).forEach(k => { this[k] = props[k]; });
-    }
-
-    async getConfig(){
-        const folder = this;
-        const config = await this.download({ name: 'config.json' });
-        const shouldFixName = (config.name && this.name && this.name.length && config.name!==this.name);
-        const shouldFixDescription = (config.description && this.description && this.description.length && config.description!==this.description);
-        if (shouldFixName) config.name = this.name;
-        if (shouldFixDescription) config.description = this.description;
-        if (shouldFixName || shouldFixDescription)
-            await this.upload({
-                name: 'config.json',
-                contents: config,
-                force: true
-            });
-        return { config, folder };
-    }
-
-    async setConfig({config}){
-        if (config && (typeof(config)==='object')){
-            if (config.name !== this.name)
-                throw new Error(`mismatch at StudyFolder:setConfig configuration name ${config.name} should equal the folder name ${this.name}`);
-            await this.upload({ name: 'config.json',  contents: config});
-            if (this.description !== config.description){
-                this.description = config.description;
-                await this.update({description: config.description});
-            }
-        }
-        return this;
-    }
+export class StudyFolderForGoogleDrive extends StudyFolder {
 
     async search(name){
       const trashed = false;
@@ -53,20 +22,6 @@ export class StudyFolder {
       });
       const response = await searcher(folderId, name);
       return response.files;
-    }
-
-    async listFiles(){
-      let files = await this.search();
-      if (this.hintFileId){
-        files = arrayPrefer(files, (f)=>(f.id===this.hintFileId), 1);
-      }
-      return files;
-    }
-
-    async fileId(name){
-        const files = await this.search(name);
-        const fileId = files && files[0] && files[0].id;
-        return fileId;
     }
 
     async download({name, id}){
