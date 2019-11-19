@@ -6,6 +6,7 @@
 /* eslint-disable no-console */
 
 import { StudyFolderForGoogleDrive, driveX, arrayPrefer } from './StudyFolder.js';
+import { StudyFolderForZip } from 'single-market-robot-simulator-db-zip';
 export { StudyFolderForGoogleDrive, driveX, getHint, defaultWebLink };
 
 const defaultWebLink = 'https://drive.google.com';
@@ -65,7 +66,7 @@ export async function listStudyFolders(name) {
   const searcher = driveX.searcher(searchTerms);
   const response = await searcher();
   let files = response.files;
-  if (hint.existingFolderId) {
+  if (hint && hint.existingFolderId) {
     files = arrayPrefer(files, (f) => (f.id === hint.existingFolderId), 1);
     if (
       (files.length > 0) &&
@@ -74,6 +75,9 @@ export async function listStudyFolders(name) {
     ) files[0].hintFileId = hint.file.id;
   }
   const studyFolders = files.map((f) => (new StudyFolderForGoogleDrive(f)));
+  if (!name && hint && hint.includeFolder){
+      studyFolders.unshift(hint.includeFolder);
+  }
   return studyFolders;
 }
 
@@ -147,6 +151,11 @@ async function getHint() {
     console.log("existing folder", existingFolder);
     if (existingFolder && existingFolder.id) {
       hint.existingFolderId = existingFolder.id;
+    } else if (file && (file.mimeType==='application/zip') && (file.id)) {
+      hint.includeFolder = new StudyFolderForZip({
+        zipPromise: driveX.contents(file.id),
+        zipName: file.name
+      });
     }
   }
   return hint;

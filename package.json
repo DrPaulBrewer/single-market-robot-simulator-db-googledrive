@@ -30,6 +30,7 @@
     "array-prefer": "^0.1.0",
     "p-reduce": "^2.1.0",
     "search-string-for-google-drive": "^1.0.0",
-    "single-market-robot-simulator-db-studyfolder": "^1.0.0"
+    "single-market-robot-simulator-db-studyfolder": "^1.0.0",
+    "single-market-robot-simulator-db-zip": "^1.0.0"
   }
 }
