@@ -90,7 +90,7 @@ var listStudyFolders = exports.listStudyFolders = function () {
             response = _context2.sent;
             files = response.files;
 
-            if (hint.existingFolderId) {
+            if (hint && hint.existingFolderId) {
               files = (0, _StudyFolder.arrayPrefer)(files, function (f) {
                 return f.id === hint.existingFolderId;
               }, 1);
@@ -99,9 +99,13 @@ var listStudyFolders = exports.listStudyFolders = function () {
             studyFolders = files.map(function (f) {
               return new _StudyFolder.StudyFolderForGoogleDrive(f);
             });
+
+            if (!name && hint && hint.includeFolder) {
+              studyFolders.unshift(hint.includeFolder);
+            }
             return _context2.abrupt('return', studyFolders);
 
-          case 17:
+          case 18:
           case 'end':
             return _context2.stop();
         }
@@ -276,6 +280,11 @@ var getHint = function () {
             console.log("existing folder", existingFolder);
             if (existingFolder && existingFolder.id) {
               hint.existingFolderId = existingFolder.id;
+            } else if (file && file.mimeType === 'application/zip' && file.id) {
+              hint.includeFolder = new _singleMarketRobotSimulatorDbZip.StudyFolderForZip({
+                zipPromise: _StudyFolder.driveX.contents(file.id),
+                zipName: file.name
+              });
             }
 
           case 11:
@@ -295,6 +304,8 @@ var getHint = function () {
 }();
 
 var _StudyFolder = require('./StudyFolder.js');
+
+var _singleMarketRobotSimulatorDbZip = require('single-market-robot-simulator-db-zip');
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; } /* Copyright 2017- Paul Brewer, Economic and Financial Technology Consulting LLC */
 /* This file is open source software.  The MIT License applies to this software. */
