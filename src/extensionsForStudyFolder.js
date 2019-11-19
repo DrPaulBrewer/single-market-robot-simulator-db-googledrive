@@ -7,7 +7,7 @@
 
 import {driveX} from './extensionsForGoogleDrive';
 import arrayPrefer from 'array-prefer';
-import StudyFolder from 'single-market-robot-simulator-db-studyfolder';
+import { StudyFolder } from 'single-market-robot-simulator-db-studyfolder';
 export {driveX, arrayPrefer};
 
 export class StudyFolderForGoogleDrive extends StudyFolder {

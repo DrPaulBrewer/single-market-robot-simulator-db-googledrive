@@ -31,7 +31,7 @@ var myPrimaryFolder = exports.myPrimaryFolder = function () {
           case 6:
             folderName = 'Econ1Net-' + userName;
             _context.next = 9;
-            return _StudyFolder.driveX.folderFactory()('root', folderName);
+            return _extensionsForStudyFolder.driveX.folderFactory()('root', folderName);
 
           case 9:
             folder = _context.sent;
@@ -82,7 +82,7 @@ var listStudyFolders = exports.listStudyFolders = function () {
                 role: studyFolderRole
               }
             };
-            searcher = _StudyFolder.driveX.searcher(searchTerms);
+            searcher = _extensionsForStudyFolder.driveX.searcher(searchTerms);
             _context2.next = 12;
             return searcher();
 
@@ -91,13 +91,13 @@ var listStudyFolders = exports.listStudyFolders = function () {
             files = response.files;
 
             if (hint && hint.existingFolderId) {
-              files = (0, _StudyFolder.arrayPrefer)(files, function (f) {
+              files = (0, _extensionsForStudyFolder.arrayPrefer)(files, function (f) {
                 return f.id === hint.existingFolderId;
               }, 1);
               if (files.length > 0 && hint.file && hint.file.id && files[0].id === hint.existingFolderId) files[0].hintFileId = hint.file.id;
             }
             studyFolders = files.map(function (f) {
-              return new _StudyFolder.StudyFolderForGoogleDrive(f);
+              return new _extensionsForStudyFolder.StudyFolderForGoogleDrive(f);
             });
 
             if (!name && hint && hint.includeFolder) {
@@ -131,7 +131,7 @@ var createStudyFolder = exports.createStudyFolder = function () {
 
           case 2:
             parent = _context3.sent;
-            creator = _StudyFolder.driveX.folderCreator({
+            creator = _extensionsForStudyFolder.driveX.folderCreator({
               properties: {
                 role: studyFolderRole
               }
@@ -150,7 +150,7 @@ var createStudyFolder = exports.createStudyFolder = function () {
             throw new Error("creating Study Folder " + name + " failed");
 
           case 9:
-            return _context3.abrupt('return', new _StudyFolder.StudyFolderForGoogleDrive(folder));
+            return _context3.abrupt('return', new _extensionsForStudyFolder.StudyFolderForGoogleDrive(folder));
 
           case 10:
           case 'end':
@@ -220,7 +220,7 @@ var parentStudyFolder = exports.parentStudyFolder = function () {
               break;
             }
 
-            return _context4.abrupt('return', new _StudyFolder.StudyFolderForGoogleDrive(parentFolder));
+            return _context4.abrupt('return', new _extensionsForStudyFolder.StudyFolderForGoogleDrive(parentFolder));
 
           case 19:
             return _context4.abrupt('return', false);
@@ -256,7 +256,7 @@ var getHint = function () {
         switch (_context5.prev = _context5.next) {
           case 0:
             _context5.next = 2;
-            return _StudyFolder.driveX.appDataFolder.readBurnHint();
+            return _extensionsForStudyFolder.driveX.appDataFolder.readBurnHint();
 
           case 2:
             hint = _context5.sent;
@@ -278,14 +278,16 @@ var getHint = function () {
             existingFolder = _context5.sent;
 
             console.log("existing folder", existingFolder);
+            /* eslint-disable require-atomic-updates */
             if (existingFolder && existingFolder.id) {
               hint.existingFolderId = existingFolder.id;
             } else if (file && file.mimeType === 'application/zip' && file.id) {
               hint.includeFolder = new _singleMarketRobotSimulatorDbZip.StudyFolderForZip({
-                zipPromise: _StudyFolder.driveX.contents(file.id),
+                zipPromise: _extensionsForStudyFolder.driveX.contents(file.id),
                 zipName: file.name
               });
             }
+            /* eslint-enable require-atomic-updates */
 
           case 11:
             return _context5.abrupt('return', hint);
@@ -303,7 +305,7 @@ var getHint = function () {
   };
 }();
 
-var _StudyFolder = require('./StudyFolder.js');
+var _extensionsForStudyFolder = require('./extensionsForStudyFolder.js');
 
 var _singleMarketRobotSimulatorDbZip = require('single-market-robot-simulator-db-zip');
 
@@ -314,8 +316,8 @@ function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, a
 
 /* eslint-disable no-console */
 
-exports.StudyFolderForGoogleDrive = _StudyFolder.StudyFolderForGoogleDrive;
-exports.driveX = _StudyFolder.driveX;
+exports.StudyFolderForGoogleDrive = _extensionsForStudyFolder.StudyFolderForGoogleDrive;
+exports.driveX = _extensionsForStudyFolder.driveX;
 exports.getHint = getHint;
 exports.defaultWebLink = defaultWebLink;
 

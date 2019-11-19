@@ -5,7 +5,7 @@
 
 /* eslint-disable no-console */
 
-import { StudyFolderForGoogleDrive, driveX, arrayPrefer } from './StudyFolder.js';
+import { StudyFolderForGoogleDrive, driveX, arrayPrefer } from './extensionsForStudyFolder.js';
 import { StudyFolderForZip } from 'single-market-robot-simulator-db-zip';
 export { StudyFolderForGoogleDrive, driveX, getHint, defaultWebLink };
 
@@ -149,6 +149,7 @@ async function getHint() {
     // file is an object and should have properties name, parents, etc...
     const existingFolder = await parentStudyFolder(file);
     console.log("existing folder", existingFolder);
+    /* eslint-disable require-atomic-updates */
     if (existingFolder && existingFolder.id) {
       hint.existingFolderId = existingFolder.id;
     } else if (file && (file.mimeType==='application/zip') && (file.id)) {
@@ -157,6 +158,7 @@ async function getHint() {
         zipName: file.name
       });
     }
+    /* eslint-enable require-atomic-updates */
   }
   return hint;
 }

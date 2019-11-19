@@ -15,8 +15,6 @@ var _arrayPrefer2 = _interopRequireDefault(_arrayPrefer);
 
 var _singleMarketRobotSimulatorDbStudyfolder = require('single-market-robot-simulator-db-studyfolder');
 
-var _singleMarketRobotSimulatorDbStudyfolder2 = _interopRequireDefault(_singleMarketRobotSimulatorDbStudyfolder);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
@@ -249,4 +247,4 @@ var StudyFolderForGoogleDrive = exports.StudyFolderForGoogleDrive = function (_S
     }]);
 
     return StudyFolderForGoogleDrive;
-}(_singleMarketRobotSimulatorDbStudyfolder2.default);
+}(_singleMarketRobotSimulatorDbStudyfolder.StudyFolder);
