@@ -303,33 +303,33 @@ var getHint = function () {
 }();
 
 var getHintOnce = function () {
-  var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
-    var ahint, file, existingFolder;
-    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+  var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8() {
+    var ahint, file, existingFolder, config;
+    return regeneratorRuntime.wrap(function _callee8$(_context8) {
       while (1) {
-        switch (_context6.prev = _context6.next) {
+        switch (_context8.prev = _context8.next) {
           case 0:
-            _context6.next = 2;
+            _context8.next = 2;
             return _extensionsForStudyFolder.driveX.appDataFolder.readBurnHint();
 
           case 2:
-            ahint = _context6.sent;
+            ahint = _context8.sent;
 
             console.log("got hint: ", ahint);
 
             if (!((typeof ahint === 'undefined' ? 'undefined' : _typeof(ahint)) === 'object' && _typeof(ahint.file) === 'object')) {
-              _context6.next = 11;
+              _context8.next = 11;
               break;
             }
 
             file = ahint.file; // also contents
             // file is an object and should have properties name, parents, etc...
 
-            _context6.next = 8;
+            _context8.next = 8;
             return parentStudyFolder(file);
 
           case 8:
-            existingFolder = _context6.sent;
+            existingFolder = _context8.sent;
 
             console.log("existing folder", existingFolder);
             if (existingFolder && existingFolder.id) {
@@ -339,6 +339,62 @@ var getHintOnce = function () {
                 zipPromise: _extensionsForStudyFolder.driveX.contents(file.id),
                 zipName: file.name
               });
+            } else if (file && file.mimeType && file.mimeType.includes("json") && ahint.contents) {
+              config = ahint.contents;
+
+              if (config && config.name && config.common && Array.isArray(config.configurations)) {
+                ahint.includeFolder = {
+                  name: 'extenal json file: ' + file.name,
+                  listFiles: function () {
+                    var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+                      return regeneratorRuntime.wrap(function _callee6$(_context6) {
+                        while (1) {
+                          switch (_context6.prev = _context6.next) {
+                            case 0:
+                              return _context6.abrupt('return', []);
+
+                            case 1:
+                            case 'end':
+                              return _context6.stop();
+                          }
+                        }
+                      }, _callee6, this);
+                    }));
+
+                    function listFiles() {
+                      return _ref9.apply(this, arguments);
+                    }
+
+                    return listFiles;
+                  }(),
+                  getConfig: function () {
+                    var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7() {
+                      var folder;
+                      return regeneratorRuntime.wrap(function _callee7$(_context7) {
+                        while (1) {
+                          switch (_context7.prev = _context7.next) {
+                            case 0:
+                              folder = this;
+                              return _context7.abrupt('return', { folder: folder, config: config });
+
+                            case 2:
+                            case 'end':
+                              return _context7.stop();
+                          }
+                        }
+                      }, _callee7, this);
+                    }));
+
+                    function getConfig() {
+                      return _ref10.apply(this, arguments);
+                    }
+
+                    return getConfig;
+                  }()
+                };
+              } else {
+                window.alert("Failed to load Drive file:" + config.name + " because it isn't a valid configuration.");
+              }
             }
 
           case 11:
@@ -347,10 +403,10 @@ var getHintOnce = function () {
 
           case 13:
           case 'end':
-            return _context6.stop();
+            return _context8.stop();
         }
       }
-    }, _callee6, this);
+    }, _callee8, this);
   }));
 
   return function getHintOnce() {

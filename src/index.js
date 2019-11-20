@@ -178,6 +178,20 @@ async function getHintOnce(){
         zipPromise: driveX.contents(file.id),
         zipName: file.name
       });
+    } else if (file && file.mimeType && file.mimeType.includes("json") && ahint.contents){
+      const config = ahint.contents;
+      if (config && config.name && config.common && Array.isArray(config.configurations)){
+        ahint.includeFolder = {
+            name: 'extenal json file: '+file.name,
+            async listFiles(){ return []; },
+            async getConfig(){
+              const folder = this;
+              return { folder, config };
+            }
+        };
+      } else {
+        window.alert("Failed to load Drive file:"+config.name+" because it isn't a valid configuration.");
+      }
     }
   }
   hint = ahint;
