@@ -48,6 +48,7 @@ export async function myPrimaryFolder() {
 export async function listStudyFolders(name) {
   await pSignedIn();
   const parent = await myPrimaryFolder();
+  await getHint();
   const fields = 'id,name,description,properties,modifiedTime,webViewLink';
   const orderBy = 'modifiedTime desc';
   const trashed = false;
@@ -139,26 +140,46 @@ export async function parentStudyFolder({ name, parents }) {
   } catch (e) { console.log(e); return false; }
 }
 
+let hintStatus = 0;
 
 async function getHint() {
-  // hint is defined at top of module
-  hint = await driveX.appDataFolder.readBurnHint();
-  console.log("got hint: ", hint);
-  if ((typeof (hint) === 'object') && (typeof (hint.file) === 'object')) {
-    const { file } = hint; // also contents
+  if (hintStatus===0) {
+    hintStatus = 1;
+    await getHintOnce();
+    return hint;
+  } else if (hintStatus===1) {
+    return new Promise(function(resolve){
+      function loop(){
+        if (hintStatus===2){
+          resolve(hint);
+        } else {
+          setTimeout(loop,500);
+        }
+      }
+      setTimeout(loop,100);
+    });
+  } else {
+    return hint;
+  }
+}
+
+async function getHintOnce(){
+  const ahint = await driveX.appDataFolder.readBurnHint();
+  console.log("got hint: ", ahint);
+  if ((typeof (ahint) === 'object') && (typeof (ahint.file) === 'object')) {
+    const { file } = ahint; // also contents
     // file is an object and should have properties name, parents, etc...
     const existingFolder = await parentStudyFolder(file);
     console.log("existing folder", existingFolder);
-    /* eslint-disable require-atomic-updates */
     if (existingFolder && existingFolder.id) {
-      hint.existingFolderId = existingFolder.id;
+      ahint.existingFolderId = existingFolder.id;
     } else if (file && (file.mimeType==='application/zip') && (file.id)) {
-      hint.includeFolder = new StudyFolderForZip({
+      ahint.includeFolder = new StudyFolderForZip({
         zipPromise: driveX.contents(file.id),
         zipName: file.name
       });
     }
-    /* eslint-enable require-atomic-updates */
   }
-  return hint;
+  hint = ahint;
+  hintStatus=2;
 }

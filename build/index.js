@@ -66,6 +66,10 @@ var listStudyFolders = exports.listStudyFolders = function () {
 
           case 4:
             parent = _context2.sent;
+            _context2.next = 7;
+            return getHint();
+
+          case 7:
             fields = 'id,name,description,properties,modifiedTime,webViewLink';
             orderBy = 'modifiedTime desc';
             trashed = false;
@@ -83,10 +87,10 @@ var listStudyFolders = exports.listStudyFolders = function () {
               }
             };
             searcher = _extensionsForStudyFolder.driveX.searcher(searchTerms);
-            _context2.next = 12;
+            _context2.next = 14;
             return searcher();
 
-          case 12:
+          case 14:
             response = _context2.sent;
             files = response.files;
 
@@ -105,7 +109,7 @@ var listStudyFolders = exports.listStudyFolders = function () {
             }
             return _context2.abrupt('return', studyFolders);
 
-          case 18:
+          case 20:
           case 'end':
             return _context2.stop();
         }
@@ -249,45 +253,38 @@ var parentStudyFolder = exports.parentStudyFolder = function () {
 
 var getHint = function () {
   var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5() {
-    var _hint, file, existingFolder;
-
     return regeneratorRuntime.wrap(function _callee5$(_context5) {
       while (1) {
         switch (_context5.prev = _context5.next) {
           case 0:
-            _context5.next = 2;
-            return _extensionsForStudyFolder.driveX.appDataFolder.readBurnHint();
+            if (!(hintStatus === 0)) {
+              _context5.next = 7;
+              break;
+            }
 
-          case 2:
-            hint = _context5.sent;
+            hintStatus = 1;
+            _context5.next = 4;
+            return getHintOnce();
 
-            console.log("got hint: ", hint);
+          case 4:
+            return _context5.abrupt('return', hint);
 
-            if (!((typeof hint === 'undefined' ? 'undefined' : _typeof(hint)) === 'object' && _typeof(hint.file) === 'object')) {
+          case 7:
+            if (!(hintStatus === 1)) {
               _context5.next = 11;
               break;
             }
 
-            _hint = hint, file = _hint.file; // also contents
-            // file is an object and should have properties name, parents, etc...
-
-            _context5.next = 8;
-            return parentStudyFolder(file);
-
-          case 8:
-            existingFolder = _context5.sent;
-
-            console.log("existing folder", existingFolder);
-            /* eslint-disable require-atomic-updates */
-            if (existingFolder && existingFolder.id) {
-              hint.existingFolderId = existingFolder.id;
-            } else if (file && file.mimeType === 'application/zip' && file.id) {
-              hint.includeFolder = new _singleMarketRobotSimulatorDbZip.StudyFolderForZip({
-                zipPromise: _extensionsForStudyFolder.driveX.contents(file.id),
-                zipName: file.name
-              });
-            }
-            /* eslint-enable require-atomic-updates */
+            return _context5.abrupt('return', new Promise(function (resolve) {
+              function loop() {
+                if (hintStatus === 2) {
+                  resolve(hint);
+                } else {
+                  setTimeout(loop, 500);
+                }
+              }
+              setTimeout(loop, 100);
+            }));
 
           case 11:
             return _context5.abrupt('return', hint);
@@ -302,6 +299,62 @@ var getHint = function () {
 
   return function getHint() {
     return _ref7.apply(this, arguments);
+  };
+}();
+
+var getHintOnce = function () {
+  var _ref8 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6() {
+    var ahint, file, existingFolder;
+    return regeneratorRuntime.wrap(function _callee6$(_context6) {
+      while (1) {
+        switch (_context6.prev = _context6.next) {
+          case 0:
+            _context6.next = 2;
+            return _extensionsForStudyFolder.driveX.appDataFolder.readBurnHint();
+
+          case 2:
+            ahint = _context6.sent;
+
+            console.log("got hint: ", ahint);
+
+            if (!((typeof ahint === 'undefined' ? 'undefined' : _typeof(ahint)) === 'object' && _typeof(ahint.file) === 'object')) {
+              _context6.next = 11;
+              break;
+            }
+
+            file = ahint.file; // also contents
+            // file is an object and should have properties name, parents, etc...
+
+            _context6.next = 8;
+            return parentStudyFolder(file);
+
+          case 8:
+            existingFolder = _context6.sent;
+
+            console.log("existing folder", existingFolder);
+            if (existingFolder && existingFolder.id) {
+              ahint.existingFolderId = existingFolder.id;
+            } else if (file && file.mimeType === 'application/zip' && file.id) {
+              ahint.includeFolder = new _singleMarketRobotSimulatorDbZip.StudyFolderForZip({
+                zipPromise: _extensionsForStudyFolder.driveX.contents(file.id),
+                zipName: file.name
+              });
+            }
+
+          case 11:
+            hint = ahint;
+            hintStatus = 2;
+
+          case 13:
+          case 'end':
+            return _context6.stop();
+        }
+      }
+    }, _callee6, this);
+  }));
+
+  return function getHintOnce() {
+    return _ref8.apply(this, arguments);
   };
 }();
 
@@ -362,3 +415,5 @@ function pRequireStudyFolder(fileId) {
     return console.log(e);
   });
 }
+
+var hintStatus = 0;
