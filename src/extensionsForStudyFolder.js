@@ -29,8 +29,7 @@ export class StudyFolderForGoogleDrive extends StudyFolder {
         const contents = await driveX.contents(fileId);
         if (name.endsWith('.json') && (typeof(contents)==='string'))
             return JSON.parse(contents);
-        else
-            return contents;
+        return contents;
     }
 
     async update(metadata){
@@ -47,8 +46,8 @@ export class StudyFolderForGoogleDrive extends StudyFolder {
         const existingFile = files.filter((f)=>(f.name===name));
         const existingFileId = (Array.isArray(existingFile)) && existingFile[0] && existingFile[0].id;
         const folderId = this.id;
-        var myFile = null;
-        var mimeType = '';
+        let myFile = null;
+        let mimeType = '';
         if (contents){
             myFile = new Blob([JSON.stringify(contents,null,2)], { type: 'application/json'});
             mimeType = 'application/json';

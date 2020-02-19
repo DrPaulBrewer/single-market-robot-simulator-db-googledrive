@@ -1,7 +1,7 @@
 /* Copyright 2017- Paul Brewer, Economic and Financial Technology Consulting LLC */
 /* This file is open source software.  The MIT License applies to this software. */
 
-/* global gapi:false, Promise:false */
+/* global gapi:false */
 
 import ssgd from 'search-string-for-google-drive';
 import pReduce from 'p-reduce';
@@ -15,7 +15,7 @@ export function extensionsForGoogleDrive({ rootFolderId, spaces }) {
   const x = {};
 
   function driveSearcher(options) {
-    var limit = (options.limit || 1000);
+    let limit = (options.limit || 1000);
     const unique = options.unique;
     if (unique) limit = 2;
     const allowMatchAllFiles = options && options.allowMatchAllFiles;
@@ -88,9 +88,7 @@ export function extensionsForGoogleDrive({ rootFolderId, spaces }) {
               info[successProperty] = true;
               return info;
             },
-            () => {
-              return info;
-            }
+            () => (info)
           )
         );
       }
@@ -101,13 +99,13 @@ export function extensionsForGoogleDrive({ rootFolderId, spaces }) {
   x.janitor = driveJanitor;
 
   function getFolderId(folderIdOrObject) {
-    if (typeof (folderIdOrObject) === 'object') {
+    if (typeof(folderIdOrObject) === 'object') {
       if (folderIdOrObject.id) {
         if (folderIdOrObject.mimeType === folderMimeType)
           return folderIdOrObject.id;
       }
     }
-    if (typeof (folderIdOrObject) === 'string') {
+    if (typeof(folderIdOrObject) === 'string') {
       return folderIdOrObject;
     }
     throw new Error("bad request, not a folder or folder id");
@@ -206,7 +204,7 @@ export function extensionsForGoogleDrive({ rootFolderId, spaces }) {
     const last = parts.pop();
     const dff = driveFolderFactory();
     const parentFolder = await pReduce(parts, dff, rootFolderId);
-    const lastFolder = await (driveFolderFactory(meta)(parentFolder, last));
+    const lastFolder = await(driveFolderFactory(meta)(parentFolder, last));
     return lastFolder;
   }
 

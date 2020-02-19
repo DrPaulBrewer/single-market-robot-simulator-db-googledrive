@@ -1,9 +1,10 @@
 /* Copyright 2017- Paul Brewer, Economic and Financial Technology Consulting LLC */
 /* This file is open source software.  The MIT License applies to this software. */
 
-/* global gapi:false, Promise:false */
+/* global gapi:false */
 
 /* eslint-disable no-console */
+/* eslint-disable no-use-before-define */
 
 import { StudyFolderForGoogleDrive, driveX, arrayPrefer } from './extensionsForStudyFolder.js';
 import { StudyFolderForZip } from 'single-market-robot-simulator-db-zip';
@@ -29,7 +30,7 @@ function pSignedIn() {
   return new Promise(function (resolve) {
     function loop() {
       if (isSignedIn()) return resolve(true);
-      else setTimeout(loop, 250);
+      return setTimeout(loop, 250);
     }
     loop();
   });
@@ -41,7 +42,7 @@ export async function myPrimaryFolder() {
   const userName = emailAddress.split('@')[0];
   if (!userName.length) throw new Error(`Error: myPrimaryFolder(), bad emailAddress = ${emailAddress}`);
   const folderName = 'Econ1Net-' + userName;
-  const folder = await (driveX.folderFactory()('root', folderName));
+  const folder = await(driveX.folderFactory()('root', folderName));
   return folder;
 }
 
@@ -135,9 +136,8 @@ export async function parentStudyFolder({ name, parents }) {
     );
     if (parentFolder)
       return new StudyFolderForGoogleDrive(parentFolder);
-    else
-      return false;
-  } catch (e) { console.log(e); return false; }
+    return false;
+  } catch (e) { console.log(e);return false;}
 }
 
 let hintStatus = 0;
@@ -158,15 +158,14 @@ async function getHint() {
       }
       setTimeout(loop,100);
     });
-  } else {
-    return hint;
   }
+  return hint;
 }
 
 async function getHintOnce(){
   const ahint = await driveX.appDataFolder.readBurnHint();
   console.log("got hint: ", ahint);
-  if ((typeof (ahint) === 'object') && (typeof (ahint.file) === 'object')) {
+  if ((typeof(ahint) === 'object') && (typeof(ahint.file) === 'object')) {
     const { file } = ahint; // also contents
     // file is an object and should have properties name, parents, etc...
     const existingFolder = await parentStudyFolder(file);
@@ -190,7 +189,7 @@ async function getHintOnce(){
             }
         };
       } else {
-        window.alert("Failed to load Drive file:"+config.name+" because it isn't a valid configuration.");
+        window.alert("Failed to load Drive file:"+config.name+" because it isn't a valid configuration."); // eslint-disable-line no-alert
       }
     }
   }
