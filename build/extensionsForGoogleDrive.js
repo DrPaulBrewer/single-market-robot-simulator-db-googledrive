@@ -17,11 +17,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* This file is open source software.  The MIT License applies to this software. */
 
 /* global gapi:false */
-function extensionsForGoogleDrive(_ref) {
-  let {
-    rootFolderId,
-    spaces
-  } = _ref;
+function extensionsForGoogleDrive({
+  rootFolderId,
+  spaces
+}) {
   // inspired by v2.0.0 npm:decorated-google-drive, modified to use gapi.client.drive
   // and modified for browser environment
   const folderMimeType = 'application/vnd.google-apps.folder';
@@ -131,7 +130,7 @@ function extensionsForGoogleDrive(_ref) {
     const search = driveSearcher(searcherOptions);
     return async function (folderIdOrObject, name) {
       const parentId = getFolderId(folderIdOrObject);
-      const searchResult = checkSearch((await search(parentId, name)));
+      const searchResult = checkSearch(await search(parentId, name));
       return searchResult.files[0];
     };
   }

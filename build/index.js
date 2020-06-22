@@ -114,10 +114,9 @@ async function listStudyFolders(name) {
   return studyFolders;
 }
 
-async function createStudyFolder(_ref) {
-  let {
-    name
-  } = _ref;
+async function createStudyFolder({
+  name
+}) {
   const parent = await myPrimaryFolder();
 
   const creator = _extensionsForStudyFolder.driveX.folderCreator({
@@ -148,11 +147,10 @@ function pRequireStudyFolder(fileId) {
   }).then(result).then(passOnlyStudyFolder, e => console.log(e));
 }
 
-async function parentStudyFolder(_ref2) {
-  let {
-    name,
-    parents
-  } = _ref2;
+async function parentStudyFolder({
+  name,
+  parents
+}) {
   const primaryFolder = await myPrimaryFolder();
   if (!Array.isArray(parents)) throw new Error("parents is required to be an Array");
   if (parents.length === 0) return false;
@@ -212,7 +210,8 @@ async function getHintOnce() {
     } else if (file && file.mimeType === 'application/zip' && file.id) {
       ahint.includeFolder = new _singleMarketRobotSimulatorDbZip.StudyFolderForZip({
         zipPromise: _extensionsForStudyFolder.driveX.contents(file.id),
-        zipName: file.name
+        zipName: file.name,
+        zipSize: +file.size
       });
     } else if (file && file.mimeType && file.mimeType.includes("json") && ahint.contents) {
       const config = ahint.contents;

@@ -175,7 +175,8 @@ async function getHintOnce(){
     } else if (file && (file.mimeType==='application/zip') && (file.id)) {
       ahint.includeFolder = new StudyFolderForZip({
         zipPromise: driveX.contents(file.id),
-        zipName: file.name
+        zipName: file.name,
+        zipSize: +file.size
       });
     } else if (file && file.mimeType && file.mimeType.includes("json") && ahint.contents){
       const config = ahint.contents;

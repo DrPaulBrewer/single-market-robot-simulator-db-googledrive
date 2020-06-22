@@ -47,11 +47,10 @@ class StudyFolderForGoogleDrive extends _singleMarketRobotSimulatorDbStudyfolder
     return response.files;
   }
 
-  async download(_ref) {
-    let {
-      name,
-      id
-    } = _ref;
+  async download({
+    name,
+    id
+  }) {
     const fileId = id || (await this.fileId(name));
     const contents = await _extensionsForGoogleDrive.driveX.contents(fileId);
     if (name.endsWith('.json') && typeof contents === 'string') return JSON.parse(contents);
@@ -64,14 +63,13 @@ class StudyFolderForGoogleDrive extends _singleMarketRobotSimulatorDbStudyfolder
     return response;
   }
 
-  async upload(_ref2) {
-    let {
-      name,
-      contents,
-      blob,
-      onProgress,
-      force
-    } = _ref2;
+  async upload({
+    name,
+    contents,
+    blob,
+    onProgress,
+    force
+  }) {
     const files = await this.listFiles();
     const hasZipFiles = files.some(f => f.name.endsWith(".zip"));
     if (!force && name === 'config.json' && hasZipFiles) throw new Error("conflict Error in upload logic: may not clobber config.json in a study folder with existing .zip file data: config.json unchanged");
