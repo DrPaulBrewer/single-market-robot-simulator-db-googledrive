@@ -8,6 +8,13 @@
 import {driveX} from './extensionsForGoogleDrive';
 import arrayPrefer from 'array-prefer';
 import { StudyFolder } from 'single-market-robot-simulator-db-studyfolder';
+import {scan, parse} from 'secure-json-parse';
+
+const secureJSONPolicy = {
+  protoAction: 'remove',
+  constructorAction: 'remove'
+};  // see https://github.com/fastify/secure-json-parse
+
 export {driveX, arrayPrefer};
 
 export class StudyFolderForGoogleDrive extends StudyFolder {
@@ -27,13 +34,15 @@ export class StudyFolderForGoogleDrive extends StudyFolder {
     async download({name, id}){
         const fileId = id || (await this.fileId(name));
         const contents = await driveX.contents(fileId);
+        if (typeof(contents)==='object') scan(contents, secureJSONPolicy);
         if (name.endsWith('.json') && (typeof(contents)==='string'))
-            return JSON.parse(contents);
+            return parse(contents, secureJSONPolicy);
         return contents;
     }
 
     async update(metadata){
         const folder = this;
+        scan(metadata, secureJSONPolicy);
         const response = await driveX.updateMetadata(folder.id, metadata);
         return response;
     }
@@ -49,6 +58,7 @@ export class StudyFolderForGoogleDrive extends StudyFolder {
         let myFile = null;
         let mimeType = '';
         if (contents){
+            scan(contents, secureJSONPolicy);
             myFile = new Blob([JSON.stringify(contents,null,2)], { type: 'application/json'});
             mimeType = 'application/json';
         }

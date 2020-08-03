@@ -5,6 +5,12 @@
 
 import ssgd from 'search-string-for-google-drive';
 import pReduce from 'p-reduce';
+import {scan, parse} from 'secure-json-parse';
+
+const secureJSONPolicy = {
+  protoAction: 'remove',
+  constructorAction: 'remove'
+};  // see https://github.com/fastify/secure-json-parse
 
 export function extensionsForGoogleDrive({ rootFolderId, spaces }) {
   // inspired by v2.0.0 npm:decorated-google-drive, modified to use gapi.client.drive
@@ -224,7 +230,8 @@ export function extensionsForGoogleDrive({ rootFolderId, spaces }) {
     try {
       const file = await driveFindPath(path);
       const contents = await driveContents(file.id);
-      hint = (typeof(contents) === 'string') ? JSON.parse(contents) : contents;
+      hint = (typeof(contents) === 'string') ? parse(contents, secureJSONPolicy) : contents;
+      scan(hint, secureJSONPolicy);
       if (file && file.id) {
         await gapi.client.drive.files.delete({ fileId: file.id });
       }
