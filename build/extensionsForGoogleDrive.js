@@ -10,6 +10,8 @@ var _searchStringForGoogleDrive = _interopRequireDefault(require("search-string-
 
 var _pReduce = _interopRequireDefault(require("p-reduce"));
 
+var _secureJsonParse = require("secure-json-parse");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /* Copyright 2017- Paul Brewer, Economic and Financial Technology Consulting LLC */
@@ -17,6 +19,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* This file is open source software.  The MIT License applies to this software. */
 
 /* global gapi:false */
+const secureJSONPolicy = {
+  protoAction: 'remove',
+  constructorAction: 'remove'
+}; // see https://github.com/fastify/secure-json-parse
+
 function extensionsForGoogleDrive({
   rootFolderId,
   spaces
@@ -254,7 +261,8 @@ function extensionsForGoogleDrive({
     try {
       const file = await driveFindPath(path);
       const contents = await driveContents(file.id);
-      hint = typeof contents === 'string' ? JSON.parse(contents) : contents;
+      hint = typeof contents === 'string' ? (0, _secureJsonParse.parse)(contents, secureJSONPolicy) : contents;
+      (0, _secureJsonParse.scan)(hint, secureJSONPolicy);
 
       if (file && file.id) {
         await gapi.client.drive.files.delete({

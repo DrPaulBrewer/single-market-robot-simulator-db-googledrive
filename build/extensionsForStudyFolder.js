@@ -23,6 +23,8 @@ var _arrayPrefer = _interopRequireDefault(require("array-prefer"));
 
 var _singleMarketRobotSimulatorDbStudyfolder = require("single-market-robot-simulator-db-studyfolder");
 
+var _secureJsonParse = require("secure-json-parse");
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 /* Copyright 2018- Paul Brewer, Economic and Financial Technology Consulting LLC */
@@ -32,6 +34,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 /* global pUploaderForGoogleDrive:false */
 
 /* eslint-disable no-console */
+const secureJSONPolicy = {
+  protoAction: 'remove',
+  constructorAction: 'remove'
+}; // see https://github.com/fastify/secure-json-parse
+
 class StudyFolderForGoogleDrive extends _singleMarketRobotSimulatorDbStudyfolder.StudyFolder {
   async search(name) {
     const trashed = false;
@@ -53,12 +60,14 @@ class StudyFolderForGoogleDrive extends _singleMarketRobotSimulatorDbStudyfolder
   }) {
     const fileId = id || (await this.fileId(name));
     const contents = await _extensionsForGoogleDrive.driveX.contents(fileId);
-    if (name.endsWith('.json') && typeof contents === 'string') return JSON.parse(contents);
+    if (typeof contents === 'object') (0, _secureJsonParse.scan)(contents, secureJSONPolicy);
+    if (name.endsWith('.json') && typeof contents === 'string') return (0, _secureJsonParse.parse)(contents, secureJSONPolicy);
     return contents;
   }
 
   async update(metadata) {
     const folder = this;
+    (0, _secureJsonParse.scan)(metadata, secureJSONPolicy);
     const response = await _extensionsForGoogleDrive.driveX.updateMetadata(folder.id, metadata);
     return response;
   }
@@ -80,6 +89,7 @@ class StudyFolderForGoogleDrive extends _singleMarketRobotSimulatorDbStudyfolder
     let mimeType = '';
 
     if (contents) {
+      (0, _secureJsonParse.scan)(contents, secureJSONPolicy);
       myFile = new Blob([JSON.stringify(contents, null, 2)], {
         type: 'application/json'
       });

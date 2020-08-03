@@ -18,20 +18,20 @@
     "url": "https://github.com/drpaulbrewer/single-market-robot-simulator-db-googledrive"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.8.4",
-    "@babel/polyfill": "^7.8.3",
-    "@babel/preset-env": "^7.8.4",
-    "@babel/register": "^7.8.3",
-    "coveralls": "^3.0.9",
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.0",
+    "@babel/polyfill": "^7.10.4",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/register": "^7.10.5",
+    "coveralls": "^3.1.0",
     "esdoc": "^1.1.0",
-    "eslint": "^6.8.0"
+    "eslint": "^7.6.0"
   },
   "dependencies": {
     "array-prefer": "^0.1.0",
     "p-reduce": "^2.1.0",
     "search-string-for-google-drive": "^1.0.0",
     "single-market-robot-simulator-db-studyfolder": "^2.0.0",
-    "single-market-robot-simulator-db-zip": "^2.0.0"
+    "single-market-robot-simulator-db-zip": "^2.1.0"
   }
 }
