@@ -23,8 +23,10 @@ export class StudyFolderForGoogleDrive extends StudyFolder {
       const trashed = false;
       const folderId = this.id;
       const orderBy = 'modifiedTime desc';
+      const fields = 'id,name,mimeType,modifiedTime,size,properties,webViewLink';
       const searcher = driveX.searcher({
         trashed,
+        fields,
         orderBy
       });
       const response = await searcher(folderId, name);
