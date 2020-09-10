@@ -49,7 +49,7 @@ export class StudyFolderForGoogleDrive extends StudyFolder {
         return response;
     }
 
-    async upload({name, contents, blob, onProgress, force}){
+    async upload({name, contents, description, properties, blob, onProgress, force}){
         const files = await this.listFiles();
         const hasZipFiles = files.some((f)=>(f.name.endsWith(".zip")));
         if ((!force) && (name === 'config.json') && (hasZipFiles))
@@ -71,17 +71,29 @@ export class StudyFolderForGoogleDrive extends StudyFolder {
             else
                 mimeType = blob.type || 'application/octet-stream';
         }
-        const metadata = (!existingFileId) && { name, mimeType, parents: [folderId] };
-        const uploadedDriveFile = await pUploaderForGoogleDrive({
-            file: myFile,
-            fileId: existingFileId,
-            metadata,
-            params: {
-                spaces: 'drive',
-                fields: 'id,name,mimeType,modifiedTime,size,parents,webViewLink'
+        const uploadRequest = {
+          file: myFile,
+          fileId: existingFileId,
+          params: {
+              spaces: 'drive',
+              fields: 'id,name,mimeType,modifiedTime,size,parents,description,properties,webViewLink'
+          },
+          onProgress
+        };
+        if (!existingFileId){
+          // the code below prevents creating keys for undefined description, properties
+          uploadRequest.metadata = Object.assign(
+            {},
+            {
+              name,
+              mimeType,
+              parents: [folderId]
             },
-            onProgress
-        });
+            (description && {description}),
+            (properties && {properties})
+          );
+        }
+        const uploadedDriveFile = await pUploaderForGoogleDrive(uploadRequest);
         return uploadedDriveFile;
     }
 }

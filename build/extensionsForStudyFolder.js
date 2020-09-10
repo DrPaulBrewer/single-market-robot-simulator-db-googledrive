@@ -44,9 +44,11 @@ class StudyFolderForGoogleDrive extends _singleMarketRobotSimulatorDbStudyfolder
     const trashed = false;
     const folderId = this.id;
     const orderBy = 'modifiedTime desc';
+    const fields = 'id,name,mimeType,modifiedTime,size,properties,webViewLink';
 
     const searcher = _extensionsForGoogleDrive.driveX.searcher({
       trashed,
+      fields,
       orderBy
     });
 
@@ -75,6 +77,8 @@ class StudyFolderForGoogleDrive extends _singleMarketRobotSimulatorDbStudyfolder
   async upload({
     name,
     contents,
+    description,
+    properties,
     blob,
     onProgress,
     force
@@ -101,21 +105,30 @@ class StudyFolderForGoogleDrive extends _singleMarketRobotSimulatorDbStudyfolder
       if (name.endsWith(".zip")) mimeType = 'application/zip';else mimeType = blob.type || 'application/octet-stream';
     }
 
-    const metadata = !existingFileId && {
-      name,
-      mimeType,
-      parents: [folderId]
-    };
-    const uploadedDriveFile = await pUploaderForGoogleDrive({
+    const uploadRequest = {
       file: myFile,
       fileId: existingFileId,
-      metadata,
       params: {
         spaces: 'drive',
-        fields: 'id,name,mimeType,modifiedTime,size,parents,webViewLink'
+        fields: 'id,name,mimeType,modifiedTime,size,parents,description,properties,webViewLink'
       },
       onProgress
-    });
+    };
+
+    if (!existingFileId) {
+      // the code below prevents creating keys for undefined description, properties
+      uploadRequest.metadata = Object.assign({}, {
+        name,
+        mimeType,
+        parents: [folderId]
+      }, description && {
+        description
+      }, properties && {
+        properties
+      });
+    }
+
+    const uploadedDriveFile = await pUploaderForGoogleDrive(uploadRequest);
     return uploadedDriveFile;
   }
 
