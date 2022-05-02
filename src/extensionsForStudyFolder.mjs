@@ -5,7 +5,7 @@
 
 /* eslint-disable no-console */
 
-import {driveX} from './extensionsForGoogleDrive';
+import {driveX} from './extensionsForGoogleDrive.mjs';
 import arrayPrefer from 'array-prefer';
 import { StudyFolder } from 'single-market-robot-simulator-db-studyfolder';
 import {scan, parse} from 'secure-json-parse';

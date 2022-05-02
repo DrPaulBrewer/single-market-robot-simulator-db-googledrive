@@ -6,7 +6,7 @@
 /* eslint-disable no-console */
 /* eslint-disable no-use-before-define */
 
-import { StudyFolderForGoogleDrive, driveX, arrayPrefer } from './extensionsForStudyFolder.js';
+import { StudyFolderForGoogleDrive, driveX, arrayPrefer } from './extensionsForStudyFolder.mjs';
 import { StudyFolderForZip } from 'single-market-robot-simulator-db-zip';
 export { StudyFolderForGoogleDrive, driveX, getHint, defaultWebLink };
 

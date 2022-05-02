@@ -2,14 +2,11 @@
   "name": "single-market-robot-simulator-db-googledrive",
   "version": "2.5.0",
   "description": "settings and data db for single-market-robot-simulator studies with storage on Google Drive",
-  "main": "build/index.js",
-  "jsnext:main": "src/index.js",
+  "exports": "./src/index.mjs",
   "scripts": {
-    "clean": "rm -rf ./build ./doc ; mkdir ./build",
-    "build": "node_modules/.bin/babel src --out-dir build",
-    "doc": "node_modules/.bin/esdoc -c esdoc.json",
-    "lint": "node_modules/.bin/eslint src/**.js",
-    "go": "npm run clean && npm run lint && npm run build"
+    "docs": "rm -rf ./docs && npx jsdoc -c .jsdoc.conf.json --access all src/index.mjs && mv out docs",
+    "lint": "eslint src/**.mjs",
+    "go": "npm run lint && npm run docs"
   },
   "author": "drpaulbrewer@eaftc.com",
   "license": "MIT",
@@ -18,21 +15,15 @@
     "url": "https://github.com/drpaulbrewer/single-market-robot-simulator-db-googledrive"
   },
   "devDependencies": {
-    "@babel/cli": "^7.11.6",
-    "@babel/core": "^7.11.6",
-    "@babel/polyfill": "^7.11.5",
-    "@babel/preset-env": "^7.11.5",
-    "@babel/register": "^7.11.5",
-    "coveralls": "^3.1.0",
-    "esdoc": "^1.1.0",
-    "eslint": "^7.8.1"
+    "eslint": "^8.14.0",
+    "jsdoc": "^3.6.10"
   },
   "dependencies": {
     "array-prefer": "^0.1.0",
-    "p-reduce": "^2.1.0",
-    "search-string-for-google-drive": "^1.0.0",
-    "secure-json-parse": "^2.1.0",
-    "single-market-robot-simulator-db-studyfolder": "^2.0.0",
-    "single-market-robot-simulator-db-zip": "^2.1.0"
+    "p-reduce": "^3.0.0",
+    "search-string-for-google-drive": "^1.1.0",
+    "secure-json-parse": "^2.4.0",
+    "single-market-robot-simulator-db-studyfolder": "^3.1.0",
+    "single-market-robot-simulator-db-zip": "^3.0.0"
   }
 }
