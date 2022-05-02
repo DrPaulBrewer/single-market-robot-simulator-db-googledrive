@@ -186,7 +186,7 @@ async function getHintOnce(){
             async listFiles(){ return []; },
             async getConfig(){
               const folder = this;
-              return { folder, config };
+              return config;
             }
         };
       } else {
