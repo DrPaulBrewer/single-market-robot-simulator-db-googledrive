@@ -185,7 +185,6 @@ async function getHintOnce(){
             name: 'extenal json file: '+file.name,
             async listFiles(){ return []; },
             async getConfig(){
-              const folder = this;
               return config;
             }
         };
